@@ -1,0 +1,15 @@
+annealing_temperature_k,annealing_time_s,h_star_kj_mol,tp_1000kps_k,source
+383,0.1,92,377,manual_digitization_from_fig3a_b
+383,0.2,92,380,manual_digitization_from_fig3a_b
+383,0.5,94,384,manual_digitization_from_fig3a_b
+383,1,98,389,manual_digitization_from_fig3a_b
+383,2,112,397,manual_digitization_from_fig3a_b
+383,5,148,408,manual_digitization_from_fig3a_b
+383,10,155,414,manual_digitization_from_fig3a_b
+383,20,156,419,manual_digitization_from_fig3a_b
+383,50,157,424,manual_digitization_from_fig3a_b
+383,100,156,427,manual_digitization_from_fig3a_b
+383,200,155,430,manual_digitization_from_fig3a_b
+383,500,155,432,manual_digitization_from_fig3a_b
+383,1000,156,433,manual_digitization_from_fig3a_b
+383,2000,157,434,manual_digitization_from_fig3a_b
