@@ -1,0 +1,609 @@
+                            Supplementary Information
+
+
+Activation entropy as a key factor controlling the memory effect in glasses
+
+
+    Lijian Song1,2, Wei Xu1,2, Juntao Huo1,2, Fushan Li3, Li-Min Wang4, M. D. Ediger5,
+                                      Jun-Qiang Wang1,2,3,*
+
+1
+    CAS Key Laboratory of Magnetic Materials and Devices, and Zhejiang Province Key Laboratory
+    of Magnetic Materials and Application Technology, Ningbo Institute of Materials Technology
+    and Engineering, Chinese Academy of Sciences, Ningbo 315201, China
+2
+    Center of Materials Science and Optoelectronics Engineering, University of Chinese Academy of
+    Sciences, Beijing 100049, China
+3
+    School of Materials Science and Engineering, Zhengzhou University, Zhengzhou 450001, China
+4
+    State Key Lab of Metastable Materials Science and Technology, and College of Materials
+    Science and Engineering, Yanshan University, Qinhuangdao, Hebei 066004, China
+5
+    Department of Chemistry, University of Wisconsin-Madison, Wisconsin 53706, USA
+
+
+
+*Correspondence should be addressed to: jqwang@nimte.ac.cn
+
+
+
+
+                                                 1
+1. Sample fabrication
+    The master alloy of Au49Cu26.9Ag5.5Pd2.3Si16.3 (at.%) was first melt using arc
+melting furnace. Metallic glass ribbon was obtained by the melt spinning technique
+(tangent speed ~40 m/s). During melting, the alloy was protected by high-purity Ar. A
+tiny sample was cut from the ribbon under microscope and loaded on the flash DSC
+chip for measurement.
+2. The DSC measurements
+
+
+           (a)                                                 (b)
+
+
+
+                    ta                                                    t1
+            Ta                                                  T1
+
+                                                                               t2
+                                                                T2
+
+
+
+                         Time (s)                                               Time (s)
+
+           (c)                                (d) 0.50
+                                                                                    Tp
+                                              Heat flow (mW)
+
+
+
+
+                          t2                                           300 350 400 450          Tx
+            T2                                                 0.25           T (K)
+
+
+
+                                                                                         Tg
+            T1                                                             annealed
+                    t1
+                                                                           as-cooled
+                                                               0.00
+                         Time (s)                                 300           400           500
+                                                                                 T (K)
+
+
+
+Figure S1. (a) Temperature-time protocols for single-step ageing. (b) Temperature-time protocols
+
+for two-step ageing. (c) Temperature-time protocols for memory effect. (d) The representative
+
+DSC curves obtained upon heating for as-cooled sample (blue) and the sample annealed at 383 K
+
+for 0.1 s (red). Inset is the relaxation peak obtained by subtracting the two DSC traces.
+
+
+
+     During measurement, a flow of high-purity Ar gas (40 ml/min) was applied to
+protect the sample from oxidation. The heat flow of the as-cooled sample was first
+measured at a heating rate of Rh=1000 K/s. The enthalpy change that occurred during
+
+isothermal annealing is given by ∆                                 ∆     d , with T0 is the integral upper limit
+                                                               R
+
+
+                                                               2
+(in the supercooled liquid state), TR is room temperature (relaxation peak is above
+room temperature), and ΔCp is the change in the specific heat. Schematic illustration
+of single and two-step thermal progresses are shown in Fig. S1(a)-(c). The DSC
+curves were measured at cooling rate Rc=10000 K/s and heating rate Rh=1000 K/s. As
+shown in Fig. S1(d), the glass transition temperature Tg and the onset crystallization
+temperature Tx are marked by arrows. Inset is the relaxation peak by subtracting the
+two DSC traces and the relaxation peak Tp is obtained.
+
+
+
+
+                                          3
+ 3.        2-D contours of the relaxation heat flows for T1=383 K and T2=373 K
+           The relaxation heat flows evolve with the pre-ageing time t1=0.1-100 s for
+ T1=383 K and T2=373 K experiments are shown in Figure S2. The results show that
+ the relaxation heat flows monotonic increases with t2 for the entire pre-ageing time
+ range t1=0.1 -100 s. The memory effect was not observed in this two step ageing
+ experiments.
+
+                                       0.3 (b)                                      0.3                                           0.3
+(a) 460                                               460                                  (c) 460
+        440                            0.2            440                           0.2             440                           0.2
+                                              T (K)
+T (K)
+
+
+
+
+                                                                                            T (K)
+        420                                           420                                           420
+                                       0.1                                          0.1                                           0.1
+        400                                           400                                           400
+        380                                           380                                           380
+              T1=383 K, t1=0.1 s      . 0.0                 T1=383 K, t1=0.2 s     . 0.0                  T1=383 K, t1=0.5 s     . 0.0
+        360                           Q               360                          Q                360                          Q
+          10-1 100 101 102 103      (mW)                10-1 100 101 102 103     (mW)                 10-1 100 101 102 103     (mW)
+                    t2 (s)                                        t2 (s)                                        t2 (s)
+
+                                       0.3                                          0.3                                           0.3
+(d) 460                                       (e) 460                                      (f)      460
+        440                            0.2            440                           0.2             440                           0.2
+T (K)
+
+
+
+
+                                              T (K)
+
+
+
+
+                                                                                           T (K)
+        420                                           420                                           420
+                                       0.1                                          0.1                                           0.1
+        400                                           400                                           400
+        380                                           380                                           380
+               T1=383 K, t1=1 s       . 0.0                  T1=383 K, t1=2 s      . 0.0                   T1=383 K, t1=5 s      . 0.0
+        360                           Q               360                          Q                360                          Q
+          10-1 100 101 102 103      (mW)                10-1 100 101 102 103     (mW)                 10-1 100 101 102 103     (mW)
+                    t2 (s)                                        t2 (s)                                        t2 (s)
+
+                                       0.3                                          0.3                                           0.3
+(g) 460                                       (h) 460                                      (i)      460
+        440                            0.2            440                           0.2             440                           0.2
+T (K)
+
+
+
+
+                                              T (K)
+
+
+
+
+                                                                                           T (K)
+
+
+
+
+        420                                           420                                           420
+                                       0.1                                          0.1                                           0.1
+        400                                           400                                           400
+        380                                           380                                           380
+               T1=383 K, t1=10 s      . 0.0                 T1=383 K, t1=20 s      . 0.0                   T1=383 K, t1=50 s     . 0.0
+        360                           Q               360                          Q                360                          Q
+          10-1 100 101 102 103      (mW)                10-1 100 101 102 103     (mW)                 10-1 100 101 102 103     (mW)
+                    t2 (s)                                        t2 (s)                                        t2 (s)
+                                       0.3
+(j) 460
+        440                            0.2
+T (K)
+
+
+
+
+        420
+                                       0.1
+        400
+        380
+               T1=383 K, t1=100 s     . 0.0
+        360                           Q
+          10 100 101 102 103
+            -1                      (mW)
+                    t2 (s)
+
+
+ Figure S2. (a)-(j) Two-dimension contours of the relaxation heat flows of sample pre-ageing at
+
+ T1=383 K for t1=0.1-100 s and then ageing at T2=373 K, t2=0.1-5000 s.
+
+
+
+                                                                  4
+4.        2-D contours of the relaxation heat flows for memory effect (T1=373 K and
+         T2=383 K)
+         To better illustrate the relaxation heat flows evolve with the pre-ageing time t1 for
+memory effect, the two-dimensional contours of the relaxation heat flows pre-ageing
+at T1=373 K for t1=0.1 -100 s are shown in Figure S3. The results show that the
+relaxation heat flows monotonic increases with t2 for t1=0.1-2 s but nonmonotonic
+changes with t2 for t1=5-100 s.
+
+                                      0.2    (b) 460                              0.2    (c) 460                            0.2
+(a) 460
+         440                                         440                                         440
+                                      0.1                                         0.1                                       0.1
+                                             T (K)
+
+
+
+
+                                                                                         T (K)
+ T (K)
+
+
+
+
+         420                                         420                                         420
+         400                                         400                                         400
+         380                                         380                                         380
+               T1=373 K, t1=0.1 s    . 0.0                 T1=373 K, t1=0.2 s    . 0.0                 T1=373 K, t1=0.5 s . 0.0
+         360                         Q               360                         Q               360                      Q
+           10-1 100 101 102    103 (mW)                10-1 100 101 102    103 (mW)                10-1 100 101 102 103 (mW)
+                    t2 (s)                                      t2 (s)                                      t2 (s)
+
+                                      0.2                                         0.2                                       0.2
+(d) 460                                      (e) 460                                     (f)     460
+         440                                         440                                         440
+                                      0.1                                         0.1                                       0.1
+                                             T (K)
+T (K)
+
+
+
+
+                                                                                         T (K)
+         420                                         420                                         420
+         400                                         400                                         400
+         380                                         380                                         380
+                T1=373 K, t1=1 s     . 0.0                 T1=373 K, t1=2 s      . 0.0                  T1=373 K, t1=5 s  . 0.0
+         360                         Q               360                         Q               360                      Q
+           10-1 100 101 102    103 (mW)                10-1 100 101 102    103 (mW)                10-1 100 101 102 103 (mW)
+                    t2 (s)                                      t2 (s)                                       t2 (s)
+
+
+(g) 460                               0.2    (h) 460                              0.2                                       0.2
+                                                                                         (i)     460
+         440                                         440                                         440
+                                      0.1                                         0.1                                       0.1
+T (K)
+
+
+
+
+                                             T (K)
+
+
+
+
+                                                                                         T (K)
+
+
+
+
+         420                                         420                                         420
+         400                                         400                                         400
+         380                                         380                                         380
+               T1=373 K, t1=10 s     . 0.0                 T1=373 K, t1=20 s     . 0.0                 T1=373 K, t1=50 s  . 0.0
+         360                         Q               360                         Q               360                      Q
+           10-1 100 101 102    103 (mW)                10-1 100 101 102    103 (mW)                10-1 100 101 102 103 (mW)
+                    t2 (s)                                      t2 (s)                                      t2 (s)
+
+(j)                                   0.2
+         460
+         440
+                                      0.1
+T (K)
+
+
+
+
+         420
+         400
+         380
+               T1=373 K, t1=100 s . 0.0
+         360                      Q
+           10-1 100 101 102 103 (mW)
+                     t2 (s)
+
+
+Figure S3. (a)-(j) Two-dimension contours of the relaxation heat flows of sample pre-ageing at
+
+T1=373 K for t1=0.1-100 s and then ageing at T2=383 K, t2=0.1-1000 s.
+
+
+                                                              5
+5.   The absolute reaction rate theory
+     To understand the kinetic process of reaction occurs in thermal signal, the
+reaction peak position (Tp) versus heating rate Rh was build [1]. The form of structure
+defects of crystal, such as vacancy defects, can contribute to the formation enthalpy
+and the formation entropy. That is to say, the formation free energy ∆G=∆H-T∆S.
+However, the metallic glasses contain lower packing and higher packing density and
+some results also shown that the cooperative atomic motion in relaxation and
+diffusion processes [2-4]. Therefore, the activation behavior of the cooperative atomic
+motion can not contribute to the formation enthalpy and the formation, they can
+contribute to the migration enthalpy and migration entropy [2]. There, we analyze the
+internal stress σ (units: Pa) change with time during annealing process upon an
+unsymmetrical barrier between basins [5]:
+
+                                                       exp                            (1)
+
+                                   ∆
+where                       exp          and         1 is the usual assumption [5], where
+
+k is the Boltzmann’s constant, hP is Planck’s constant, R is the gas constant, H* is
+migration enthalpy and S* is migration entropy.
+     To describes the relaxation peak temperature change with heating rate, we
+consider the temperature rises at a constant heating rate Rh and T=T0+Rht, T0 is the
+
+initial temperature. The form of             :
+
+                                       exp
+
+                                         exp                           exp
+
+                                       exp
+
+                                                     exp                              (2)
+
+The d(dσ/dt)/dt =0 when the dσ/dt reaches the maximum value, we have
+
+                                                     exp                              (3)
+
+                     1                               exp                              (4)
+
+
+                                                 6
+Consider the H*/R            >> 1, equation (4) becomes
+
+                                                                                        (5)
+
+To build the relationship between the H* and ∆E, the one order difference method was
+used. The differential form of the Kissinger plot [1]:
+
+                                             Δ                                          (6)
+
+The equation (6) can express as:
+
+                                                   exp         exp                      (7)
+
+and the differential form of the equation (7):
+
+                                                                         /
+
+                                                                     1
+
+
+
+                                                                                   Δ    (8)
+
+That is to say,
+                                             Δ                                          (9)
+which is consistent with the previous result[6].
+5.1 The ∆E and H*+RTp at four representative annealed temperatures
+
+                                     200
+                                                 T=348 K
+                                                 T=363 K
+                                                 T=373 K
+                                     150         T=383 K
+                       ΔE (kJ/mol)
+
+
+
+
+                                                           y=x
+                                     100
+
+
+
+                                      50
+                                        50         100          150          200
+                                                   ΔH+RTp (kJ/mol)
+
+Figure S4. The ∆E versus H*+RTp for sample annealed at four representative annealed
+
+temperatures (T=348 K, 363 K, 373 K, 383 K). The solid line is the linear fit by y=x.
+
+
+                                                           7
+6. The enthalpy change of sample preaged at higher temperature experiments
+    For T1>T2, the ∆h decays monotonic with t2 and independent of pre-ageing time
+t1=0.1, 5 and 100 s. The memory effect dose not appear in the whole ageing
+temperature (T2=348, 363 and 373 K).
+
+                      (a) 0.0
+                                                                       T1=383 K
+                                     0.2                               T2=348 K
+
+                       Δh (kJ/mol)
+                                     0.4
+
+                                     0.6
+
+                                     0.8
+
+                                     1.0
+                                           10-1   100       101      102   103
+                                                            t2 (s)
+                      (b) 0.0
+                                                                       T1=383 K
+                                     0.2                               T2=363 K
+                       Δh (kJ/mol)
+
+
+
+
+                                     0.4
+
+                                     0.6
+
+                                     0.8
+
+                                     1.0
+                                           10-1   100       101     102    103
+                                                             t2 (s)
+
+Figure S5. (a) The enthalpy change after ageing at T2=348 K for various annealing time
+
+t2=0.1-5000 s, (b) The enthalpy change after ageing at T2=363 K for various annealing time
+
+t2=0.1-5000 s.
+
+
+
+
+                                                        8
+7. The Tool−Narayanaswamy−Moynihan (TNM) model
+7.1 The enthalpy change with time for one-step annealing condition
+     The Tool−Narayanaswamy−Moynihan (TNM) model has been successfully used
+to capture the nonexponential and nonlinear characteristics of the evolution of
+enthalpy and volume with annealing time. The time evolution of fictive temperature
+Tf(t) at one-step annealing temperature Ta can be expressed [7]:
+
+                                      1       exp                                  (10)
+
+To describe the evolution of Tf(t) with time, the accumulative form of equation 10 is
+given by:
+                                                             ∆
+                 ,                     1      exp        ∑                         (11)
+
+where T0 is the starting point of the equilibrium state and we define T0=430 K, the
+structure relaxation time τi in the form:
+                                                         ∆
+                               ln                                                  (12)
+                                                     ,
+
+where A is the constant, β is the nonexponential parameter (0<β≤1), x is the nonlinear
+parameter (0<x≤1), and H* is the activation enthalpy of relaxation process and can be
+obtained by equation 5. Therefore, we can obtain the deviation of enthalpy change
+from the equilibrium state:
+
+                                          1    exp                                 (13)
+
+7.2 The enthalpy change with time for two-step annealing condition
+     The time evolution of Tf for two step annealing conditions can be given by the
+superposition of the responses of equation 10, which is expressed as [7]:
+
+
+
+                 1    exp                                        1   exp
+
+                                                                                   (14)
+the accumulative form of equation 14 is given by:
+
+
+
+
+                                               9
+                                            ∆            ∆
+  ,                     1   exp        ∑         ∑                         1
+
+
+               ∆
+exp     ∑                                                                           (15)
+
+where T1 and T2 are the first annealing temperature and the second annealing
+temperature, respectively. The structure relaxation time τi corresponds to the T1 and τj
+corresponds to the T2, they are given by:
+
+                                  ln                                               (16)
+                                                     ,
+
+
+                                  ln                                               (17)
+                                                     ,
+
+Therefore, we can also have the form of enthalpy change with time at two step
+annealing conditions:
+
+                                                                                   (18)
+
+
+
+
+                                            10
+                                           0.2
+                                                   348 K
+                                                   363 K
+                                                   373 K
+                                                   TNM-348K
+
+
+
+
+                         Δhpeak (kJ/mol)
+                                                   TNM-363K
+                                                   TNM-373K
+                                           0.1
+
+
+
+
+                                                                memory effect
+                                           0.0
+                                             0.0   0.2       0.4     0.6    0.8
+                                                         Δh (kJ/mol)
+
+
+Figure S6. The strength of memory effect (∆hpeak) versus enthalpy evolution (∆h) during the first
+
+annealing step at T=348, 363, 373 K. ∆hpeak is obtained by subtracting the initial enthalpy from the
+
+peak enthalpy. The memory effect appears only for ∆h greater than about 0.4 kJ/mol. The solid
+
+symbols represent experimental data in which the memory effect was observed. The dashed lines
+
+are for guides for the eyes. The solid curves are fitting results using TNM model.
+
+
+
+
+                                                                11
+                 200
+                         348 K
+                         363 K
+                         373 K
+                 150     383 K
+  S∗ (J/mol.K)
+
+
+
+                 100
+                               mem
+                                  ory
+                 50
+
+
+                  0
+                  10-1   100      101 102   103   104
+                                    t (s)
+
+Figure S7. S* as a function of annealing time for single-step annealing at T=348, 363, 373, 383 K.
+
+The arrow shows that the memory effect appears only if the glass jumps from low temperature
+
+(with a small S*) to high temperature (with a big S*). As the enthalpy relaxation exhibits strong
+
+dependence on temperature, the up-jump in the two-step memory experiments
+
+
+
+
+                                                        12
+References
+[1] H. E. Kissinger, Reaction kinetics in differential thermal analysis, Anal. Chem. 29, 1702 (1957).
+[2] U. Geyer, S. Schneider, W. L. Johnson, Y. Qiu, T. A. Tombrello, and M. Macht, Atomic diffusion in the
+    supercooled liquid and glassy states of the Zr41.2Ti13.8Cu12.5Ni10Be22.5 alloy, Phys. Rev. Lett. 75, 2364
+    (1995).
+[3] F. Faupel, P. W. Huppe, and K. Ratzke, Pressure dependence and isotope effect of self-diffusion in a
+    metallic glass, Phys. Rev. Lett. 65, 1219 (1990).
+[4] Y. Fan, T. Iwashita, and T. Egami, How thermally activated deformation starts in metallic glass, Nat.
+    Commun. 5, 5083 (2014).
+[5] F. W. Cagle and H. Eyring, An application of the absolute reaction rate theory to some problems in
+    annealing, J. Appl. Phys. 22, 771 (1951).
+[6] H. W. Starkweather, Simple and complex relaxations, Macromolecules 182, 1277 (1981).
+[7] C. T. Moynihan et al., Structural relaxation in vitreous materials, Ann. N. Y. Acad. Sci. 279, 15
+    (1976).
+
+
+
+
+                                                     13
+

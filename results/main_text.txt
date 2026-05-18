@@ -1,0 +1,639 @@
+Activation entropy as a key factor controlling the memory effect in glasses
+     Lijian Song1,2, Wei Xu1,2, Juntao Huo1,2, Fushan Li3, Li-Min Wang4, M. D. Ediger5,
+                                       Jun-Qiang Wang1,2,3,*
+
+1
+    CAS Key Laboratory of Magnetic Materials and Devices, and Zhejiang Province Key Laboratory
+     of Magnetic Materials and Application Technology, Ningbo Institute of Materials Technology
+     and Engineering, Chinese Academy of Sciences, Ningbo 315201, China
+2
+    Center of Materials Science and Optoelectronics Engineering, University of Chinese Academy of
+     Sciences, Beijing 100049, China
+3
+    School of Materials Science and Engineering, Zhengzhou University, Zhengzhou 450001, China
+4
+     State Key Lab of Metastable Materials Science and Technology, and College of Materials
+     Science and Engineering, Yanshan University, Qinhuangdao, Hebei 066004, China
+5
+    Department of Chemistry, University of Wisconsin-Madison, Wisconsin 53706, USA
+
+
+
+                                             Abstract
+        As opposed to the common monotonic relaxation process of glasses, the Kovacs
+memory effect describes an isothermal annealing experiment, in which the
+enthalpy/volume of a pre-annealed glass first increases before finally decreasing
+towards equilibrium. This interesting behavior has been observed for many materials
+and is generally explained in terms of heterogeneous dynamics. In this paper, the
+memory effect in a model Au-based metallic glass is studied using a high-precision
+high-rate calorimeter. The activation entropy (S*) during isothermal annealing is
+determined according to the absolute reaction rate theory. We observe that the
+memory effect appears only when the second-annealing process has a large S*. These
+results indicate that a large value of S* is a key requirement for observation of the
+memory effect and this may provide a useful perspective for understanding the
+memory effect in both thermal and athermal systems.
+
+a)
+     Correspondence should be addressed to: jqwang@nimte.ac.cn
+
+
+
+
+                                                 1
+     Glasses are non-equilibrium systems with various types of relaxation processes
+[1-5], all of which contribute towards equilibration of the glass. Glasses retain
+memory of their thermal history and this can lead to surprisingly complex
+equilibration paths. When a glass is annealed sequentially at two temperatures, i.e.
+first at low temperature and then at a higher temperature, the glass can “rejuvenate”
+during the second step annealing, which was observed by Kovacs in the 1960s [6]. In
+this process, known as the memory effect, the enthalpy and volume first increase
+during the second annealing (moving in the direction of a younger glass) before
+finally decreasing as equilibrium is approached [7-30]. It is intriguing that such a
+two-step annealing protocol can achieve superior magnetic properties in metallic
+glasses [31] in comparison to a single-step annealing process.
+     Phenomenological models such as the Tool−Narayanaswamy−Moynihan (TNM)
+model have been used to describe the Kovacs memory effect in glasses [7-13]. The
+TNM model suggests that the memory effect derives from the heterogeneous nature of
+glass which has been related to the nonexponential nature of the alpha relaxation
+process [32,33]. In the TNM model, the memory effect cannot be obtained for
+homogeneous dynamics (exponential relaxation) and experimental data supports the
+view that dynamic heterogeneity is correlated with the strength of the memory effect
+[11,14,15,34]. The TNM model involves activation enthalpies and can qualitatively fit
+thermally activated memory effects in polymer glasses [11,14] and oxide glasses
+[9,21], it provides no insight into the memory effects in athermal disordered systems
+[22-26,34], e.g. crumpled papers [22,23], frictional interface [24], and granular
+materials [25,26]. As the memory effect seems to be quite general in complex
+disordered systems, it is worthwhile to look for underlying physical mechanisms that
+encompass both thermal and athermal systems.
+     In this letter, the memory effect of a model metallic glass (MG)
+(Au49Cu26.9Ag5.5Pd2.3Si16.3) with good glass forming ability, and low glass transition
+temperature and liquidus temperature [4,35-39] is studied using a high-precision
+high-rate differential scanning calorimeter. The influence of the annealing temperature
+and the annealing time has been studied systematically. Absolute reaction rate theory
+                                           2
+is applied to calculate the activation entropy S* and the activation enthalpy H* during
+relaxation process. It is found that the S* plays a key role in triggering the Kovacs
+memory effect in this metallic glass and it may also provide a general way of
+describing memory effects that encompasses athermal systems.
+     The enthalpy relaxation of the Au-based MG was measured using a Flash DSC
+(Flash DSC 1, Mettler Toledo [40]). A high cooling rate of Rc= 10000 K/s was applied
+to obtain a fully glassy sample (critical cooling rate for glass formation~1000 K/s
+[38]). The glass transition temperature (Tg) upon cooling is about 430 K. To
+characterize the enthalpy relaxation process, the sample was annealed isothermally
+and then the heat flow for the annealed sample was measured upon heating (see Fig.
+S1 [41]). The heat flow difference between the annealed sample and the as-cooled
+sample is integrated to obtain the relaxation enthalpy. To examine the Kovacs memory
+effect, the sample was held at the first annealing temperature (T1=348 K, 363 K, or
+373 K), and then the temperature was quickly increased to the second annealing
+temperature T2=383 K.
+     Figure 1 shows the behavior of the enthalpy for single-step and two-step
+annealing protocols for the Au-based MG. For single temperature annealing at 383 K,
+the enthalpy decreases monotonically towards equilibrium enthalpy with increasing
+time, as shown in Fig. 1a. For a two-step annealing process starting with t1=50 s at
+T1=383 K, and followed by annealing at T2=373 K, the enthalpy also decreases
+monotonically with increasing t2, as shown in Fig. 1b. However, for a two-step
+annealing process starting with t1=50 s at T1=373 K, and then subsequent annealing at
+T2=383 K, the enthalpy does not decrease monotonically but first increases to a higher
+energy state and then decreases towards the equilibrium state, as shown in Fig. 1c. To
+better illustrate the relaxation peak, two-dimensional contour images of heat flow are
+shown in Fig. 1d-f. When the glass is isothermally annealed at 383 K, the heat flow
+increases monotonically and the peak shifts to higher temperature along with the
+increase of annealing time, as shown in Fig. 1d. When the glass was pre-annealed at
+T1=383 K for t1=50 s before the isothermal annealing at T2=373 K, the heat flow also
+increases monotonically and the peak shifts to higher temperature along with the
+                                           3
+increase of annealing time t2, as shown in Fig. 1e (images for pre-annealing time
+t1=0.1-100 s are shown in Fig. S2 [41]). However, if the glass is pre-annealed at a
+lower temperature, e.g. T1=373 K for t1=50 s before the second-step annealing at
+T2=383 K, the heat flow first decreases and then increases along with t2, as shown in
+Fig. 1f (images for pre-annealing time t1=0.1-100 s are shown in Fig. S3 [41]).
+          To describe the relaxation characteristics of two-step annealing processes of the
+sample, the phenomenological TNM model was used to fit the evolution of enthalpy
+recovery with time (see details in Supplemental Materials [41]). For single-step
+annealing condition, it was given by [9]:
+                                    ℎ𝑡𝑡𝑡𝑡𝑡𝑡 −ℎ(𝑡𝑡)            𝑇𝑇𝑓𝑓 −𝑇𝑇𝑎𝑎                             𝑡𝑡 𝑑𝑑𝑑𝑑 𝛽𝛽
+                                                          =                = 1 − exp �− �∫0                  � �                                       (1)
+                                           ℎ𝑡𝑡𝑡𝑡𝑡𝑡            𝑇𝑇0 −𝑇𝑇𝑎𝑎                                 𝜏𝜏
+
+Here Tf is the fictive temperature and T0=430 K represents the starting point of the
+equilibrium supercooled liquid. The parameters τ and β characterize the timescale and
+the nonexponential nature of the response function (0<β≤1). For two-step annealing
+conditions, the enthalpy change is given by [9]:
+                                                                                                𝛽𝛽                                                𝛽𝛽
+ ℎ𝑡𝑡𝑡𝑡𝑡𝑡 −ℎ(𝑡𝑡)
+     ℎ𝑡𝑡𝑡𝑡𝑡𝑡
+                  =
+                      𝑇𝑇𝑓𝑓 −𝑇𝑇2
+                      𝑇𝑇0 −𝑇𝑇2
+                                  =1+
+                                        (𝑇𝑇1 −𝑇𝑇0 )
+                                         𝑇𝑇0 −𝑇𝑇2
+                                                      �1 − exp �− �∑𝑖𝑖=1
+                                                                      1
+                                                                         𝜏𝜏
+                                                                           𝑛𝑛   ∆𝑡𝑡
+                                                                            + ∑𝑛𝑛𝑗𝑗=𝑛𝑛1 𝜏𝜏 � �� +
+                                                                                 𝑖𝑖
+                                                                                          ∆𝑡𝑡
+                                                                                           𝑗𝑗
+                                                                                                        (𝑇𝑇2 −𝑇𝑇1 )
+                                                                                                         𝑇𝑇0 −𝑇𝑇2
+                                                                                                                                            ∆𝑡𝑡
+                                                                                                                      �1 − exp �− �∑𝑛𝑛𝑗𝑗=𝑛𝑛1 𝜏𝜏 � ��
+                                                                                                                                             𝑗𝑗
+                                                                                                                                                       (2)
+
+Here the decay of nonexponential response function is represented as a series of small
+time increments. The structure relaxation time τi has the form:
+
+                                         𝜏𝜏𝑖𝑖 = 𝑒𝑒𝑒𝑒𝑒𝑒�ln (𝐴𝐴) + (𝑥𝑥𝐻𝐻 ∗ )/(R𝑇𝑇𝑎𝑎 ) + ((1 − 𝑥𝑥)𝐻𝐻 ∗ )/(R𝑇𝑇(𝑓𝑓,i−1) �                                   (3)
+
+where A is constant, x is the nonlinear parameter (0<x≤1), and H* is the activation
+enthalpy of the relaxation process. The two-step annealing data were fitted with
+H*=164 kJ/mol, A=6×10-22 s, x=0.6 and β=0.43, with fits shown in Figs. 1 and 2. The
+TNM model can qualitatively capture the two-step annealing conditions with these
+fixed parameters, as shown in Figure 1c.
+          To examine the influence of the pre-annealing temperature in the two-step
+annealing protocol on the memory effect, Fig. 2a-c compares enthalpy relaxation at
+T2=383 K after pre-annealing at three different temperatures (T1=348, 363 and 373 K).
+At all T1, the enthalpy change ∆h decays monotonically with t2 for short pre-annealing.
+When the pre-annealing time t1 is large enough, the enthalpy exhibits the memory
+effect during subsequent annealing. For the same pre-annealing time (e.g. 100 s), the
+                                                                                      4
+enthalpy rejuvenates to maximum value at a shorter time when it is pre-annealed at
+lower temperatures. Figure 2d shows the relationship between ∆h and the strength of
+memory effect (∆hpeak, obtained by subtracting the peak enthalpy by the initial
+enthalpy). It is valuable to note that the TNM model fitting result shows qualitatively
+the wrong curvature in comparison to the experimental results (see details in
+Supplemental Materials [41]). The memory strength in TNM model changes slowly
+at small ∆h but fast at large ∆h. However, the experimental results indicate that the
+memory effect vanishes quickly when ∆h is smaller than 0.4 kJ/mol (corresponding to
+the pink hexagons, green triangles and yellow triangles data in Fig. 2a-c,
+respectively).
+     According to the absolute reaction rate theory [42] (see details in Supplemental
+Materials [41]), a relaxation process can be described by:
+                              𝑅𝑅ℎ             𝐻𝐻 ∗              𝑘𝑘𝑘𝑘             1         𝑆𝑆 ∗
+                       𝑙𝑙𝑙𝑙          3   =−            + 𝑙𝑙𝑙𝑙          + 𝑙𝑙𝑙𝑙          +          (4)
+                              𝑇𝑇𝑝𝑝            𝑅𝑅𝑇𝑇𝑝𝑝            ℎ𝑃𝑃             𝐻𝐻 ∗       𝑅𝑅
+
+where k is the Boltzmann constant, R is the gas constant, hP is Planck constant, H* is
+the activation enthalpy and S* is the activation entropy. As shown in Fig. 3a, equation
+4 fits the relaxation peak temperature very well for single-step annealing. Fig. 3b
+shows the evolution of H* and S* as a function of the annealing time. At short
+annealing times, H* is about 90 kJ/mol, while H* increases to about 150 kJ/mol at
+longer ageing time. As a consistency check, we verified that the activation energy (∆E)
+in a Kissinger plot, i.e. Rh/T2 versus 1/T [43], is equal to H*+RTp [47] (see Figure S4
+[41]). Fig 3b shows that S* evolves dramatically with increasing annealing time. At
+short annealing times, S* is close to zero (about 15 J/mol.K) indicating that the
+activated process is primarily enthalpic. However, as the annealing time increases, S*
+increases up to roughly 150 J/mol.K, indicating a strong entropic component to the
+structural relaxation process; in this regime, a large number of paths allow escape
+from the initial state [48].
+    These experiments reveal a striking correlation between the value of the
+activation entropy and the memory effect. We illustrate this by considering the
+evolution of S* versus the enthalpy change during isothermal annealing at
+
+                                                                  5
+representative temperatures T=348 K, 363 K, 373 K and 383 K, as shown in Figure 3c.
+A representative temperature jump that gives rise to the memory effect is shown by
+the pink arrow, which corresponds to the data of the same color in Figure 2a (and the
+pink arrow in Figure 4). The pink arrow is vertical on this graph as ∆h doesn’t change
+during a rapid temperature jump. In this example and in all other cases explored in
+this work, the memory effect occurs only when the temperature jump moves the glass
+into a state with a larger value of S*. No memory effect is observed if the jump occurs
+into smaller S* state. This can be seen by comparing the transition seen in the
+experimental data in Fig. 2d to the transition observed in the red curve of Fig. 3c; the
+memory effect is only observed when ∆h in the first annealing step exceeds 0.4
+kJ/mol, and only in this regime a large increase in S* is possible when the temperature
+jump occurs. This suggests that observation of the memory effect requires a large
+increase of S*.
+      The requirements for the observation of the memory effect can be summarized in
+Figure 4. Upon isothermal annealing at low temperature, the enthalpy decreases.
+When the temperature jumps to high temperature, a memory effect will not be
+observed if the jump occurs into a relaxation region with small S*. Conversely, the
+memory effect will be observed if the jump occurs into a relaxation region with large
+S*.
+      Recent fast scanning calorimetry experiments on the same MG [49] propose an
+intriguing correlation between the two regimes in Fig. 3b with the beta (secondary)
+relaxation and alpha (primary) relaxation, which allow a physical picture for these
+results. In the regime of low S* observed at short annealing times, only the beta
+relaxation contributes to enthalpy relaxation, while the behavior at longer annealing
+times (high values of S*) is associated with the alpha relaxation. The arrow in Fig. 3c
+connects two glasses with the same enthalpy value, but with this enthalpy achieved in
+two different ways; annealing at low temperature occurs solely via the beta process
+(optimization of structure via small rearrangements) while annealing at high
+temperature occurs via the large-scale motion of the alpha process. The memory effect
+occurs because this glass prepared at low temperature must first abandon its optimized
+                                           6
+structure, thus initially increasing the enthalpy in order to approach equilibrium. On
+the other hand, jumping into a low S* state does not result in a memory effect, as the
+structural optimization that occurred via the beta process during the low temperature
+step is similar to the optimization that would have occurred during isothermal
+annealing at high temperature.
+     It is useful to compare the above understanding of the memory effect to the
+traditional view based upon heterogeneous dynamics. For metallic and molecular
+glasses, the two views can be reconciled as a large value of S* (indicative of a large
+number of possible escape paths) is indicative of a complex energy landscape for
+which heterogeneous dynamics can be expected [47,48,50]. For athermal systems,
+such as crumpled papers and granular materials, we speculate that S* (or an
+equivalent quantity that quantifies the connectivity of states in the driven system) will
+provide important insight into the memory effect. The activation entropy S* may be
+                                                         ∂𝑃𝑃
+proportional to the evolution of states probability            (𝑥𝑥, 𝑡𝑡), with x is a vector
+                                                         ∂𝑡𝑡
+
+representing the state of an athermal disordered system and t is time, which is
+consistent with theoretical analysis [34]. The possible role of entropy in memory
+effects is raised in a review article recently [51]. Our finding suggests that the large
+activation entropy S* is essential for the appearance of memory effect.
+     In summary, the memory effect of an Au-based metallic glass is studied using a
+high precision Flash DSC. We find that the memory effect appears only when a
+temperature jump occurs into a relaxation region with a large S*. These results are the
+first experimental evidence for the role of activation entropy in the memory effect of
+glasses and they provide new understanding of the physical origin of the memory
+effect. We expect that the activation entropy S* is a more general and suitable
+parameter than heterogeneity to characterize the kinetic complexity in various
+disordered materials regardless of the bonding/packing nature.
+
+
+Acknowledgements
+Valuable discussions with Dr. Ping Wen are appreciated. We acknowledge financial
+
+                                            7
+support from National Key R&D Program of China (2018YFA0703604,
+2018YFA0703602), National Natural Science Foundation of China (NSFC 51922102,
+51771216, 51701230, 51827801), Zhejiang Provincial Natural Science Foundation of
+China (LR18E010002), Ningbo 2025 Science and Technology Innovation Project
+(2019B10051), and the U.S. National Science Foundation through the University of
+Wisconsin Materials Research Science and Engineering Center (DMR-1720415).
+
+
+
+
+                                       8
+References
+[1] J. Yang, Y. J. Wang, E. Ma, A. Zaccone, L. H. Dai, and M. Q. Jiang, Structural parameter of
+    orientational order to predict the Boson vibrational anomaly in glasses, Phys. Rev. Lett. 122,
+    015501 (2019).
+[2] F. Zhu, H. K. Nguyen, S. X. Song, D. P. Aji, A. Hirata, H. Wang, K. Nakajima, and M. W. Chen, Intrinsic
+    correlation between β-relaxation and spatial heterogeneity in a metallic glass, Nat. Commun. 7,
+    11516 (2016).
+[3] H. B. Yu, W. H. Wang, H. Y. Bai, and K. Samwer, The β-relaxation in metallic glasses, Nat. Sci. Rev. 1,
+    429 (2014).
+[4] Z. Evenson, S. E. Naleway, S. Wei, O. Gross, J. J. Kruzic, I. Gallino, W. Possart, M. Stommel, and R.
+    Busch, β relaxation and low-temperature aging in a Au-based bulk metallic glass: From elastic
+    properties to atomic-scale structure, Phys. Rev. B 89, 174204 (2014).
+[5] V. M. Boucher, D. Cangialosi, A. Alegria, and J. Colmenero, Complex nonequilibrium dynamics of
+    stacked polystyrene films deep in the glassy state, J. Chem. Phys. 146, 203312 (2017).
+[6] A. J. Kovacs, Transition vitreuse dans les polymères amorphes. Etude phénoménologique, Adv.
+    Polym. Sci. 3, 394 (1963).
+[7] A. Q. Tool, Relaxation between inelastic deformability and thermal expansion of glass in its
+    annealing range, J. Am. Ceram. Soc. 29, 240 (1946).
+[8] O. S. Narayanaswamy, A model of structural relaxation in glass, J. Am. Ceram. Soc. 54, 491 (1971).
+[9] C. T. Moynihan et al., Structural relaxation in vitreous materials, Ann. N. Y. Acad. Sci. 279, 15
+    (1976).
+[10] A. J. Kovacs, J. J. Aklonis, J. M. Hutchinson, and A. R. Ramos, Isobaric volume and enthalpy
+    recovery of glasses. II. A transparent multiparameter theory, J. Polym. Sci. 17, 1097 (1979).
+[11] L. Grassia, Y. P. Koh, M. Rosa, and S. L. Simon, Complete set of enthalpy recovery data using Flash
+    DSC: experiment and modeling, Macromolecules 51, 1549 (2018).
+[12]A. L. Greer and F. Spaepen, Creep, diffusion, and structural relaxation in metallic glasses, Ann. N. Y.
+    Acad. Sci. 371, 218 (1981).
+[13] M. R. J. Gibbs, J. E. Evetts, and J. A. Leake, Activation energy spectra and relaxation in amorphous
+    materials, J. Mater. Sci. 18, 278 (1983).
+[14] E. Lopez and S. L. Simon, Signatures of structural recovery in polystyrene by nanocalorimetry,
+    Macromolecules 49, 2365 (2016).
+[15] D. P. B. Aji, P. Wen, and G. P. Johari, Memory effect in enthalpy relaxation of two metal–alloy
+    glasses, J. Non-Cryst. Solids 353, 3796 (2007).
+[16] P. Luo, Y. Z. Li, H. Y. Bai, P. Wen, and W. H. Wang, Memory effect manifested by a Boson peak in
+    metallic glass, Phys. Rev. Lett. 116, 175901 (2016).
+[17] Y. T. Wang, P. F. Li, and L.-M. Wang, Strong dependence of the hardness on fictive temperatures in
+    far-from-equilibrium La57.5Ni12.5Al17.5Cu12.5 metallic glasses, Intermetallics 93, 197 (2018).
+[18] C. A. Volkertt and F. Spaepen, Crossover relaxation of the viscosity of Pd40Ni40P19Si1 near the glass
+    transition, Acta Metall. 37, 1355 (1989).
+[19] A. Eisenbach, T. Havdala, J. Delahaye, T. Grenet, A. Amir, and A. Frydman, Glassy dynamics in
+    disordered electronic systems reveal striking thermal memory effects, Phys. Rev. Lett. 117, 116601
+    (2016).
+[20] Y. Lahini, O. Gottesman, A. Amir, and S. M. Rubinstein, Nonmonotonic aging and memory
+    retention in disordered mechanical systems, Phys. Rev. Lett. 118, 085501 (2017).
+                                                      9
+[21] L. Boesch, A. Napolitano, and P. B. Macedo, Spectrum of volume relaxation times in B2O3, J. Am.
+    Ceram. Soc. 53, 148 (1970).
+[22]A. Amir, Y. Oreg, and Y. Imry, On relaxations and aging of various glasses, Proc. Natl. Acad. Sci. U. S.
+    A. 109, 1850 (2012).
+[23] E. van Bruggen, E. van der Linden, and M. Habibi, Tailoring relaxation dynamics and mechanical
+    memory of crumpled materials by friction and ductility, Soft Matter 15, 1633 (2019).
+[24] S. Dillavou and S. M. Rubinstein, Nonmonotonic aging and memory in a frictional interface, Phys.
+    Rev. Lett. 120, 224101 (2018).
+[25] A. Prados and E. Trizac, Kovacs-like memory effect in driven granular gases, Phys. Rev. Lett. 112,
+    198001 (2014).
+[26] B. Kou et al., Granular materials flow like complex fluids, Nature 551, 360 (2017).
+[27] A. Vaknin and Z. Ovadyahu, Nonequilibrium field effect and memory in the electron glass, Phys.
+    Rev. B 65, 134208 (2002).
+[28] A. Amir, Y. Oreg, and Y. Imry, Electron glass dynamics, Annu. Rev. Condens. Matter Phys. 2, 235
+    (2011).
+[29] X. J. Di, K. Z. Win, G. B. McKenna, T. Narita, F. Lequeux, S. R. Pullela, and Z. D. Cheng, Signatures of
+    structural recovery in colloidal glasses, Phys. Rev. Lett. 106, 095701 (2011).
+[30] S. Banik and G. B. McKenna, Isochoric structural recovery in molecular glasses and its analog in
+    colloidal glasses, Phys. Rev. E. 97, 062601 (2018).
+[31] Y. B. Han, A. D. Wang, A. N. He, C. T. Chang, F. S. Li, and X. M. Wang, Improvement of magnetic
+    properties, microstructure and magnetic structure of Fe73.5Cu1Nb3Si15.5B7 nanocrystalline alloys by
+    two-step annealing process, J. Mater. Sci.: Mater. Electron. 27, 3736 (2015).
+[32] R. Richert, Heterogeneous dynamics in liquids: fluctuations in space and time, J. Phys.: Condens.
+    Matter 14, R703 (2002).
+[33] G. B. McKenna and S. L. Simon, 50th anniversary perspective: challenges in the dynamics and
+    kinetics of glass-forming polymers, Macromolecules 50, 6333 (2017).
+[34]C. A. Plata and A. Prados, Kovacs-like memory effect in athermal systems: Linear response analysis,
+    Entropy 19, 539 (2017).
+[35] S. Pogatscher, P. J. Uggowitzer, and J. F. Löffler, In-situ probing of metallic glass formation and
+    crystallization upon heating and cooling via fast differential scanning calorimetry, Appl. Phys. Lett.
+    104, 251908 (2014).
+[36] J. Schroers, B. Lohwongwatana, W. L. Johnson, and A. Peker, Gold based bulk metallic glass, Appl.
+    Phys. Lett. 87, 061912 (2005).
+[37] J. M. Pelletier, S. Cardinal, J. C. Qiao, M. Eisenbart, and U. E. Klotz, Main and secondary relaxations
+    in an Au-based bulk metallic glass investigated by mechanical spectroscopy, J. Alloys Compd. 684,
+    530 (2016).
+[38] J. Q. Wang, Y. Shen, J. H. Perepezko, and M. D. Ediger, Increasing the kinetic stability of bulk
+    metallic glasses, Acta Mater. 104, 25 (2016).
+[39] I. Gallino, D. Cangialosi, Z. Evenson, L. Schmitt, S. Hechler, M. Stolpe, and B. Ruta, Hierarchical
+    aging pathways and reversible fragile-to-strong transition upon annealing of a metallic glass
+    former, Acta Mater. 144, 400 (2018).
+[40]S. van Herwaarden, E. Iervolino, F. van Herwaarden, T. Wijffels, A. Leenaers, and V. Mathot, Design,
+    performance and analysis of thermal lag of the UFS1 twin-calorimeter chip for fast scanning
+    calorimetry using the Mettler-Toledo Flash DSC 1, Thermochim. Acta 522, 46 (2011).
+
+                                                     10
+[41] See Supplemental Material for the details of experiments and the detailed theoretical model and
+    functions, which includes Refs. [42-47].
+[42] F. W. Cagle and H. Eyring, An application of the absolute reaction rate theory to some problems in
+    annealing, J. Appl. Phys. 22, 771 (1951).
+[43] H. E. Kissinger, Reaction kinetics in differential thermal analysis, Anal. Chem. 29, 1702 (1957).
+[44] U. Geyer, S. Schneider, W. L. Johnson, Y. Qiu, T. A. Tombrello, and M. Macht, Atomic diffusion in the
+    supercooled liquid and glassy states of the Zr41.2Ti13.8Cu12.5Ni10Be22.5 alloy, Phys. Rev. Lett. 75, 2364
+    (1995).
+[45] F. Faupel, P. W. Huppe, and K. Ratzke, Pressure dependence and isotope effect of self-diffusion in a
+    metallic glass, Phys. Rev. Lett. 65, 1219 (1990).
+[46] Y. Fan, T. Iwashita, and T. Egami, How thermally activated deformation starts in metallic glass, Nat.
+    Commun. 5, 5083 (2014).
+[47] H. W. Starkweather, Simple and complex relaxations, Macromolecules 182, 1277 (1981).
+[48] A. Heuer, Exploring the potential energy landscape of glass-forming systems: from inherent
+    structures via metabasins to macroscopic transport, J. Phys.: Condens. Matter 20, 373101 (2008).
+[49] L. J. Song, W. Xu, J. T. Huo, J. Q. Wang, X. M. Wang, and R. W. Li, Two-step relaxations in metallic
+    glasses during isothermal annealing, Intermetallics 93, 101 (2018).
+[50] H. W. Starkweather, Distribution of activation enthalpies in viscoelastic relaxations,
+    Macromolecules 23, 328 (1990).
+[51] N. C. Keim, J. D. Paulsen, Z. Zeravcic, S. Sastry, and S. R. Nagel, Memory formation in matter, Rev.
+    Mod. Phys. 91, 035002 (2019).
+
+
+
+
+                                                    11
+                                             Figures and Figure Captions
+
+
+   (a) 0.0                                   (b) 0.6                                       (c) 0.50                           Memory
+                                 Monotonic                                     Monotonic
+                  0.2                                      0.7                                           0.55
+    ∆h (kJ/mol)
+
+
+
+
+                                                                                           ∆h (kJ/mol)
+                                             ∆h (kJ/mol)
+                  0.4                                                                                    0.60
+                                                           0.8
+                                                                     t1                                                  t2
+                  0.6 383 t1                                   383
+                                                                          t2                             0.65   383
+                                                           0.9 373                                              373 t
+                                                                                                                     1
+                  0.8 -1                                                                                 0.70 -1
+                     10 100 101 102 103                       10-1   101     103       105                   10 100 101 102 103
+                            t1 (s)                                     t2 (s)                                       t2 (s)
+  (d) 460                                    (e)460                                          (f) 460                                   0.2
+
+              440                                          440                                           440
+              420                                          420                                           420                           0.1
+  T (K)
+
+
+
+
+                                                                                             T (K)
+                                             T (K)
+
+
+
+
+              400                                          400                                           400
+              380                                          380                                           380
+              360
+                               T1=383 K
+                                                           360
+                                                                 T1=383 K, T2=373 K
+                                                                                                         360
+                                                                                                               T1=373 K, T2=383 K
+                                                                                                                                  Q
+                                                                                                                                   0.0 .
+                10-1 100 101 102 103                         10-1 100 101 102 103                          10-1 100 101 102 103 (mW)
+                         t1 (s)                                        t2 (s)                                         t2 (s)
+
+
+
+Fig. 1. Enthalpy changes for a Au-based MG during annealing. (a) The enthalpy change ∆h at
+
+T1=383 K versus annealing time t1. Inset is the thermal protocol of single-step annealing treatment.
+
+Solid curve is for guiding eyes. (b) The enthalpy change of sample pre-annealed at T1=383 K for
+
+t1=50 s and then annealed at T2=373 K for t2=0.1-100000 s. Inset is the thermal protocol. Solid
+
+curve is for guiding eyes. (c) The enthalpy change of sample pre-annealed at T1=373 K for t1=50 s
+
+and then being annealed at T2=383 K for t2=0.1-2000 s. Inset is the thermal protocol. Solid curve
+
+is the TNM model fitting result. (d) Two-dimensional contours of the relaxation heat flows (𝑄𝑄̇) at
+
+T1=383 K. (e) Two-dimensional contours of the relaxation heat flows at T2=373 K for the sample
+
+pre-annealed at T1=383 K for t1=50 s. (f) Two-dimensional contours of the relaxation heat flows at
+
+T2=383 K for the sample pre-annealed at T1=373 K for t1=50 s.
+
+
+
+
+                                                                           12
+    (a) 0.1                                                (b) 0.1
+                          t1=0.1 s             T1=348 K                               t1=0.1 s                T1=363 K
+                   0.2                         T2=383 K                      0.2                              T2=383 K
+                   0.3                                                       0.3
+     ∆h (kJ/mol)
+
+
+
+
+                                                            ∆h (kJ/mol)
+                   0.4                                                       0.4
+
+                   0.5                                                       0.5
+
+                   0.6                                                       0.6
+                          t1=100 s
+                   0.7                                                       0.7      t1=100 s
+                           -1     0        1     2     3
+                         10     10      10     10    10                              10-1     100      101    102    103
+                                      t2 (s)                                                         t2 (s)
+    (c) 0.1               t1=0.1 s
+                                                           (d) 0.2
+                                               T1=373 K                                 348 K
+                   0.2                         T2=383 K
+                                                                                        363 K
+                                                                                        373 K
+                   0.3
+                                                           ∆hpeak (kJ/mol)
+    ∆h (kJ/mol)
+
+
+
+
+                   0.4                                                       0.1
+                   0.5
+
+                   0.6
+                                                                                                          memory effect
+                   0.7    t1=100 s                                           0.0
+                         10-1   100     101    102   103                       0.0          0.2       0.4     0.6     0.8
+                                      t2 (s)                                                      ∆h (kJ/mol)
+
+
+Fig. 2. Enthalpy changes for two-step annealing experiments, with fit results from TNM model
+
+(solid lines). (a) The enthalpy change following annealing at T2=383 K for the sample
+
+pre-annealed at T1=348 K for t1=0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100 s. (b) The enthalpy change
+
+following annealing at T2=383 K for the sample pre-annealed at T1=363 K for t1=0.1, 0.2, 0.5, 1, 2,
+
+5, 10, 20, 50, 100 s. (c) The enthalpy change when being annealed at T2=383 K for the sample
+
+pre-annealed at T1=373 K for t1=0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100 s. (d) The strength of
+
+memory effect (∆hpeak) versus enthalpy evolution (∆h) during the first annealing step at T=348,
+
+363, 373 K. ∆hpeak is obtained by subtracting the initial enthalpy from the peak enthalpy. The
+
+memory effect appears only for ∆h greater than about 0.4 kJ/mol. The solid symbols represent
+
+experimental data in which the memory effect was observed. The dashed lines are for guides for
+
+the eyes.
+
+
+
+
+                                                           13
+   (a) -10                                          (b)200                                   200        (c)200
+
+                                                                   150                       150                 150
+
+
+
+
+                                                                                                  S∗ (J/mol.K)
+                                                    S∗ (J/mol.K)
+   ln (Rh/T3p)
+
+
+
+
+                                                                                                  H∗ (kJ/mol)
+                 -12                   -H∗/R
+
+
+
+
+                                                                                                                         memory 383
+                                                                         H∗                                      100
+
+
+
+
+                                                                                                                               373
+                                                                   100                       100
+
+
+
+
+                                                                                                                            363
+                                                                                                                          348
+                                                                   50                        50                  50
+                 -14                                                     S∗
+                         2000 s             0.1 s
+                                  T=383 K                                          T=383 K
+                                                                    0 -1                0                         0
+                   2.2       2.4         2.6                         10 100 101 102 103                           0.0 0.2 0.4 0.6 0.8 1.0
+                           1000/Tp (K-1)                                    t (s)                                         ∆h (kJ/mol)
+
+
+Fig. 3. Absolute rate theory analysis of annealing kinetics. (a) The peak temperature and heating
+
+rate are used to extract the activation enthalpy H* for various annealing times during annealing at
+
+383 K. (b) The evolution of H* and the activation entropy S* with annealing time at 383 K. (c) S*
+
+as a function of enthalpy change for single-step annealing at T=348, 363, 373, 383 K. The arrow
+
+shows that the memory effect appears only if the glass jumps from low temperature (with a small
+
+S*) to high temperature (with a big S*).
+
+
+
+
+                                                                              14
+                                                                            150
+                                                                     L
+                                                                   SC       100
+                                             Glass                          50
+                                                                            0
+                                 ageing
+                Enthalpy
+
+
+                                 mem  ory                                   -50
+                                       ry
+                                 memo
+                                                                            -100
+                                                                            -150
+                                                             1 kJ/mol         S∗
+                                                                         (J/mol.K)
+                           340   360        380      400    420   440
+                                                  T (K)
+
+
+
+Fig. 4. Schematic map of enthalpy changes during glass annealing. As the enthalpy decreases
+
+during isothermal annealing at low temperature, the as-cooled glass first experiences a small S*
+
+stage and then transitions into a large S* stage. When the pre-annealed glass jumps to higher
+
+temperature, the enthalpy continues to decrease if the jump reaches a relaxation stage with small
+
+S*, but there is a memory effect if the jump reaches a relaxation stage with large S*. The color
+
+map represents the value of S*. Open blue squares: the sample pre-annealed at T=348 K for 1 s
+
+does not exhibit the memory effect at 383 K. Filled pink circles: the sample pre-annealed at T=348
+
+K for 20 s exhibits memory effect at 383 K. Filled green pentagons: the sample pre-annealed at
+
+T=348 K for 100 s exhibits memory effect at 383 K.
+
+
+
+
+                                                       15
+
