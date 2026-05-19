@@ -38,6 +38,12 @@ Train/evaluate the finite-time predictor:
 python -m src.ps.train_ps_model
 ```
 
+Train/evaluate the physics-informed PS predictor:
+
+```powershell
+python -m src.ps.train_physics_informed_ps_model
+```
+
 Search short feasible annealing conditions for a target recovery index:
 
 ```powershell
@@ -56,11 +62,14 @@ python -m src.ps.eig_design
 - `data/ps/ps_preexperiment_features.csv`
 - `data/ps/ps_eig_next_experiments.csv`
 - `results/ps/models/ps_limited_time_model.json`
+- `results/ps/models/ps_physics_informed_kernel_model.json`
 - `results/ps/evaluation/ps_train_test_metrics.json`
+- `results/ps/physics_informed/physics_informed_model_comparison.json`
 - `results/ps/evaluation/ps_test_predictions.csv`
 - `results/ps/predictions/ps_inverse_design_top10.json`
 - `results/ps/eig/ps_eig_candidate_ranking.csv`
 - `results/ps/eig/ps_eig_selection_summary.json`
+- `docs/ps_required_missing_data_for_prediction.md`
 
 ## Expected Information Gain Design
 
@@ -72,6 +81,21 @@ slots for the highest-value path-effect experiments. This gives the PS plan a sh
 information-theoretic rationale: do the finite-time experiments that are expected to
 reduce uncertainty in recovery index, Tp, enthalpy area, and path dependence most
 efficiently.
+
+## Physics-Informed PS Model
+
+The current default inverse-design and EIG entrypoints use
+`results/ps/models/ps_physics_informed_kernel_model.json`. This model keeps the
+raw finite-time annealing inputs and adds compact TNM/ARRT-inspired path
+features. The current best feature subset is `raw_phys_beta`, which describes
+total relaxation progress and two-step path excess over a small stretched
+exponential basis.
+
+For the current sparse PS dataset, the physics-informed kernel lowers the mean
+core-target normalized error from `0.7997` to `0.7352` on the same grouped split.
+See `docs/ps_physics_informed_model_update.md` for the metric table and
+`docs/ps_required_missing_data_for_prediction.md` for the data gaps, especially
+the missing direct `S*` and `H*` measurements.
 
 ## Notes
 

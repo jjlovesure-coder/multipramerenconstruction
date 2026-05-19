@@ -9,8 +9,8 @@ from pathlib import Path
 
 import numpy as np
 
-from src.ps.inverse_design import MODEL_PATH, candidate_rows, load_model
-from src.ps.train_ps_model import TARGETS, featurize
+from src.ps.inverse_design import MODEL_PATH, candidate_feature_matrix, candidate_rows, load_model
+from src.ps.inverse_design import load_model_payload
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -21,27 +21,26 @@ RANKING_PATH = OUT_DIR / "ps_eig_candidate_ranking.csv"
 SUMMARY_PATH = OUT_DIR / "ps_eig_selection_summary.json"
 
 
-TARGET_WEIGHTS = {
+DEFAULT_TARGET_WEIGHTS = {
     "delta_h_total_J_g": 0.7,
     "peak_area_J_g": 0.6,
     "peak_temperature_Tp_C": 0.8,
     "peak_height_uW": 0.4,
-    "onset_temperature_C": 0.2,
     "recovery_index": 1.0,
     "path_dependence_index": 0.6,
-    "kovacs_peak_label": 0.0,
 }
 
-NOISE_FLOORS = {
+DEFAULT_NOISE_FLOORS = {
     "delta_h_total_J_g": 0.20,
     "peak_area_J_g": 0.13,
     "peak_temperature_Tp_C": 5.0,
     "peak_height_uW": 50.0,
-    "onset_temperature_C": 5.0,
     "recovery_index": 0.15,
     "path_dependence_index": 0.20,
-    "kovacs_peak_label": 1.0,
 }
+
+TARGET_WEIGHTS = DEFAULT_TARGET_WEIGHTS
+NOISE_FLOORS = DEFAULT_NOISE_FLOORS
 
 
 @dataclass
@@ -58,12 +57,18 @@ def load_model_payload(path: Path = MODEL_PATH) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def noise_scales(payload: dict) -> np.ndarray:
+def targets_from_payload(payload: dict) -> list[str]:
+    return list(payload.get("targets", DEFAULT_TARGET_WEIGHTS))
+
+
+def noise_scales(payload: dict, targets: list[str]) -> np.ndarray:
     metrics = payload.get("metrics", {})
+    if not metrics:
+        metrics = payload.get("metrics_same_split", {})
     scales = []
-    for target in TARGETS:
+    for target in targets:
         rmse = metrics.get(target, {}).get("rmse")
-        floor = NOISE_FLOORS[target]
+        floor = DEFAULT_NOISE_FLOORS[target]
         if rmse is None or not np.isfinite(float(rmse)):
             scales.append(floor)
         else:
@@ -187,14 +192,15 @@ def design_next_batch(
 ) -> dict:
     config = config or EigConfig()
     payload = load_model_payload()
+    targets = targets_from_payload(payload)
     model = load_model()
     rows = candidate_table(mode_filter)
-    x = np.array([featurize(row) for row in rows], dtype=float)
+    x = candidate_feature_matrix(rows, payload)
     x_scaled = scaled_features(x, payload)
     pred, unc = model.predict(x)
 
-    scales = noise_scales(payload)
-    weights = np.array([TARGET_WEIGHTS[target] for target in TARGETS], dtype=float)
+    scales = noise_scales(payload, targets)
+    weights = np.array([DEFAULT_TARGET_WEIGHTS[target] for target in targets], dtype=float)
     components = eig_components(unc, scales)
     eig = components @ weights
     known_distance = nearest_distance(x_scaled, np.array(payload["x_train"], dtype=float))
@@ -212,7 +218,7 @@ def design_next_batch(
         out["expected_information_gain"] = float(eig[idx])
         out["nearest_existing_distance"] = float(known_distance[idx])
         out["time_penalty"] = float(time_penalty[idx])
-        for j, target in enumerate(TARGETS):
+        for j, target in enumerate(targets):
             out[f"eig_{target}"] = float(components[idx, j])
             out[f"pred_{target}"] = float(pred[idx, j])
             out[f"uncertainty_{target}"] = float(unc[idx, j])
@@ -229,8 +235,10 @@ def design_next_batch(
         "selected_count": len(selection),
         "candidate_count": len(rows),
         "mode_filter": mode_filter or "all",
-        "target_weights": TARGET_WEIGHTS,
-        "noise_scales": {target: float(scales[i]) for i, target in enumerate(TARGETS)},
+        "model_path": str(MODEL_PATH.relative_to(ROOT)),
+        "targets": targets,
+        "target_weights": {target: DEFAULT_TARGET_WEIGHTS[target] for target in targets},
+        "noise_scales": {target: float(scales[i]) for i, target in enumerate(targets)},
         "config": config.__dict__,
         "outputs": {
             "next_experiments": str(next_experiments_path.relative_to(ROOT)),

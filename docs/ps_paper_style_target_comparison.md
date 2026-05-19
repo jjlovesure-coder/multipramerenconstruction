@@ -36,36 +36,36 @@ ln(k) - ln(kB T / h) = S*/R - H*/(R T)
 
 ## 3. 同条件预测结果
 
-数据集样本数：`94`；训练集：`67`；
-测试集：`27`。两组模型使用相同输入特征、相同 grouped split、
+数据集样本数：`102`；训练集：`74`；
+测试集：`28`。两组模型使用相同输入特征、相同 grouped split、
 相同 RBF kernel bandwidth。
 
 | 目标集 | 目标 | MAE | RMSE | R2 | MAE/测试std |
 | --- | --- | --- | --- | --- | --- |
-| 当前PS目标 | delta_h_total_J_g | 0.1952 | 0.2171 | 0.214 | 0.797 |
-| 当前PS目标 | peak_area_J_g | 0.1511 | 0.1667 | 0.224 | 0.799 |
-| 当前PS目标 | peak_temperature_Tp_C | 0.3444 | 0.3737 | 0.302 | 0.770 |
-| 当前PS目标 | peak_height_uW | 26.92 | 32.12 | -0.170 | 0.907 |
-| 当前PS目标 | onset_temperature_C | 0.004476 | 0.005602 | -0.415 | 0.950 |
-| 当前PS目标 | recovery_index | 0.1682 | 0.1938 | -0.090 | 0.906 |
-| 当前PS目标 | path_dependence_index | 0.1948 | 0.2375 | -0.057 | 0.843 |
+| 当前PS目标 | delta_h_total_J_g | 0.1812 | 0.2093 | 0.240 | 0.755 |
+| 当前PS目标 | peak_area_J_g | 0.1455 | 0.1657 | 0.209 | 0.781 |
+| 当前PS目标 | peak_temperature_Tp_C | 0.3458 | 0.3933 | 0.276 | 0.748 |
+| 当前PS目标 | peak_height_uW | 24.26 | 30.2 | -0.068 | 0.830 |
+| 当前PS目标 | onset_temperature_C | 0.004495 | 0.005426 | -0.335 | 0.957 |
+| 当前PS目标 | recovery_index | 0.1574 | 0.1733 | 0.180 | 0.823 |
+| 当前PS目标 | path_dependence_index | 0.1944 | 0.2335 | -0.018 | 0.840 |
 | 当前PS目标 | kovacs_peak_label | 0 | 0 | nan | nan |
-| 论文式目标 | paper_delta_h_J_g | 0.1952 | 0.2171 | 0.214 | 0.797 |
-| 论文式目标 | paper_delta_h_peak_J_g | 0.1511 | 0.1667 | 0.224 | 0.799 |
-| 论文式目标 | paper_s_star_eff_J_mol_K | 151.4 | 189.5 | 0.501 | 0.564 |
-| 论文式目标 | paper_h_star_eff_kJ_mol | 57.32 | 71.75 | 0.500 | 0.565 |
+| 论文式目标 | paper_delta_h_J_g | 0.1812 | 0.2093 | 0.240 | 0.755 |
+| 论文式目标 | paper_delta_h_peak_J_g | 0.1455 | 0.1657 | 0.209 | 0.781 |
+| 论文式目标 | paper_s_star_eff_J_mol_K | 157.1 | 203.8 | 0.234 | 0.675 |
+| 论文式目标 | paper_h_star_eff_kJ_mol | 59.46 | 77.14 | 0.234 | 0.675 |
 
 归一化综合误差：
 
 ```json
 {
   "current_targets": {
-    "mean_mae_over_test_std": 0.8532940379346564,
-    "median_mae_over_test_std": 0.8433466771675275
+    "mean_mae_over_test_std": 0.8192043303994533,
+    "median_mae_over_test_std": 0.8227260370353497
   },
   "paper_style_targets": {
-    "mean_mae_over_test_std": 0.6813468847288245,
-    "median_mae_over_test_std": 0.6810863658880486
+    "mean_mae_over_test_std": 0.7213503025767358,
+    "median_mae_over_test_std": 0.7149048634755434
   }
 }
 ```
@@ -74,8 +74,8 @@ ln(k) - ln(kB T / h) = S*/R - H*/(R T)
 
 | 目标集 | EIG均值 | P90 | P99 | 最大值 |
 | --- | --- | --- | --- | --- |
-| 当前PS目标 | 1.244 | 1.542 | 1.596 | 1.617 |
-| 论文式目标 | 1.299 | 1.642 | 2.117 | 2.541 |
+| 当前PS目标 | 1.337 | 1.604 | 1.691 | 1.718 |
+| 论文式目标 | 1.366 | 1.672 | 2.122 | 2.539 |
 
 ![EIG distribution](E:\knowledgepaper\multipramereconstruction\results\ps\paper_style_comparison\figures\eig_distribution_current_vs_paper_style.png)
 
@@ -84,14 +84,14 @@ ln(k) - ln(kB T / h) = S*/R - H*/(R T)
 ```json
 {
   "current_targets": {
-    "mean_abs_offdiag_corr": 0.4803514581836244,
-    "median_abs_offdiag_corr": 0.6172844286255597,
-    "max_abs_offdiag_corr": 0.9517106500866649
+    "mean_abs_offdiag_corr": 0.47256635706932343,
+    "median_abs_offdiag_corr": 0.605819593539345,
+    "max_abs_offdiag_corr": 0.9522960923088609
   },
   "paper_style_targets": {
-    "mean_abs_offdiag_corr": 0.5049900823458587,
-    "median_abs_offdiag_corr": 0.2826186405820037,
-    "max_abs_offdiag_corr": 0.9999991461924681
+    "mean_abs_offdiag_corr": 0.5032176850259175,
+    "median_abs_offdiag_corr": 0.28234105253504893,
+    "max_abs_offdiag_corr": 0.9999990780427025
   }
 }
 ```
@@ -104,16 +104,16 @@ ln(k) - ln(kB T / h) = S*/R - H*/(R T)
 
 | Rank | 当前PS目标Top工况 | 论文式目标Top工况 |
 | --- | --- | --- |
-| 1 | 50C 10s -> 65C 1800s | 100C 10s -> 100C 10s |
-| 2 | 50C 10s -> 65C 1200s | 100C 30s -> 100C 10s |
-| 3 | 50C 10s -> 65C 900s | 100C 10s -> 100C 30s |
-| 4 | 50C 10s -> 65C 600s | 100C 60s -> 100C 10s |
-| 5 | 50C 10s -> 60C 1800s | 100C 10s -> 100C 60s |
-| 6 | 50C 10s -> 70C 300s | 100C 30s -> 100C 30s |
-| 7 | 50C 30s -> 65C 1800s | 100C 100s -> 100C 10s |
-| 8 | 50C 10s -> 70C 600s | 100C 10s -> 100C 100s |
-| 9 | 50C 10s -> 70C 100s | 100C 60s -> 100C 30s |
-| 10 | 50C 30s -> 65C 1200s | 100C 30s -> 100C 60s |
+| 1 | 100C 10s -> 100C 1800s | 100C 10s -> 100C 10s |
+| 2 | 100C 10s -> 100C 1200s | 100C 30s -> 100C 10s |
+| 3 | 100C 10s -> 100C 900s | 100C 10s -> 100C 30s |
+| 4 | 100C 10s -> 100C 600s | 100C 60s -> 100C 10s |
+| 5 | 95C 10s -> 95C 1800s | 100C 10s -> 100C 60s |
+| 6 | 95C 10s -> 95C 1200s | 100C 30s -> 100C 30s |
+| 7 | 100C 10s -> 100C 300s | 100C 100s -> 100C 10s |
+| 8 | 100C 30s -> 100C 1800s | 100C 10s -> 100C 100s |
+| 9 | 95C 10s -> 95C 900s | 100C 60s -> 100C 30s |
+| 10 | 100C 30s -> 100C 1200s | 100C 30s -> 100C 60s |
 
 ## 6. 判断
 

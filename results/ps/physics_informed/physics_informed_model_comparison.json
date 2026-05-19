@@ -1,0 +1,409 @@
+{
+  "dataset": "data\\ps\\ps_preexperiment_features.csv",
+  "n_samples": 102,
+  "n_train": 74,
+  "n_test": 28,
+  "split_strategy": "same_as_src.ps.train_ps_model.grouped_split",
+  "targets": [
+    "delta_h_total_J_g",
+    "peak_area_J_g",
+    "recovery_index",
+    "path_dependence_index",
+    "peak_temperature_Tp_C",
+    "peak_height_uW"
+  ],
+  "core_targets": [
+    "delta_h_total_J_g",
+    "peak_area_J_g",
+    "recovery_index",
+    "path_dependence_index"
+  ],
+  "raw_features": [
+    "is_two_step",
+    "T1_C",
+    "T2_C_filled",
+    "delta_T_C",
+    "log_t1_s",
+    "log_t2_s",
+    "log_total_time_s"
+  ],
+  "physics_feature_sets": {
+    "raw_phys_compact": [
+      "phys_inv_T1_K",
+      "phys_inv_T2_K",
+      "phys_inv_equivalent_T_K",
+      "phys_log_total_time_s",
+      "phys_step_time_fraction_1",
+      "phys_step_time_fraction_2",
+      "tnm_state_total_e120_b050",
+      "tnm_state_total_e160_b050",
+      "tnm_state_total_e200_b050",
+      "tnm_state_step1_e160_b035",
+      "tnm_state_step1_e160_b050",
+      "tnm_state_step1_e160_b065",
+      "tnm_state_step2_only_e160_b035",
+      "tnm_state_step2_only_e160_b050",
+      "tnm_state_step2_only_e160_b065",
+      "tnm_path_excess_e120_b050",
+      "tnm_path_excess_e160_b035",
+      "tnm_path_excess_e160_b050",
+      "tnm_path_excess_e160_b065",
+      "tnm_path_excess_e200_b050",
+      "tnm_temperature_path_span_e160_b050",
+      "tnm_step_mismatch_e160_b050"
+    ],
+    "raw_phys_dose": [
+      "tnm_state_total_e120_b050",
+      "tnm_state_total_e160_b050",
+      "tnm_state_total_e200_b050",
+      "tnm_path_excess_e120_b050",
+      "tnm_path_excess_e160_b050",
+      "tnm_path_excess_e200_b050"
+    ],
+    "raw_phys_beta": [
+      "tnm_state_total_e160_b035",
+      "tnm_state_total_e160_b050",
+      "tnm_state_total_e160_b065",
+      "tnm_path_excess_e160_b035",
+      "tnm_path_excess_e160_b050",
+      "tnm_path_excess_e160_b065"
+    ]
+  },
+  "selected_physics_kernel": {
+    "score": 0.846380242219281,
+    "feature_set": "raw_phys_beta",
+    "features": [
+      "tnm_state_total_e160_b035",
+      "tnm_state_total_e160_b050",
+      "tnm_state_total_e160_b065",
+      "tnm_path_excess_e160_b035",
+      "tnm_path_excess_e160_b050",
+      "tnm_path_excess_e160_b065"
+    ],
+    "bandwidth": 3.0,
+    "cv_grid": [
+      {
+        "feature_set": "raw_phys_compact",
+        "bandwidth": 1.0,
+        "cv_core_score": 0.957771334109047
+      },
+      {
+        "feature_set": "raw_phys_compact",
+        "bandwidth": 1.2,
+        "cv_core_score": 0.8993585678974179
+      },
+      {
+        "feature_set": "raw_phys_compact",
+        "bandwidth": 1.4,
+        "cv_core_score": 0.9001999063682301
+      },
+      {
+        "feature_set": "raw_phys_compact",
+        "bandwidth": 1.8,
+        "cv_core_score": 0.8842809705618967
+      },
+      {
+        "feature_set": "raw_phys_compact",
+        "bandwidth": 2.2,
+        "cv_core_score": 0.8878686725435762
+      },
+      {
+        "feature_set": "raw_phys_compact",
+        "bandwidth": 3.0,
+        "cv_core_score": 0.8722130192286095
+      },
+      {
+        "feature_set": "raw_phys_dose",
+        "bandwidth": 1.0,
+        "cv_core_score": 0.9065495430694991
+      },
+      {
+        "feature_set": "raw_phys_dose",
+        "bandwidth": 1.2,
+        "cv_core_score": 0.9031771938937057
+      },
+      {
+        "feature_set": "raw_phys_dose",
+        "bandwidth": 1.4,
+        "cv_core_score": 0.8952158517823234
+      },
+      {
+        "feature_set": "raw_phys_dose",
+        "bandwidth": 1.8,
+        "cv_core_score": 0.8719090653647531
+      },
+      {
+        "feature_set": "raw_phys_dose",
+        "bandwidth": 2.2,
+        "cv_core_score": 0.8492211879635067
+      },
+      {
+        "feature_set": "raw_phys_dose",
+        "bandwidth": 3.0,
+        "cv_core_score": 0.8489586417480373
+      },
+      {
+        "feature_set": "raw_phys_beta",
+        "bandwidth": 1.0,
+        "cv_core_score": 0.9011916451765122
+      },
+      {
+        "feature_set": "raw_phys_beta",
+        "bandwidth": 1.2,
+        "cv_core_score": 0.8923081668714004
+      },
+      {
+        "feature_set": "raw_phys_beta",
+        "bandwidth": 1.4,
+        "cv_core_score": 0.8891406755190678
+      },
+      {
+        "feature_set": "raw_phys_beta",
+        "bandwidth": 1.8,
+        "cv_core_score": 0.8681783181398851
+      },
+      {
+        "feature_set": "raw_phys_beta",
+        "bandwidth": 2.2,
+        "cv_core_score": 0.8474509276261759
+      },
+      {
+        "feature_set": "raw_phys_beta",
+        "bandwidth": 3.0,
+        "cv_core_score": 0.846380242219281
+      }
+    ]
+  },
+  "residual_baseline_features": [
+    "phys_inv_T1_K",
+    "phys_inv_T2_K",
+    "phys_inv_equivalent_T_K",
+    "phys_log_total_time_s",
+    "phys_step_time_fraction_1",
+    "phys_step_time_fraction_2",
+    "tnm_state_total_e120_b050",
+    "tnm_state_total_e160_b050",
+    "tnm_state_total_e200_b050",
+    "tnm_state_step1_e160_b035",
+    "tnm_state_step1_e160_b050",
+    "tnm_state_step1_e160_b065",
+    "tnm_state_step2_only_e160_b035",
+    "tnm_state_step2_only_e160_b050",
+    "tnm_state_step2_only_e160_b065",
+    "tnm_path_excess_e120_b050",
+    "tnm_path_excess_e160_b035",
+    "tnm_path_excess_e160_b050",
+    "tnm_path_excess_e160_b065",
+    "tnm_path_excess_e200_b050",
+    "tnm_temperature_path_span_e160_b050",
+    "tnm_step_mismatch_e160_b050"
+  ],
+  "model_variants": [
+    "raw_kernel",
+    "physics_kernel",
+    "physics_residual",
+    "physics_baseline_only"
+  ],
+  "metrics": {
+    "raw_kernel": {
+      "delta_h_total_J_g": {
+        "mae": 0.18123047863612052,
+        "rmse": 0.2092544614523513,
+        "r2": 0.23964448047705644,
+        "target_std": 0.2399752068989315
+      },
+      "peak_area_J_g": {
+        "mae": 0.1455243911886919,
+        "rmse": 0.16572628897966094,
+        "r2": 0.20893257761016715,
+        "target_std": 0.1863308030193365
+      },
+      "recovery_index": {
+        "mae": 0.15741390260499585,
+        "rmse": 0.17326501724026622,
+        "r2": 0.17993914132970168,
+        "target_std": 0.19133210269147263
+      },
+      "path_dependence_index": {
+        "mae": 0.1943568860834124,
+        "rmse": 0.23346022964293522,
+        "r2": -0.017998549001279507,
+        "target_std": 0.23138719901038157
+      },
+      "peak_temperature_Tp_C": {
+        "mae": 0.3457620762647764,
+        "rmse": 0.3932933426898957,
+        "r2": 0.2755920127304521,
+        "target_std": 0.4620883081453346
+      },
+      "peak_height_uW": {
+        "mae": 24.255862732972027,
+        "rmse": 30.204380833894543,
+        "r2": -0.06775821031925844,
+        "target_std": 29.230313798158
+      }
+    },
+    "physics_kernel": {
+      "delta_h_total_J_g": {
+        "mae": 0.16471688550622782,
+        "rmse": 0.2005369516365677,
+        "r2": 0.3016774468469392,
+        "target_std": 0.2399752068989315
+      },
+      "peak_area_J_g": {
+        "mae": 0.11941338703099126,
+        "rmse": 0.14450373384024978,
+        "r2": 0.39856482156327866,
+        "target_std": 0.1863308030193365
+      },
+      "recovery_index": {
+        "mae": 0.15161692893570478,
+        "rmse": 0.18307609032480376,
+        "r2": 0.08443839891894112,
+        "target_std": 0.19133210269147263
+      },
+      "path_dependence_index": {
+        "mae": 0.1900336612787754,
+        "rmse": 0.22362270385511224,
+        "r2": 0.06598654874362564,
+        "target_std": 0.23138719901038157
+      },
+      "peak_temperature_Tp_C": {
+        "mae": 0.3640513012290718,
+        "rmse": 0.43784917261831785,
+        "r2": 0.10215967593505737,
+        "target_std": 0.4620883081453346
+      },
+      "peak_height_uW": {
+        "mae": 18.110982541427205,
+        "rmse": 21.58482921817322,
+        "r2": 0.4547065534932857,
+        "target_std": 29.230313798158
+      }
+    },
+    "physics_residual": {
+      "delta_h_total_J_g": {
+        "mae": 0.1676786726505311,
+        "rmse": 0.21300185297168164,
+        "r2": 0.21216728060964385,
+        "target_std": 0.2399752068989315
+      },
+      "peak_area_J_g": {
+        "mae": 0.07149512815714429,
+        "rmse": 0.09013714871193201,
+        "r2": 0.7659878963136824,
+        "target_std": 0.1863308030193365
+      },
+      "recovery_index": {
+        "mae": 0.18212878835577534,
+        "rmse": 0.24209574828548053,
+        "r2": -0.6010269266978545,
+        "target_std": 0.19133210269147263
+      },
+      "path_dependence_index": {
+        "mae": 0.364617397018578,
+        "rmse": 0.4565593937995155,
+        "r2": -2.8932824137209643,
+        "target_std": 0.23138719901038157
+      },
+      "peak_temperature_Tp_C": {
+        "mae": 0.2058780929558175,
+        "rmse": 0.25909616223504167,
+        "r2": 0.6856076280201449,
+        "target_std": 0.4620883081453346
+      },
+      "peak_height_uW": {
+        "mae": 16.566572647361586,
+        "rmse": 21.213914664062674,
+        "r2": 0.4732862211899863,
+        "target_std": 29.230313798158
+      }
+    },
+    "physics_baseline_only": {
+      "delta_h_total_J_g": {
+        "mae": 0.21857252728324245,
+        "rmse": 0.254764178917618,
+        "r2": -0.1270520635819108,
+        "target_std": 0.2399752068989315
+      },
+      "peak_area_J_g": {
+        "mae": 0.09498961797168594,
+        "rmse": 0.11257448570596952,
+        "r2": 0.6349850671590689,
+        "target_std": 0.1863308030193365
+      },
+      "recovery_index": {
+        "mae": 0.23182026430052488,
+        "rmse": 0.27636488647735186,
+        "r2": -1.086363792718613,
+        "target_std": 0.19133210269147263
+      },
+      "path_dependence_index": {
+        "mae": 0.3552326843001846,
+        "rmse": 0.44637321683069864,
+        "r2": -2.721496362141977,
+        "target_std": 0.23138719901038157
+      },
+      "peak_temperature_Tp_C": {
+        "mae": 0.28902147793446736,
+        "rmse": 0.33803281766853494,
+        "r2": 0.46485956063524414,
+        "target_std": 0.4620883081453346
+      },
+      "peak_height_uW": {
+        "mae": 16.35939284965658,
+        "rmse": 21.480847864877976,
+        "r2": 0.45994762143480217,
+        "target_std": 29.230313798158
+      }
+    }
+  },
+  "normalized_core": {
+    "raw_kernel": {
+      "mean_mae_over_test_std": 0.7997237738809986,
+      "median_mae_over_test_std": 0.8018631098353464
+    },
+    "physics_kernel": {
+      "mean_mae_over_test_std": 0.7352417313321563,
+      "median_mae_over_test_std": 0.7394096670064233
+    },
+    "physics_residual": {
+      "mean_mae_over_test_std": 0.9025302580639518,
+      "median_mae_over_test_std": 0.8253160315061012
+    },
+    "physics_baseline_only": {
+      "mean_mae_over_test_std": 1.0418614040095204,
+      "median_mae_over_test_std": 1.061212458326851
+    }
+  },
+  "normalized_all": {
+    "raw_kernel": {
+      "mean_mae_over_test_std": 0.7961622654443584,
+      "median_mae_over_test_std": 0.8018631098353464
+    },
+    "physics_kernel": {
+      "mean_mae_over_test_std": 0.72473367720755,
+      "median_mae_over_test_std": 0.7371152515258144
+    },
+    "physics_residual": {
+      "mean_mae_over_test_std": 0.7704032414043445,
+      "median_mae_over_test_std": 0.6327466591855597
+    },
+    "physics_baseline_only": {
+      "mean_mae_over_test_std": 0.8920976393802543,
+      "median_mae_over_test_std": 0.7681405077324386
+    }
+  },
+  "notes": [
+    "Physics features are deterministic functions of annealing conditions only.",
+    "The residual model uses a ridge physics baseline plus RBF residual correction.",
+    "ARRT/TNM constants are a basis prior, not claimed fitted PS material constants."
+  ],
+  "outputs": {
+    "summary": "results\\ps\\physics_informed\\physics_informed_model_comparison.json",
+    "model": "results\\ps\\models\\ps_physics_informed_kernel_model.json",
+    "predictions": "results\\ps\\physics_informed\\physics_informed_test_predictions.csv",
+    "figure": "results\\ps\\physics_informed\\physics_informed_mae_comparison.png",
+    "report": "docs\\ps_physics_informed_model_update.md"
+  }
+}

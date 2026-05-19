@@ -29,6 +29,8 @@ RAW_FILES = {
     "onestep_70": RAW_DIR / "PS-onestep-02.xlsx",
     "single_eig_01": RAW_DIR / "ps-single-01.xlsx",
     "kovacs_eig_01": RAW_DIR / "ps-kovacs-01.xlsx",
+    "kovacs_eig_03": RAW_DIR / "ps-kovacs-03.xlsx",
+    "kovacs_eig_04": RAW_DIR / "ps-kovacs-04.xlsx",
     "kovacs_80_to_90": RAW_DIR / "pskovacs.xlsx",
     "twostep_90_to_80": RAW_DIR / "twosteps.xlsx",
 }
