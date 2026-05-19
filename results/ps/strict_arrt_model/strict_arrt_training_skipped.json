@@ -1,0 +1,10 @@
+{
+  "status": "skipped",
+  "reason": "Strict ARRT/Kissinger S*/H* labels require at least five calculable annealed states for a useful train/test split.",
+  "n_calculable_rows": 0,
+  "targets": [
+    "activation_enthalpy_H_star_kj_mol",
+    "activation_entropy_S_star_j_mol_K"
+  ],
+  "input": "results\\ps\\arrt_kissinger\\arrt_kissinger_results.csv"
+}

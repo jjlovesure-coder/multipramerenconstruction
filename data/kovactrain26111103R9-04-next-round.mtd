@@ -1,0 +1,824 @@
+<Method>
+Version 4
+object TMUMeasMethod
+TempProg = TempProg
+StartCond = StartCond
+EndCond = EndCond
+object TempProg: TMUMeasTempProg
+TempProgMode = 0
+Ramp = TempProg.Ramp
+Step = TempProg.Step
+Special = 0
+object Ramp: TMUMeasTempProgRamp
+EndStep = 31
+object TMUMeasTempProgRampStep
+Start = 200
+Limit = 50
+Rate = 0.1
+Hold = 100
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 50
+Limit = 65
+Rate = 0.1
+Hold = 12000
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 65
+Limit = 30
+Rate = 0.1
+Hold = 6000
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 30
+Limit = 200
+Rate = 0.0166666666666667
+Hold = 1800
+Sampling = 0.1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 200
+Limit = 50
+Rate = 0.1
+Hold = 100
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 50
+Limit = 75
+Rate = 0.1
+Hold = 100
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 75
+Limit = 30
+Rate = 0.1
+Hold = 6000
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 30
+Limit = 200
+Rate = 0.0166666666666667
+Hold = 1800
+Sampling = 0.1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 200
+Limit = 65
+Rate = 0.1
+Hold = 100
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 65
+Limit = 65
+Rate = 0.1
+Hold = 18000
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 65
+Limit = 30
+Rate = 0.1
+Hold = 6000
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 30
+Limit = 200
+Rate = 0.0166666666666667
+Hold = 1800
+Sampling = 0.1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 200
+Limit = 85
+Rate = 0.1
+Hold = 100
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 85
+Limit = 100
+Rate = 0.1
+Hold = 12000
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 100
+Limit = 30
+Rate = 0.1
+Hold = 6000
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 30
+Limit = 200
+Rate = 0.0166666666666667
+Hold = 1800
+Sampling = 0.1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 200
+Limit = 75
+Rate = 0.1
+Hold = 100
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 75
+Limit = 100
+Rate = 0.1
+Hold = 100
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 100
+Limit = 30
+Rate = 0.1
+Hold = 6000
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 30
+Limit = 200
+Rate = 0.0166666666666667
+Hold = 1800
+Sampling = 0.1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 200
+Limit = 50
+Rate = 0.1
+Hold = 1000
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 50
+Limit = 70
+Rate = 0.1
+Hold = 600
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 70
+Limit = 30
+Rate = 0.1
+Hold = 6000
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 30
+Limit = 200
+Rate = 0.0166666666666667
+Hold = 1800
+Sampling = 0.1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 200
+Limit = 65
+Rate = 0.1
+Hold = 100
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 65
+Limit = 85
+Rate = 0.1
+Hold = 6000
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 85
+Limit = 30
+Rate = 0.1
+Hold = 6000
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 30
+Limit = 200
+Rate = 0.0166666666666667
+Hold = 1800
+Sampling = 0.1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 200
+Limit = 50
+Rate = 0.1
+Hold = 100
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 50
+Limit = 70
+Rate = 0.1
+Hold = 3000
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 70
+Limit = 30
+Rate = 0.1
+Hold = 6000
+Sampling = 1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+object TMUMeasTempProgRampStep
+Start = 30
+Limit = 200
+Rate = 0.0166666666666667
+Hold = 1800
+Sampling = 0.1
+Store = True
+ExtOutOn = (
+1
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+30
+0
+0
+0
+0
+0
+0)
+end
+end
+object Step: TMUMeasTempProgStep
+Limit = 100
+Rate = 0.00833333333333333
+Hold = 6000
+Sampling = 0.5
+Store = True
+StepCount = 10
+StepTemp = 10
+Soak = 10
+ExtOutOn = (
+0
+0
+0
+0
+0
+0
+0)
+ExtOutFlow = (
+0
+0
+0
+0
+0
+0
+0)
+end
+end
+object StartCond: TMUMeasStartCond
+IsTempCond = False
+TempRange = 1
+IsYCond = False
+dYRange = 1
+IsTimeWait = True
+TimeWait = 60
+IsZeroSet = True
+IsSampleWeightStart = False
+end
+object EndCond: TMUMeasEndCond
+IsMeltProtect = False
+EnableHeatCoolAutoExten = True
+end
+end

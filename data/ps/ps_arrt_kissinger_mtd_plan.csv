@@ -1,0 +1,25 @@
+run_id,condition_id,mode,T1_C,t1_s,T2_C,t2_s,purpose,final_heating_rate_C_min,final_scan_rate_mtd,calculation_use
+1,ARRT-S01,single_step,70,300,,,single-step mid-temperature anchor,5,0.008333333333333333,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+2,ARRT-S01,single_step,70,300,,,single-step mid-temperature anchor,10,0.01666666666666667,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+3,ARRT-S01,single_step,70,300,,,single-step mid-temperature anchor,20,0.03333333333333333,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+4,ARRT-S01,single_step,70,300,,,single-step mid-temperature anchor,40,0.06666666666666667,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+5,ARRT-S02,single_step,90,100,,,single-step high-temperature short-time anchor,5,0.008333333333333333,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+6,ARRT-S02,single_step,90,100,,,single-step high-temperature short-time anchor,10,0.01666666666666667,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+7,ARRT-S02,single_step,90,100,,,single-step high-temperature short-time anchor,20,0.03333333333333333,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+8,ARRT-S02,single_step,90,100,,,single-step high-temperature short-time anchor,40,0.06666666666666667,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+9,ARRT-S03,single_step,95,100.02,,,complete existing 95 C 100 s multi-rate condition,5,0.008333333333333333,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+10,ARRT-S03,single_step,95,100.02,,,complete existing 95 C 100 s multi-rate condition,10,0.01666666666666667,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+11,ARRT-S03,single_step,95,100.02,,,complete existing 95 C 100 s multi-rate condition,20,0.03333333333333333,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+12,ARRT-S03,single_step,95,100.02,,,complete existing 95 C 100 s multi-rate condition,40,0.06666666666666667,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+13,ARRT-D01,two_step,50,10,80,1800,large old-model error two-step condition,5,0.008333333333333333,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+14,ARRT-D01,two_step,50,10,80,1800,large old-model error two-step condition,10,0.01666666666666667,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+15,ARRT-D01,two_step,50,10,80,1800,large old-model error two-step condition,20,0.03333333333333333,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+16,ARRT-D01,two_step,50,10,80,1800,large old-model error two-step condition,40,0.06666666666666667,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+17,ARRT-D02,two_step,50,10,100,1800,high-temperature second-step EIG condition,5,0.008333333333333333,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+18,ARRT-D02,two_step,50,10,100,1800,high-temperature second-step EIG condition,10,0.01666666666666667,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+19,ARRT-D02,two_step,50,10,100,1800,high-temperature second-step EIG condition,20,0.03333333333333333,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+20,ARRT-D02,two_step,50,10,100,1800,high-temperature second-step EIG condition,40,0.06666666666666667,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+21,ARRT-D03,two_step,65,10,100,1200,measured EIG two-step condition with high uncertainty,5,0.008333333333333333,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+22,ARRT-D03,two_step,65,10,100,1200,measured EIG two-step condition with high uncertainty,10,0.01666666666666667,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+23,ARRT-D03,two_step,65,10,100,1200,measured EIG two-step condition with high uncertainty,20,0.03333333333333333,Tp(beta) for Kissinger fit and ARRT S*/H* calculation
+24,ARRT-D03,two_step,65,10,100,1200,measured EIG two-step condition with high uncertainty,40,0.06666666666666667,Tp(beta) for Kissinger fit and ARRT S*/H* calculation

@@ -1,0 +1,143 @@
+{
+  "n_two_step_samples": 49,
+  "active_targets": [
+    "delta_h_total_J_g",
+    "peak_area_J_g",
+    "peak_temperature_Tp_C",
+    "recovery_index",
+    "path_dependence_index"
+  ],
+  "near_match_definition": "T1/T2 within 5 deg C and each time within a factor of 3.",
+  "summary_by_T1_bin": [
+    {
+      "group": "50-60",
+      "n": 7,
+      "T1_MAE_C": 6.428571428571429,
+      "T2_MAE_C": 17.857142857142858,
+      "median_t1_factor": 59.99988000023999,
+      "median_t2_factor": 120.0,
+      "top1_near_rate": 0.0,
+      "top5_near_rate": 0.0,
+      "top10_near_rate": 0.14285714285714285,
+      "mean_loss": 0.2383406755707736
+    },
+    {
+      "group": "65-75",
+      "n": 2,
+      "T1_MAE_C": 12.5,
+      "T2_MAE_C": 0.0,
+      "median_t1_factor": 100.0002,
+      "median_t2_factor": 1.25,
+      "top1_near_rate": 0.0,
+      "top5_near_rate": 0.0,
+      "top10_near_rate": 0.0,
+      "mean_loss": 0.03654892401130108
+    },
+    {
+      "group": "80-90",
+      "n": 40,
+      "T1_MAE_C": 18.75,
+      "T2_MAE_C": 8.5,
+      "median_t1_factor": 4.299072002880115,
+      "median_t2_factor": 13.999200359928015,
+      "top1_near_rate": 0.025,
+      "top5_near_rate": 0.075,
+      "top10_near_rate": 0.1,
+      "mean_loss": 0.32786006655244493
+    }
+  ],
+  "summary_by_T2_bin": [
+    {
+      "group": "T2 50-70",
+      "n": 1,
+      "T1_MAE_C": 10.0,
+      "T2_MAE_C": 20.0,
+      "median_t1_factor": 59.99988000023999,
+      "median_t2_factor": 1.0,
+      "top1_near_rate": 0.0,
+      "top5_near_rate": 0.0,
+      "top10_near_rate": 0.0,
+      "mean_loss": 0.2136865729995872
+    },
+    {
+      "group": "T2 75-90",
+      "n": 43,
+      "T1_MAE_C": 17.790697674418606,
+      "T2_MAE_C": 8.372093023255815,
+      "median_t1_factor": 4.997999999999999,
+      "median_t2_factor": 17.99640071985603,
+      "top1_near_rate": 0.023255813953488372,
+      "top5_near_rate": 0.06976744186046512,
+      "top10_near_rate": 0.11627906976744186,
+      "mean_loss": 0.3214351500279545
+    },
+    {
+      "group": "T2 95-100",
+      "n": 5,
+      "T1_MAE_C": 9.0,
+      "T2_MAE_C": 17.0,
+      "median_t1_factor": 89.99982000035999,
+      "median_t2_factor": 1.5,
+      "top1_near_rate": 0.0,
+      "top5_near_rate": 0.0,
+      "top10_near_rate": 0.0,
+      "mean_loss": 0.16409744298283774
+    }
+  ],
+  "summary_by_path_class": [
+    {
+      "group": "down-jump",
+      "n": 20,
+      "T1_MAE_C": 25.25,
+      "T2_MAE_C": 9.25,
+      "median_t1_factor": 3.6001440057602303,
+      "median_t2_factor": 36.80419536235547,
+      "top1_near_rate": 0.0,
+      "top5_near_rate": 0.0,
+      "top10_near_rate": 0.0,
+      "mean_loss": 0.2746635973577284
+    },
+    {
+      "group": "up-jump",
+      "n": 29,
+      "T1_MAE_C": 10.862068965517242,
+      "T2_MAE_C": 9.655172413793103,
+      "median_t1_factor": 49.998000000000005,
+      "median_t2_factor": 10.001999999999999,
+      "top1_near_rate": 0.034482758620689655,
+      "top5_near_rate": 0.10344827586206896,
+      "top10_near_rate": 0.1724137931034483,
+      "mean_loss": 0.32284873420556026
+    }
+  ],
+  "coverage_by_T1_bin": [
+    {
+      "T1_bin": "50-60",
+      "two_step_n": 7,
+      "unique_T1": "50,55",
+      "unique_T2": "70,80,85,90,100",
+      "unique_paths": 5
+    },
+    {
+      "T1_bin": "65-75",
+      "two_step_n": 2,
+      "unique_T1": "65,75",
+      "unique_T2": "100",
+      "unique_paths": 2
+    },
+    {
+      "T1_bin": "80-90",
+      "two_step_n": 40,
+      "unique_T1": "80,90",
+      "unique_T2": "80,90",
+      "unique_paths": 2
+    }
+  ],
+  "figures": [
+    "results\\ps\\inverse_temperature\\figures\\inverse_T1_error_by_T1_bin.png",
+    "results\\ps\\inverse_temperature\\figures\\inverse_T2_error_by_T1_bin.png",
+    "results\\ps\\inverse_temperature\\figures\\inverse_top5_rate_by_T1_bin.png",
+    "results\\ps\\inverse_temperature\\figures\\inverse_top5_rate_by_T2_bin.png",
+    "results\\ps\\inverse_temperature\\figures\\inverse_T1_actual_vs_pred.png"
+  ]
+}

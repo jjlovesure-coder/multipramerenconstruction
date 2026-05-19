@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_PATH = ROOT / "data" / "kovactrain26111103R9-01.mtd"
+OUT_PATH = ROOT / "data" / "kovactrain26111103R9-03.mtd"
 
 COOL_RATE = "0.1"
 SCAN_RATE = "0.0166666666666667"
@@ -70,37 +70,7 @@ def two_step(t1: float, time1_s: float, t2: float, time2_s: float) -> list[str]:
     ]
 
 
-def build_method() -> str:
-    ramp_steps: list[str] = []
-
-    # First three runs correct the previous 95 C, 100 s nonstandard scan issue.
-    for _ in range(3):
-        ramp_steps.extend(single_step(95, 100.02))
-
-    # Full optimized two-step EIG plan after the new single-step update.
-    two_step_plan = [
-        (65, 10, 100, 1200),
-        (50, 10, 80, 1800),
-        (50, 10, 100, 10),
-        (50, 1800, 100, 10),
-        (55, 600, 90, 300),
-        (50, 10, 70, 1800),
-        (50, 10, 100, 1800),
-        (50, 10, 85, 60),
-        (75, 10, 100, 1800),
-        (55, 30, 90, 900),
-        (65, 10, 95, 1800),
-        (65, 100, 100, 10),
-        (50, 300, 80, 100),
-        (100, 10, 100, 1800),
-        (65, 300, 100, 1200),
-        (50, 100, 100, 100),
-        (60, 10, 95, 100),
-        (50, 10, 60, 1800),
-    ]
-    for condition in two_step_plan:
-        ramp_steps.extend(two_step(*condition))
-
+def method_text(ramp_steps: list[str]) -> str:
     end_step = len(ramp_steps) - 1
     body = "".join(ramp_steps)
     return f"""<Method>
@@ -160,6 +130,40 @@ EnableHeatCoolAutoExten = True
 end
 end
 """
+
+
+def build_method() -> str:
+    ramp_steps: list[str] = []
+
+    # First three runs correct the previous 95 C, 100 s nonstandard scan issue.
+    for _ in range(3):
+        ramp_steps.extend(single_step(95, 100.02))
+
+    # Full optimized two-step EIG plan after the new single-step update.
+    two_step_plan = [
+        (65, 10, 100, 1200),
+        (50, 10, 80, 1800),
+        (50, 10, 100, 10),
+        (50, 1800, 100, 10),
+        (55, 600, 90, 300),
+        (50, 10, 70, 1800),
+        (50, 10, 100, 1800),
+        (50, 10, 85, 60),
+        (75, 10, 100, 1800),
+        (55, 30, 90, 900),
+        (65, 10, 95, 1800),
+        (65, 100, 100, 10),
+        (50, 300, 80, 100),
+        (100, 10, 100, 1800),
+        (65, 300, 100, 1200),
+        (50, 100, 100, 100),
+        (60, 10, 95, 100),
+        (50, 10, 60, 1800),
+    ]
+    for condition in two_step_plan:
+        ramp_steps.extend(two_step(*condition))
+
+    return method_text(ramp_steps)
 
 
 def main() -> None:
