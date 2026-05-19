@@ -1,0 +1,50 @@
+experiment_id,batch,mode,T1_C,t1_s,T2_C,t2_s,max_step_time_s,purpose
+A-01,A,single_step,50,10,,,1800,single-step enthalpy recovery calibration
+A-02,A,single_step,50,60,,,1800,single-step enthalpy recovery calibration
+A-03,A,single_step,50,300,,,1800,single-step enthalpy recovery calibration
+A-04,A,single_step,50,900,,,1800,single-step enthalpy recovery calibration
+A-05,A,single_step,50,1800,,,1800,single-step enthalpy recovery calibration
+A-06,A,single_step,60,10,,,1800,single-step enthalpy recovery calibration
+A-07,A,single_step,60,60,,,1800,single-step enthalpy recovery calibration
+A-08,A,single_step,60,300,,,1800,single-step enthalpy recovery calibration
+A-09,A,single_step,60,900,,,1800,single-step enthalpy recovery calibration
+A-10,A,single_step,60,1800,,,1800,single-step enthalpy recovery calibration
+A-11,A,single_step,70,10,,,1800,single-step enthalpy recovery calibration
+A-12,A,single_step,70,60,,,1800,single-step enthalpy recovery calibration
+A-13,A,single_step,70,300,,,1800,single-step enthalpy recovery calibration
+A-14,A,single_step,70,900,,,1800,single-step enthalpy recovery calibration
+A-15,A,single_step,70,1800,,,1800,single-step enthalpy recovery calibration
+A-16,A,single_step,80,10,,,1800,single-step enthalpy recovery calibration
+A-17,A,single_step,80,60,,,1800,single-step enthalpy recovery calibration
+A-18,A,single_step,80,300,,,1800,single-step enthalpy recovery calibration
+A-19,A,single_step,80,900,,,1800,single-step enthalpy recovery calibration
+A-20,A,single_step,80,1800,,,1800,single-step enthalpy recovery calibration
+A-21,A,single_step,90,10,,,1800,single-step enthalpy recovery calibration
+A-22,A,single_step,90,60,,,1800,single-step enthalpy recovery calibration
+A-23,A,single_step,90,300,,,1800,single-step enthalpy recovery calibration
+A-24,A,single_step,90,900,,,1800,single-step enthalpy recovery calibration
+A-25,A,single_step,90,1800,,,1800,single-step enthalpy recovery calibration
+B-01,B,two_step,50,300,70,60,1800,finite-time path-dependence screen
+B-02,B,two_step,50,900,70,300,1800,finite-time path-dependence screen
+B-03,B,two_step,50,1800,70,900,1800,finite-time path-dependence screen
+B-04,B,two_step,50,300,80,60,1800,finite-time path-dependence screen
+B-05,B,two_step,50,900,80,300,1800,finite-time path-dependence screen
+B-06,B,two_step,50,1800,80,900,1800,finite-time path-dependence screen
+B-07,B,two_step,60,300,80,60,1800,finite-time path-dependence screen
+B-08,B,two_step,60,900,80,300,1800,finite-time path-dependence screen
+B-09,B,two_step,60,1800,80,900,1800,finite-time path-dependence screen
+B-10,B,two_step,60,300,90,60,1800,finite-time path-dependence screen
+B-11,B,two_step,60,900,90,300,1800,finite-time path-dependence screen
+B-12,B,two_step,60,1800,90,900,1800,finite-time path-dependence screen
+B-13,B,two_step,70,300,90,60,1800,finite-time path-dependence screen
+B-14,B,two_step,70,900,90,300,1800,finite-time path-dependence screen
+B-15,B,two_step,70,1800,90,900,1800,finite-time path-dependence screen
+B-16,B,two_step,80,300,100,60,1800,finite-time path-dependence screen
+B-17,B,two_step,80,900,100,300,1800,finite-time path-dependence screen
+B-18,B,two_step,80,1800,100,900,1800,finite-time path-dependence screen
+C-01,C,single_step,50,10,,,1800,single_repeat_short: repeat short-time single-step control
+C-02,C,single_step,90,1800,,,1800,single_repeat_long: repeat long-time single-step control
+C-03,C,two_step,50,900,80,300,1800,two_step_risk_1: placeholder for model-selected high-risk two-step point
+C-04,C,two_step,70,1800,90,900,1800,two_step_risk_2: placeholder for model-selected high-risk two-step point
+C-05,C,single_step,65,600,,,1800,single_interpolation: interpolation validation point
+C-06,C,two_step,55,900,85,300,1800,two_step_interpolation: interpolation validation point

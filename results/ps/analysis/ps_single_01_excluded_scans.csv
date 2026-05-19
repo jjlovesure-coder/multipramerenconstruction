@@ -1,0 +1,2 @@
+source_file,scan_segment_index,mode,T1_C,t1_s,T2_C,t2_s,total_anneal_time_s,heating_rate_C_min,exclusion_reason
+ps-single-01.xlsx,12,single_step,95.0,100.02,nan,nan,100.02,60.0,nonstandard_heating_rate
