@@ -19,11 +19,13 @@ single_step|70|1.0002||,single_step,70,1.0002,,,2,1,10,False,need at least three
 single_step|70|10.02||,single_step,70,10.02,,,2,1,10,False,need at least three heating rates for the same annealed state
 single_step|70|100.02||,single_step,70,100.02,,,2,1,10,False,need at least three heating rates for the same annealed state
 single_step|70|1000.02||,single_step,70,1000.02,,,2,1,10,False,need at least three heating rates for the same annealed state
+single_step|70|300||,single_step,70,300,,,4,4,5;10;20;40,True,ok
 single_step|70|4.998||,single_step,70,4.998,,,2,1,10,False,need at least three heating rates for the same annealed state
 single_step|70|49.98||,single_step,70,49.98,,,2,1,10,False,need at least three heating rates for the same annealed state
 single_step|70|499.98||,single_step,70,499.98,,,2,1,10,False,need at least three heating rates for the same annealed state
+single_step|90|100||,single_step,90,100,,,4,4,5;10;20;40,True,ok
 single_step|90|300||,single_step,90,300,,,1,1,10,False,need at least three heating rates for the same annealed state
-single_step|95|100.02||,single_step,95,100.02,,,2,2,10;60,False,need at least three heating rates for the same annealed state
+single_step|95|100.02||,single_step,95,100.02,,,6,5,5;10;20;40;60,True,ok
 two_step|50|10|100|10,two_step,50,10,100,10,1,1,10,False,need at least three heating rates for the same annealed state
 two_step|50|10|100|1800,two_step,50,10,100,1800,1,1,10,False,need at least three heating rates for the same annealed state
 two_step|50|10|65|1200,two_step,50,10,65,1200,1,1,10,False,need at least three heating rates for the same annealed state

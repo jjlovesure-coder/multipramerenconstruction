@@ -97,6 +97,13 @@ See `docs/ps_physics_informed_model_update.md` for the metric table and
 `docs/ps_required_missing_data_for_prediction.md` for the data gaps, especially
 the missing direct `S*` and `H*` measurements.
 
+`data/dsc/ps-hs-01.xlsx` adds multi-heating-rate scans for three representative
+single-step annealed states. The strict ARRT/Kissinger calculation now extracts
+high-temperature relaxation `Tp` values and estimates PS-specific `H* / S*`
+anchors. The current physics-informed model uses the resulting high-energy
+activation basis (`430/460/540 kJ/mol`) when it improves grouped CV. See
+`docs/ps_hs_01_arrt_prediction_update.md`.
+
 ## Notes
 
 The parser uses the instrument temperature program to split each repeated cycle into annealing and scan segments. For two-step programs it infers `T1,t1,T2,t2` from the two annealing holds preceding the 30-200 deg C scan.

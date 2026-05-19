@@ -31,6 +31,7 @@ RAW_FILES = {
     "kovacs_eig_01": RAW_DIR / "ps-kovacs-01.xlsx",
     "kovacs_eig_03": RAW_DIR / "ps-kovacs-03.xlsx",
     "kovacs_eig_04": RAW_DIR / "ps-kovacs-04.xlsx",
+    "hs_01": RAW_DIR / "ps-hs-01.xlsx",
     "kovacs_80_to_90": RAW_DIR / "pskovacs.xlsx",
     "twostep_90_to_80": RAW_DIR / "twosteps.xlsx",
 }

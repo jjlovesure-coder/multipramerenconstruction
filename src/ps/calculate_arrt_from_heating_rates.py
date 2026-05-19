@@ -15,6 +15,7 @@ from src.ps.dsc_processing import (
     all_recovery_scan_indices,
     baseline_scan,
     corrected_signal,
+    detrend_window,
     estimate_noise,
     extract_features,
     infer_condition,
@@ -52,6 +53,23 @@ def condition_key(row: dict[str, object]) -> tuple[str, str, str, str, str]:
     )
 
 
+def arrt_peak_temperature_c(corrected_scan) -> float:
+    """Pick the high-temperature relaxation peak for multi-rate ARRT fits.
+
+    The PS heating-rate scans can contain a lower-temperature opposite-sign
+    feature near 85-90 C.  For Kissinger/ARRT we want the relaxation peak that
+    shifts with heating rate, which is the negative peak around 100-110 C in the
+    current PS data.
+    """
+    window = detrend_window(corrected_scan, 40.0, 160.0)
+    peak_window = window[(window["Temp_C"] >= 95.0) & (window["Temp_C"] <= 125.0)].copy()
+    if len(peak_window) < 5:
+        return math.nan
+    values = peak_window["DSC_detrended_uW"].to_numpy()
+    temps = peak_window["Temp_C"].to_numpy()
+    return float(temps[int(values.argmin())])
+
+
 def scan_all_recovery_features() -> list[dict[str, object]]:
     """Extract final heating scans, including non-standard heating rates."""
     ref = baseline_scan(RAW_FILES["ref"])
@@ -79,6 +97,7 @@ def scan_all_recovery_features() -> list[dict[str, object]]:
             cycle_id += 1
             corrected = corrected_signal(scan, ref)
             features = extract_features(corrected, noise, segments[heat_idx].rate_c_min)
+            arrt_tp = arrt_peak_temperature_c(corrected)
             total_time = float(condition["t1_s"])
             if condition["mode"] == "two_step":
                 total_time += float(condition["t2_s"])
@@ -94,6 +113,7 @@ def scan_all_recovery_features() -> list[dict[str, object]]:
                     "t2_s": condition["t2_s"],
                     "total_anneal_time_s": total_time,
                     "heating_rate_C_min": segments[heat_idx].rate_c_min,
+                    "arrt_peak_temperature_Tp_C": arrt_tp,
                     **features,
                 }
             )
@@ -128,12 +148,13 @@ def calculate_group_results(rows: list[dict[str, object]]) -> tuple[list[dict[st
 
         points = []
         for row in values:
-            if not finite(row["peak_temperature_Tp_C"]):
+            tp_c = row.get("arrt_peak_temperature_Tp_C", row.get("peak_temperature_Tp_C"))
+            if not finite(tp_c):
                 continue
             points.append(
                 PeakRatePoint(
                     heating_rate_k_s=float(row["heating_rate_C_min"]) / 60.0,
-                    peak_temperature_k=float(row["peak_temperature_Tp_C"]) + 273.15,
+                    peak_temperature_k=float(tp_c) + 273.15,
                 )
             )
         if len(points) < 3:

@@ -16,7 +16,7 @@ from src.physics.arrt import R
 
 T_REF_K = 373.15
 TAU_REF_S = 100.0
-ENERGY_GRID_KJ_MOL = (120.0, 160.0, 200.0)
+ENERGY_GRID_KJ_MOL = (120.0, 160.0, 200.0, 430.0, 460.0, 540.0)
 BETA_GRID = (0.35, 0.50, 0.65)
 
 

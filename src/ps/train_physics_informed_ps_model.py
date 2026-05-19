@@ -84,10 +84,34 @@ PHYSICS_BETA_FEATURES = [
     "tnm_path_excess_e160_b065",
 ]
 
+PHYSICS_PS_HS_FEATURES = [
+    "tnm_state_total_e430_b050",
+    "tnm_state_total_e460_b050",
+    "tnm_state_total_e540_b050",
+    "tnm_path_excess_e430_b050",
+    "tnm_path_excess_e460_b050",
+    "tnm_path_excess_e540_b050",
+]
+
+PHYSICS_PS_HS_BETA_FEATURES = [
+    "tnm_state_total_e430_b050",
+    "tnm_state_total_e460_b035",
+    "tnm_state_total_e460_b050",
+    "tnm_state_total_e460_b065",
+    "tnm_state_total_e540_b050",
+    "tnm_path_excess_e430_b050",
+    "tnm_path_excess_e460_b035",
+    "tnm_path_excess_e460_b050",
+    "tnm_path_excess_e460_b065",
+    "tnm_path_excess_e540_b050",
+]
+
 PHYSICS_FEATURE_SETS = {
     "raw_phys_compact": PHYSICS_COMPACT_FEATURES,
     "raw_phys_dose": PHYSICS_DOSE_FEATURES,
     "raw_phys_beta": PHYSICS_BETA_FEATURES,
+    "raw_phys_ps_hs": PHYSICS_PS_HS_FEATURES,
+    "raw_phys_ps_hs_beta": PHYSICS_PS_HS_BETA_FEATURES,
 }
 
 BANDWIDTH_GRID = (1.0, 1.2, 1.4, 1.8, 2.2, 3.0)
@@ -451,6 +475,7 @@ def train() -> Path:
             "Physics features are deterministic functions of annealing conditions only.",
             "The residual model uses a ridge physics baseline plus RBF residual correction.",
             "ARRT/TNM constants are a basis prior, not claimed fitted PS material constants.",
+            "The high-energy PS basis values 430/460/540 kJ/mol come from ps-hs-01 multi-rate Kissinger fits.",
         ],
         "outputs": {
             "summary": str(SUMMARY_PATH.relative_to(ROOT)),

@@ -14,17 +14,17 @@ The `physics_kernel` feature subset and bandwidth are selected by repeated group
 
 ```json
 {
-  "score": 0.846380242219281,
-  "feature_set": "raw_phys_beta",
+  "score": 0.8576372827271755,
+  "feature_set": "raw_phys_ps_hs",
   "features": [
-    "tnm_state_total_e160_b035",
-    "tnm_state_total_e160_b050",
-    "tnm_state_total_e160_b065",
-    "tnm_path_excess_e160_b035",
-    "tnm_path_excess_e160_b050",
-    "tnm_path_excess_e160_b065"
+    "tnm_state_total_e430_b050",
+    "tnm_state_total_e460_b050",
+    "tnm_state_total_e540_b050",
+    "tnm_path_excess_e430_b050",
+    "tnm_path_excess_e460_b050",
+    "tnm_path_excess_e540_b050"
   ],
-  "bandwidth": 3.0
+  "bandwidth": 1.4
 }
 ```
 
@@ -34,12 +34,12 @@ The split is identical across models and grouped by source file / mode / T1. Low
 
 | target | raw_MAE | physics_kernel_MAE | physics_residual_MAE | physics_residual_R2 |
 | --- | --- | --- | --- | --- |
-| delta_h_total_J_g | 0.1812 | 0.1647 | 0.1677 | 0.2122 |
-| peak_area_J_g | 0.1455 | 0.1194 | 0.0715 | 0.7660 |
-| recovery_index | 0.1574 | 0.1516 | 0.1821 | -0.6010 |
-| path_dependence_index | 0.1944 | 0.1900 | 0.3646 | -2.8933 |
-| peak_temperature_Tp_C | 0.3458 | 0.3641 | 0.2059 | 0.6856 |
-| peak_height_uW | 24.2559 | 18.1110 | 16.5666 | 0.4733 |
+| delta_h_total_J_g | 0.1744 | 0.1450 | 0.1156 | 0.2497 |
+| peak_area_J_g | 0.1252 | 0.1104 | 0.0725 | 0.5204 |
+| recovery_index | 0.2537 | 0.2149 | 0.1913 | -0.4509 |
+| path_dependence_index | 0.1298 | 0.0761 | 0.1577 | -0.8678 |
+| peak_temperature_Tp_C | 0.6305 | 0.5920 | 0.4528 | -1.1752 |
+| peak_height_uW | 11.3093 | 10.0040 | 5.3665 | 0.8898 |
 
 ![Physics-informed MAE comparison](E:/knowledgepaper/multipramereconstruction/results/ps/physics_informed/physics_informed_mae_comparison.png)
 
@@ -48,26 +48,26 @@ The split is identical across models and grouped by source file / mode / T1. Low
 ```json
 {
   "raw_kernel": {
-    "mean_mae_over_test_std": 0.7997237738809986,
-    "median_mae_over_test_std": 0.8018631098353464
+    "mean_mae_over_test_std": 1.0195512641495252,
+    "median_mae_over_test_std": 0.9643905077371802
   },
   "physics_kernel": {
-    "mean_mae_over_test_std": 0.7352417313321563,
-    "median_mae_over_test_std": 0.7394096670064233
+    "mean_mae_over_test_std": 0.8050027717871515,
+    "median_mae_over_test_std": 0.7882973962630822
   },
   "physics_residual": {
-    "mean_mae_over_test_std": 0.9025302580639518,
-    "median_mae_over_test_std": 0.8253160315061012
+    "mean_mae_over_test_std": 0.8187466222825189,
+    "median_mae_over_test_std": 0.8037587908556287
   },
   "physics_baseline_only": {
-    "mean_mae_over_test_std": 1.0418614040095204,
-    "median_mae_over_test_std": 1.061212458326851
+    "mean_mae_over_test_std": 0.8843925753051569,
+    "median_mae_over_test_std": 0.8275518035319904
   }
 }
 ```
 
 ## Interpretation
 
-The selected `physics_kernel` lowers the mean normalized core-target error from `0.7997` to `0.7352`, a relative change of `-8.1%`. It improves all four core targets in this split: total enthalpy, peak area, recovery index, and path-dependence index.
+The selected `physics_kernel` lowers the mean normalized core-target error from `1.0196` to `0.8050`, a relative change of `-21.0%`. It improves all four core targets in this split: total enthalpy, peak area, recovery index, and path-dependence index.
 
 The `physics_residual` variant is not recommended as the main model right now. It improves peak area and diagnostic peak shape, but it damages `recovery_index` and `path_dependence_index`, which are the targets that matter most for inverse annealing design. The better small-sample choice is therefore the lower-dimensional `physics_kernel`: raw annealing inputs plus TNM path/dose features selected by grouped CV.
