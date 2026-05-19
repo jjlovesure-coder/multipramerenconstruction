@@ -1,0 +1,23 @@
+# Python runtime caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local editor state
+.idea/
+*.swp
+*.swo
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Local logs and scratch files
+*.log
+.tmp/
+tmp/

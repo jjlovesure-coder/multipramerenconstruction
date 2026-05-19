@@ -1,0 +1,59 @@
+---
+description: Git history management workflow for this annealing reconstruction repository.
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Git History Management
+
+This repository uses the `Richard` branch as the active working branch.
+
+Use these rules when helping manage Git history from Cursor, Codex, or a terminal.
+
+## Safety Rules
+
+- Never run `git reset --hard`, `git clean -fd`, or `git checkout -- <path>` unless Richard explicitly asks for destructive cleanup.
+- Prefer history inspection before mutation:
+  - `git status -sb`
+  - `git log --oneline --decorate --graph -12`
+  - `git show --stat <commit>`
+  - `git diff <base>..<head>`
+- Stage files explicitly. Avoid `git add -A` when generated outputs or raw data are mixed with source changes.
+- Do not commit `__pycache__`, `.pyc`, virtual environments, local logs, or editor state.
+- For GitHub push from this workspace, use:
+
+```powershell
+git -c http.proxy= -c https.proxy= push origin Richard
+```
+
+## Commit Style
+
+Use short, concrete commit messages:
+
+```text
+Add ARRT Kissinger experiment method
+Update PS model evaluation report
+Clean generated Python caches
+```
+
+## Useful Review Questions
+
+Before commit:
+
+- Does the diff include only intended files?
+- Are generated CSV/JSON/PNG outputs intentionally part of the record?
+- Are raw DSC files intentionally being versioned?
+- Did a script regenerate files deterministically?
+- Was at least one relevant verification command run?
+
+## Common Commands
+
+```powershell
+git status -sb
+git log --oneline --decorate --graph -12
+git show --stat HEAD
+git diff --stat
+git diff --cached --stat
+git ls-files '*__pycache__*'
+```

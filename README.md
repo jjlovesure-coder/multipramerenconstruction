@@ -402,8 +402,15 @@ Push command used in this workspace:
 git -c http.proxy= -c https.proxy= push origin Richard
 ```
 
+Git history management helpers:
+
+```text
+docs/git_history_management.md
+.cursor/rules/git-history-management.mdc
+tools/git_history.ps1
+```
+
 ## Related Short READMEs
 
 - `README_modeling.md`: original paper-data sparse predictor.
 - `README_ps_modeling.md`: PS finite-time enthalpy-recovery predictor.
-
