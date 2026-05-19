@@ -10,8 +10,8 @@ from pathlib import Path
 
 import numpy as np
 
-from src.ps.inverse_design import load_model
-from src.ps.train_ps_model import TARGETS, featurize, read_rows
+from src.ps.inverse_design import candidate_feature_matrix, load_model, load_model_payload
+from src.ps.train_ps_model import read_rows
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -95,6 +95,7 @@ def near_match(candidate: dict[str, str], actual: dict[str, str]) -> bool:
 
 def build_candidate_predictions() -> tuple[list[dict[str, str]], np.ndarray]:
     model = load_model()
+    payload = load_model_payload()
     temps = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
     times = [0.1, 0.5, 0.8, 1, 10, 30, 60, 100, 300, 600, 900, 1200, 1800]
     candidates = []
@@ -110,18 +111,20 @@ def build_candidate_predictions() -> tuple[list[dict[str, str]], np.ndarray]:
                         "t2_s": str(t2_s),
                         "total_anneal_time_s": str(t1_s + t2_s),
                     })
-    x = np.array([featurize(row) for row in candidates], dtype=float)
+    x = candidate_feature_matrix(candidates, payload)
     pred, _ = model.predict(x)
     return candidates, pred
 
 
-def inverse_rank(row: dict[str, str], candidates: list[dict[str, str]], pred: np.ndarray) -> dict:
+def inverse_rank(row: dict[str, str], candidates: list[dict[str, str]], pred: np.ndarray, targets: list[str]) -> dict:
     losses = np.zeros(len(candidates), dtype=float)
     for target in ACTIVE_TARGETS:
-        idx = TARGETS.index(target)
+        if target not in targets:
+            continue
+        idx = targets.index(target)
         actual = as_float(row[target])
         losses += np.abs((pred[:, idx] - actual) / SCALES[target])
-    losses /= len(ACTIVE_TARGETS)
+    losses /= max(sum(target in targets for target in ACTIVE_TARGETS), 1)
     order = np.argsort(losses)
     best_idx = int(order[0])
     best = candidates[best_idx]
@@ -269,10 +272,12 @@ def plot_summaries(by_t1: list[dict], by_t2: list[dict], evaluations: list[dict]
 
 
 def main() -> None:
+    payload = load_model_payload()
+    targets = list(payload["targets"])
     rows = read_rows(DATASET_PATH)
     two_step_rows = [row for row in rows if row["mode"] == "two_step"]
     candidates, pred = build_candidate_predictions()
-    evaluations = [inverse_rank(row, candidates, pred) for row in two_step_rows]
+    evaluations = [inverse_rank(row, candidates, pred, targets) for row in two_step_rows]
     by_t1 = summarize(evaluations, "T1_bin")
     by_t2 = summarize(evaluations, "T2_bin")
     by_path = summarize(evaluations, "path_class")

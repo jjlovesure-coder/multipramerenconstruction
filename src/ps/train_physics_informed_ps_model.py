@@ -93,6 +93,39 @@ PHYSICS_PS_HS_FEATURES = [
     "tnm_path_excess_e540_b050",
 ]
 
+PHYSICS_ARRT_SEQUENTIAL_FEATURES = [
+    "arrt_state_step1_hs70_b050",
+    "arrt_state_total_hs70_b050",
+    "arrt_path_excess_hs70_b050",
+    "arrt_step2_increment_hs70_b050",
+    "arrt_state_step1_hs95_b050",
+    "arrt_state_total_hs95_b050",
+    "arrt_path_excess_hs95_b050",
+    "arrt_step2_increment_hs95_b050",
+    "arrt_state_step1_hs90_b050",
+    "arrt_state_total_hs90_b050",
+    "arrt_path_excess_hs90_b050",
+    "arrt_step2_increment_hs90_b050",
+]
+
+PHYSICS_ARRT_IDENTIFIABILITY_FEATURES = [
+    "arrt_state_step1_hs70_b035",
+    "arrt_state_total_hs70_b035",
+    "arrt_step1_fraction_of_total_hs70_b035",
+    "arrt_step2_increment_hs70_b035",
+    "arrt_path_excess_hs70_b035",
+    "arrt_state_step1_hs95_b050",
+    "arrt_state_total_hs95_b050",
+    "arrt_step1_fraction_of_total_hs95_b050",
+    "arrt_step2_increment_hs95_b050",
+    "arrt_path_excess_hs95_b050",
+    "arrt_state_step1_hs90_b065",
+    "arrt_state_total_hs90_b065",
+    "arrt_step1_fraction_of_total_hs90_b065",
+    "arrt_step2_increment_hs90_b065",
+    "arrt_path_excess_hs90_b065",
+]
+
 PHYSICS_PS_HS_BETA_FEATURES = [
     "tnm_state_total_e430_b050",
     "tnm_state_total_e460_b035",
@@ -111,6 +144,8 @@ PHYSICS_FEATURE_SETS = {
     "raw_phys_dose": PHYSICS_DOSE_FEATURES,
     "raw_phys_beta": PHYSICS_BETA_FEATURES,
     "raw_phys_ps_hs": PHYSICS_PS_HS_FEATURES,
+    "raw_arrt_sequential": PHYSICS_ARRT_SEQUENTIAL_FEATURES,
+    "raw_arrt_identifiability": PHYSICS_ARRT_IDENTIFIABILITY_FEATURES,
     "raw_phys_ps_hs_beta": PHYSICS_PS_HS_BETA_FEATURES,
 }
 

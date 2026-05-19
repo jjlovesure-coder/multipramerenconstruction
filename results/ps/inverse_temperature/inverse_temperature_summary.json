@@ -1,5 +1,5 @@
 {
-  "n_two_step_samples": 49,
+  "n_two_step_samples": 57,
   "active_targets": [
     "delta_h_total_J_g",
     "peak_area_J_g",
@@ -11,126 +11,138 @@
   "summary_by_T1_bin": [
     {
       "group": "50-60",
-      "n": 7,
-      "T1_MAE_C": 6.428571428571429,
-      "T2_MAE_C": 17.857142857142858,
-      "median_t1_factor": 59.99988000023999,
-      "median_t2_factor": 120.0,
-      "top1_near_rate": 0.0,
-      "top5_near_rate": 0.0,
-      "top10_near_rate": 0.14285714285714285,
-      "mean_loss": 0.2383406755707736
+      "n": 11,
+      "T1_MAE_C": 14.090909090909092,
+      "T2_MAE_C": 11.363636363636363,
+      "median_t1_factor": 100.0002,
+      "median_t2_factor": 2.0,
+      "top1_near_rate": 0.09090909090909091,
+      "top5_near_rate": 0.18181818181818182,
+      "top10_near_rate": 0.2727272727272727,
+      "mean_loss": 0.1134129758722494
     },
     {
       "group": "65-75",
-      "n": 2,
-      "T1_MAE_C": 12.5,
-      "T2_MAE_C": 0.0,
-      "median_t1_factor": 100.0002,
-      "median_t2_factor": 1.25,
+      "n": 5,
+      "T1_MAE_C": 12.0,
+      "T2_MAE_C": 10.0,
+      "median_t1_factor": 119.99976000047998,
+      "median_t2_factor": 1.5,
       "top1_near_rate": 0.0,
-      "top5_near_rate": 0.0,
-      "top10_near_rate": 0.0,
-      "mean_loss": 0.03654892401130108
+      "top5_near_rate": 0.2,
+      "top10_near_rate": 0.2,
+      "mean_loss": 0.15619326725613622
     },
     {
       "group": "80-90",
-      "n": 40,
-      "T1_MAE_C": 18.75,
-      "T2_MAE_C": 8.5,
-      "median_t1_factor": 4.299072002880115,
-      "median_t2_factor": 13.999200359928015,
-      "top1_near_rate": 0.025,
-      "top5_near_rate": 0.075,
-      "top10_near_rate": 0.1,
-      "mean_loss": 0.32786006655244493
+      "n": 41,
+      "T1_MAE_C": 6.7073170731707314,
+      "T2_MAE_C": 10.0,
+      "median_t1_factor": 4.9998000000000005,
+      "median_t2_factor": 5.9988002399520095,
+      "top1_near_rate": 0.04878048780487805,
+      "top5_near_rate": 0.14634146341463414,
+      "top10_near_rate": 0.14634146341463414,
+      "mean_loss": 0.1972147973527763
     }
   ],
   "summary_by_T2_bin": [
     {
       "group": "T2 50-70",
-      "n": 1,
-      "T1_MAE_C": 10.0,
-      "T2_MAE_C": 20.0,
-      "median_t1_factor": 59.99988000023999,
-      "median_t2_factor": 1.0,
+      "n": 5,
+      "T1_MAE_C": 15.0,
+      "T2_MAE_C": 23.0,
+      "median_t1_factor": 100.0002,
+      "median_t2_factor": 18.0,
       "top1_near_rate": 0.0,
       "top5_near_rate": 0.0,
       "top10_near_rate": 0.0,
-      "mean_loss": 0.2136865729995872
+      "mean_loss": 0.11014666820852906
     },
     {
       "group": "T2 75-90",
-      "n": 43,
-      "T1_MAE_C": 17.790697674418606,
-      "T2_MAE_C": 8.372093023255815,
-      "median_t1_factor": 4.997999999999999,
-      "median_t2_factor": 17.99640071985603,
-      "top1_near_rate": 0.023255813953488372,
-      "top5_near_rate": 0.06976744186046512,
-      "top10_near_rate": 0.11627906976744186,
-      "mean_loss": 0.3214351500279545
+      "n": 45,
+      "T1_MAE_C": 8.11111111111111,
+      "T2_MAE_C": 10.222222222222221,
+      "median_t1_factor": 12.004801920768308,
+      "median_t2_factor": 6.0,
+      "top1_near_rate": 0.044444444444444446,
+      "top5_near_rate": 0.15555555555555556,
+      "top10_near_rate": 0.15555555555555556,
+      "mean_loss": 0.19624734537965616
     },
     {
       "group": "T2 95-100",
-      "n": 5,
-      "T1_MAE_C": 9.0,
-      "T2_MAE_C": 17.0,
-      "median_t1_factor": 89.99982000035999,
-      "median_t2_factor": 1.5,
-      "top1_near_rate": 0.0,
-      "top5_near_rate": 0.0,
-      "top10_near_rate": 0.0,
-      "mean_loss": 0.16409744298283774
+      "n": 7,
+      "T1_MAE_C": 7.142857142857143,
+      "T2_MAE_C": 1.4285714285714286,
+      "median_t1_factor": 100.0002,
+      "median_t2_factor": 1.000002,
+      "top1_near_rate": 0.14285714285714285,
+      "top5_near_rate": 0.2857142857142857,
+      "top10_near_rate": 0.42857142857142855,
+      "mean_loss": 0.10463598274458297
     }
   ],
   "summary_by_path_class": [
     {
       "group": "down-jump",
       "n": 20,
-      "T1_MAE_C": 25.25,
-      "T2_MAE_C": 9.25,
-      "median_t1_factor": 3.6001440057602303,
-      "median_t2_factor": 36.80419536235547,
+      "T1_MAE_C": 6.5,
+      "T2_MAE_C": 14.25,
+      "median_t1_factor": 49.98,
+      "median_t2_factor": 6.989400119976004,
+      "top1_near_rate": 0.0,
+      "top5_near_rate": 0.1,
+      "top10_near_rate": 0.1,
+      "mean_loss": 0.1314049491869346
+    },
+    {
+      "group": "isothermal",
+      "n": 1,
+      "T1_MAE_C": 25.0,
+      "T2_MAE_C": 35.0,
+      "median_t1_factor": 179.99964000071998,
+      "median_t2_factor": 18.0,
       "top1_near_rate": 0.0,
       "top5_near_rate": 0.0,
       "top10_near_rate": 0.0,
-      "mean_loss": 0.2746635973577284
+      "mean_loss": 0.20904061890975462
     },
     {
       "group": "up-jump",
-      "n": 29,
-      "T1_MAE_C": 10.862068965517242,
-      "T2_MAE_C": 9.655172413793103,
-      "median_t1_factor": 49.998000000000005,
-      "median_t2_factor": 10.001999999999999,
-      "top1_near_rate": 0.034482758620689655,
-      "top5_near_rate": 0.10344827586206896,
-      "top10_near_rate": 0.1724137931034483,
-      "mean_loss": 0.32284873420556026
+      "n": 36,
+      "T1_MAE_C": 9.305555555555555,
+      "T2_MAE_C": 7.361111111111111,
+      "median_t1_factor": 33.99360144057623,
+      "median_t2_factor": 3.800072002880115,
+      "top1_near_rate": 0.08333333333333333,
+      "top5_near_rate": 0.19444444444444445,
+      "top10_near_rate": 0.2222222222222222,
+      "mean_loss": 0.20214378221363347
     }
   ],
   "coverage_by_T1_bin": [
     {
       "T1_bin": "50-60",
-      "two_step_n": 7,
+      "two_step_n": 11,
       "unique_T1": "50,55",
-      "unique_T2": "70,80,85,90,100",
-      "unique_paths": 5
+      "unique_T2": "65,70,75,80,85,90,100",
+      "unique_paths": 7
     },
     {
       "T1_bin": "65-75",
-      "two_step_n": 2,
+      "two_step_n": 5,
       "unique_T1": "65,75",
-      "unique_T2": "100",
-      "unique_paths": 2
+      "unique_T2": "65,85,100",
+      "unique_paths": 4
     },
     {
       "T1_bin": "80-90",
-      "two_step_n": 40,
-      "unique_T1": "80,90",
-      "unique_T2": "80,90",
-      "unique_paths": 2
+      "two_step_n": 41,
+      "unique_T1": "80,85,90",
+      "unique_T2": "80,90,100",
+      "unique_paths": 3
     }
   ],
   "figures": [

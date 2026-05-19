@@ -79,8 +79,6 @@ def candidate_rows() -> list[dict[str, str]]:
             })
     for t1 in temps:
         for t2 in temps:
-            if t2 < t1:
-                continue
             for t1_s in times:
                 for t2_s in times:
                     if max(t1_s, t2_s) > 1800:

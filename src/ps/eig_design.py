@@ -45,11 +45,12 @@ NOISE_FLOORS = DEFAULT_NOISE_FLOORS
 
 @dataclass
 class EigConfig:
-    batch_size: int = 18
-    min_single_step: int = 5
+    batch_size: int = 30
+    min_single_step: int = 4
     novelty_weight: float = 0.12
+    inverse_identifiability_weight: float = 1.20
     time_penalty_weight: float = 0.03
-    redundancy_weight: float = 0.35
+    redundancy_weight: float = 0.55
     diversity_bandwidth: float = 1.0
 
 
@@ -91,6 +92,74 @@ def nearest_distance(x_scaled: np.ndarray, reference_scaled: np.ndarray) -> np.n
 def eig_components(uncertainty: np.ndarray, scales: np.ndarray) -> np.ndarray:
     ratio2 = (uncertainty / scales[None, :]) ** 2
     return 0.5 * np.log1p(ratio2)
+
+
+def _bounded(value: float, low: float, high: float) -> float:
+    return min(max(value, low), high)
+
+
+def _perturbed_row(row: dict[str, str], parameter: str, direction: float) -> dict[str, str]:
+    out = dict(row)
+    if parameter in {"T1_C", "T2_C"}:
+        out[parameter] = str(_bounded(float(out[parameter]) + 5.0 * direction, 50.0, 100.0))
+    elif parameter == "t1_s":
+        factor = 3.0 if direction > 0 else 1.0 / 3.0
+        out[parameter] = str(_bounded(float(out[parameter]) * factor, 1.0, 1800.0))
+    elif parameter == "t2_s":
+        factor = 3.0 if direction > 0 else 1.0 / 3.0
+        out[parameter] = str(_bounded(float(out[parameter]) * factor, 1.0, 1800.0))
+    out["total_anneal_time_s"] = str(float(out["t1_s"]) + float(out["t2_s"]))
+    return out
+
+
+def inverse_identifiability_scores(
+    rows: list[dict[str, str]],
+    payload: dict,
+    targets: list[str],
+    scales: np.ndarray,
+) -> tuple[np.ndarray, dict[str, np.ndarray]]:
+    """Score candidates by local ability to distinguish T1/t1/T2/t2.
+
+    The score is the log-determinant of a normalized local sensitivity Gram
+    matrix.  High values mean small changes in all four inverse parameters
+    produce distinguishable predicted target changes.
+    """
+    model = load_model()
+    active = [idx for idx, target in enumerate(targets) if target in DEFAULT_TARGET_WEIGHTS]
+    active_scales = scales[active]
+    raw_scores = np.zeros(len(rows), dtype=float)
+    sensitivity_norms = {name: np.zeros(len(rows), dtype=float) for name in ["T1_C", "t1_s", "T2_C", "t2_s"]}
+
+    two_step_indices = [idx for idx, row in enumerate(rows) if row["mode"] == "two_step"]
+    if not two_step_indices:
+        return raw_scores, sensitivity_norms
+
+    for idx in two_step_indices:
+        row = rows[idx]
+        columns = []
+        for parameter in ["T1_C", "t1_s", "T2_C", "t2_s"]:
+            low = _perturbed_row(row, parameter, -1.0)
+            high = _perturbed_row(row, parameter, 1.0)
+            pred_pair, _ = model.predict(candidate_feature_matrix([low, high], payload))
+            delta = (pred_pair[1, active] - pred_pair[0, active]) / active_scales
+            if parameter in {"T1_C", "T2_C"}:
+                denom = max(float(high[parameter]) - float(low[parameter]), 1e-9)
+            else:
+                denom = max(np.log10(float(high[parameter])) - np.log10(float(low[parameter])), 1e-9)
+            column = delta / denom
+            columns.append(column)
+            sensitivity_norms[parameter][idx] = float(np.linalg.norm(column))
+        jacobian = np.column_stack(columns)
+        gram = jacobian.T @ jacobian
+        raw_scores[idx] = float(np.linalg.slogdet(gram + 1e-6 * np.eye(4))[1])
+
+    finite = raw_scores[two_step_indices]
+    lo = float(np.percentile(finite, 5))
+    hi = float(np.percentile(finite, 95))
+    normalized = np.zeros_like(raw_scores)
+    if hi > lo:
+        normalized[two_step_indices] = np.clip((raw_scores[two_step_indices] - lo) / (hi - lo), 0.0, 1.0)
+    return normalized, sensitivity_norms
 
 
 def exact_condition_key(row: dict[str, str]) -> tuple[str, str, str, str, str]:
@@ -203,10 +272,16 @@ def design_next_batch(
     weights = np.array([DEFAULT_TARGET_WEIGHTS[target] for target in targets], dtype=float)
     components = eig_components(unc, scales)
     eig = components @ weights
+    inverse_identifiability, sensitivity_norms = inverse_identifiability_scores(rows, payload, targets, scales)
     known_distance = nearest_distance(x_scaled, np.array(payload["x_train"], dtype=float))
     total_time = np.array([float(row["total_anneal_time_s"]) for row in rows], dtype=float)
     time_penalty = config.time_penalty_weight * total_time / 1800.0
-    raw_score = eig + config.novelty_weight * known_distance - time_penalty
+    raw_score = (
+        eig
+        + config.novelty_weight * known_distance
+        + config.inverse_identifiability_weight * inverse_identifiability
+        - time_penalty
+    )
 
     order = np.argsort(-raw_score)
     selected = greedy_select(raw_score, x_scaled, rows, config)
@@ -216,8 +291,11 @@ def design_next_batch(
         out["rank"] = rank
         out["eig_score"] = float(raw_score[idx])
         out["expected_information_gain"] = float(eig[idx])
+        out["inverse_identifiability_score"] = float(inverse_identifiability[idx])
         out["nearest_existing_distance"] = float(known_distance[idx])
         out["time_penalty"] = float(time_penalty[idx])
+        for parameter, values in sensitivity_norms.items():
+            out[f"sensitivity_{parameter}"] = float(values[idx])
         for j, target in enumerate(targets):
             out[f"eig_{target}"] = float(components[idx, j])
             out[f"pred_{target}"] = float(pred[idx, j])
@@ -232,6 +310,7 @@ def design_next_batch(
     summary = {
         "method": "Greedy active learning with an Expected Information Gain proxy.",
         "eig_proxy": "0.5 * log(1 + predictive_variance / noise_scale^2), summed over weighted targets.",
+        "inverse_identifiability_proxy": "Normalized log-det of local target sensitivities to T1, log(t1), T2, and log(t2).",
         "selected_count": len(selection),
         "candidate_count": len(rows),
         "mode_filter": mode_filter or "all",
@@ -247,6 +326,7 @@ def design_next_batch(
         "notes": [
             "This is an information-theoretic active-learning design over the current surrogate model.",
             "It favors uncertain, novel, and non-redundant finite-time annealing conditions.",
+            "It now also favors conditions that make T1/t1/T2/t2 locally distinguishable for inverse reconstruction.",
             "The default batch keeps single-step anchor experiments so the two-step path effect stays interpretable.",
             "The Kovacs label has zero weight because current PS pre-experiments do not show clear Kovacs peaks.",
         ],

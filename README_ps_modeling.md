@@ -104,6 +104,12 @@ anchors. The current physics-informed model uses the resulting high-energy
 activation basis (`430/460/540 kJ/mol`) when it improves grouped CV. See
 `docs/ps_hs_01_arrt_prediction_update.md`.
 
+The EIG workflow also includes an inverse-identifiability term for the four
+parameters `T1,t1,T2,t2`. It scores candidates by local sensitivity of predicted
+targets to `T1`, `log(t1)`, `T2`, and `log(t2)`, then selects a 30-point batch
+with single-step anchors plus diverse two-step paths. See
+`docs/ps_inverse_identifiability_four_step_update.md`.
+
 ## Notes
 
 The parser uses the instrument temperature program to split each repeated cycle into annealing and scan segments. For two-step programs it infers `T1,t1,T2,t2` from the two annealing holds preceding the 30-200 deg C scan.
