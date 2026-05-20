@@ -151,6 +151,7 @@ PHYSICS_FEATURE_SETS = {
 
 BANDWIDTH_GRID = (1.0, 1.2, 1.4, 1.8, 2.2, 3.0)
 CV_SEEDS = (2, 3, 4, 7, 13, 17, 23)
+ARD_FEATURE_SCALE_GRID = (0.65, 0.85, 1.0, 1.25, 1.55)
 
 
 @dataclass
@@ -202,6 +203,93 @@ def feature_matrix(rows: list[dict[str, str]], raw: np.ndarray, feature_names: l
     return np.column_stack([raw, phys]) if include_raw else phys
 
 
+def _safe_corr(a: np.ndarray, b: np.ndarray) -> float:
+    if np.std(a) <= 1e-12 or np.std(b) <= 1e-12:
+        return 0.0
+    corr = float(np.corrcoef(a, b)[0, 1])
+    return corr if math.isfinite(corr) else 0.0
+
+
+def screen_feature_names(
+    x_phys: np.ndarray,
+    y: np.ndarray,
+    feature_names: list[str],
+    min_features: int = 4,
+    max_features: int = 14,
+    redundancy_threshold: float = 0.97,
+) -> dict[str, object]:
+    """Select informative, non-redundant physics features before kernel CV."""
+    if x_phys.shape[1] != len(feature_names):
+        raise ValueError("feature_names length must match x_phys columns")
+    target_std = np.std(y, axis=0)
+    active_targets = [idx for idx, std in enumerate(target_std) if std > 1e-12]
+    scores = []
+    for j, name in enumerate(feature_names):
+        column = x_phys[:, j]
+        corr_values = [abs(_safe_corr(column, y[:, target_idx])) for target_idx in active_targets]
+        scores.append({
+            "feature": name,
+            "score": float(np.mean(corr_values)) if corr_values else 0.0,
+            "std": float(np.std(column)),
+        })
+    ranked = sorted(scores, key=lambda item: item["score"], reverse=True)
+    selected_indices: list[int] = []
+    selected_features: list[str] = []
+    for item in ranked:
+        if len(selected_features) >= max_features:
+            break
+        idx = feature_names.index(str(item["feature"]))
+        if float(item["std"]) <= 1e-12:
+            continue
+        redundant = False
+        for kept_idx in selected_indices:
+            if abs(_safe_corr(x_phys[:, idx], x_phys[:, kept_idx])) >= redundancy_threshold:
+                redundant = True
+                break
+        if redundant:
+            continue
+        selected_indices.append(idx)
+        selected_features.append(str(item["feature"]))
+    if len(selected_features) < min_features:
+        for item in ranked:
+            name = str(item["feature"])
+            if name not in selected_features:
+                selected_features.append(name)
+            if len(selected_features) >= min_features:
+                break
+    return {
+        "selected_features": selected_features,
+        "scores": scores,
+        "min_features": min_features,
+        "max_features": max_features,
+        "redundancy_threshold": redundancy_threshold,
+    }
+
+
+def ard_bandwidth_from_feature_scores(
+    feature_names: list[str],
+    screening: dict[str, object] | None,
+    n_raw_features: int,
+    base_bandwidth: float,
+) -> list[float]:
+    """Create conservative ARD bandwidths from screening correlations."""
+    raw = [float(base_bandwidth)] * n_raw_features
+    if not screening:
+        return raw + [float(base_bandwidth)] * len(feature_names)
+    score_map = {str(item["feature"]): float(item["score"]) for item in screening.get("scores", [])}
+    scores = np.array([score_map.get(name, 0.0) for name in feature_names], dtype=float)
+    if np.max(scores) > np.min(scores):
+        normalized = (scores - np.min(scores)) / (np.max(scores) - np.min(scores))
+    else:
+        normalized = np.full(len(scores), 0.5, dtype=float)
+    # Informative features get narrower kernels; weak features get wider kernels.
+    physics = [
+        float(base_bandwidth * (ARD_FEATURE_SCALE_GRID[-1] - (ARD_FEATURE_SCALE_GRID[-1] - ARD_FEATURE_SCALE_GRID[0]) * value))
+        for value in normalized
+    ]
+    return raw + physics
+
+
 def matrices(rows: list[dict[str, str]]) -> tuple[np.ndarray, np.ndarray]:
     clean = [row for row in rows if all(row.get(target, "") not in {"", "nan", "NaN"} for target in TARGETS)]
     x_raw = np.array([featurize(row) for row in clean], dtype=float)
@@ -243,6 +331,28 @@ def core_normalized_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     return float(np.mean(np.mean(err, axis=0) / std))
 
 
+def uncertainty_calibration_summary(y_true: np.ndarray, y_pred: np.ndarray, uncertainty: np.ndarray) -> dict[str, object]:
+    out: dict[str, object] = {}
+    abs_corrs = []
+    for j, target in enumerate(TARGETS):
+        errors = np.abs(y_pred[:, j] - y_true[:, j])
+        unc = uncertainty[:, j]
+        corr = _safe_corr(errors, unc)
+        abs_corrs.append(abs(corr))
+        out[target] = {
+            "uncertainty_error_corr": corr,
+            "mean_abs_error": float(np.mean(errors)),
+            "mean_uncertainty": float(np.mean(unc)),
+            "uncertainty_to_error_ratio": float(np.mean(unc) / max(float(np.mean(errors)), 1e-12)),
+        }
+    mean_abs = float(np.mean(abs_corrs)) if abs_corrs else 0.0
+    out["summary"] = {
+        "mean_abs_uncertainty_error_corr": mean_abs,
+        "calibration_quality": "weak" if mean_abs < 0.25 else "moderate" if mean_abs < 0.5 else "strong",
+    }
+    return out
+
+
 def group_folds(rows: list[dict[str, str]], train_idx: np.ndarray, n_folds: int, seed: int) -> list[tuple[np.ndarray, np.ndarray]]:
     groups: dict[tuple[str, str, str], list[int]] = {}
     for idx in train_idx:
@@ -275,7 +385,7 @@ def select_physics_kernel(
     y: np.ndarray,
     train_idx: np.ndarray,
 ) -> dict[str, object]:
-    best: dict[str, object] = {"score": math.inf, "feature_set": "", "features": [], "bandwidth": 1.8}
+    best: dict[str, object] = {"score": math.inf, "feature_set": "", "features": [], "bandwidth": 1.8, "kernel": "scalar"}
     matrices_by_name = {
         name: feature_matrix(rows, x_raw, feature_names, include_raw=True)
         for name, feature_names in PHYSICS_FEATURE_SETS.items()
@@ -290,15 +400,56 @@ def select_physics_kernel(
                     pred, _ = model.predict(x[val])
                     scores.append(core_normalized_score(y[val], pred))
             score = float(np.mean(scores))
-            cv_rows.append({"feature_set": name, "bandwidth": bandwidth, "cv_core_score": score})
+            std = float(np.std(scores))
+            cv_rows.append({"feature_set": name, "kernel": "scalar", "bandwidth": bandwidth, "cv_core_score": score, "cv_core_std": std})
             if score < float(best["score"]):
                 best = {
                     "score": score,
                     "feature_set": name,
                     "features": PHYSICS_FEATURE_SETS[name],
                     "bandwidth": bandwidth,
+                    "bandwidth_vector": None,
+                    "kernel": "scalar",
                 }
+            feature_names = PHYSICS_FEATURE_SETS[name]
+            x_phys = feature_matrix(rows, x_raw, feature_names, include_raw=False)
+            screening = screen_feature_names(x_phys[train_idx], y[train_idx], feature_names)
+            screened_features = list(screening["selected_features"])
+            if screened_features:
+                x_screened = feature_matrix(rows, x_raw, screened_features, include_raw=True)
+                bandwidth_vector = ard_bandwidth_from_feature_scores(screened_features, screening, x_raw.shape[1], bandwidth)
+                ard_scores = []
+                for seed in CV_SEEDS:
+                    for inner_train, val in group_folds(rows, train_idx, n_folds=5, seed=seed):
+                        model = KernelRegressor.fit(x_screened[inner_train], y[inner_train], bandwidth=bandwidth_vector)
+                        pred, _ = model.predict(x_screened[val])
+                        ard_scores.append(core_normalized_score(y[val], pred))
+                ard_score = float(np.mean(ard_scores))
+                ard_std = float(np.std(ard_scores))
+                cv_rows.append({
+                    "feature_set": f"{name}_screened",
+                    "base_feature_set": name,
+                    "kernel": "ard",
+                    "bandwidth": bandwidth,
+                    "bandwidth_vector": bandwidth_vector,
+                    "cv_core_score": ard_score,
+                    "cv_core_std": ard_std,
+                    "screening": screening,
+                })
+                if ard_score < float(best["score"]):
+                    best = {
+                        "score": ard_score,
+                        "feature_set": f"{name}_screened",
+                        "base_feature_set": name,
+                        "features": screened_features,
+                        "bandwidth": bandwidth,
+                        "bandwidth_vector": bandwidth_vector,
+                        "kernel": "ard",
+                        "feature_screening": screening,
+                    }
     best["cv_grid"] = cv_rows
+    best["cv_repeats"] = len(CV_SEEDS)
+    best["cv_seeds"] = list(CV_SEEDS)
     return best
 
 
@@ -312,7 +463,7 @@ def fit_physics_kernel(
     y: np.ndarray,
     train_idx: np.ndarray,
     test_idx: np.ndarray,
-    bandwidth: float,
+    bandwidth: float | list[float],
 ) -> tuple[np.ndarray, np.ndarray]:
     model = KernelRegressor.fit(x_aug[train_idx], y[train_idx], bandwidth=bandwidth)
     return model.predict(x_aug[test_idx])
@@ -461,7 +612,11 @@ def train() -> Path:
     y_test = y[test_idx]
     selected = select_physics_kernel(rows, x_raw, y, train_idx)
     selected_features = list(selected["features"])
-    selected_bandwidth = float(selected["bandwidth"])
+    selected_bandwidth: float | list[float]
+    if selected.get("bandwidth_vector"):
+        selected_bandwidth = [float(value) for value in selected["bandwidth_vector"]]
+    else:
+        selected_bandwidth = float(selected["bandwidth"])
     x_phys = feature_matrix(rows, x_raw, PHYSICS_COMPACT_FEATURES, include_raw=False)
     x_aug = feature_matrix(rows, x_raw, selected_features, include_raw=True)
 
@@ -484,6 +639,7 @@ def train() -> Path:
         name: normalized_summary(model_metrics, TARGETS)
         for name, model_metrics in metrics.items()
     }
+    calibration = uncertainty_calibration_summary(y_test, physics_pred, physics_unc)
 
     summary = {
         "dataset": str(dataset_path.relative_to(ROOT)),
@@ -504,6 +660,7 @@ def train() -> Path:
             "physics_baseline_only",
         ],
         "metrics": metrics,
+        "uncertainty_calibration": calibration,
         "normalized_core": normalized_core,
         "normalized_all": normalized_all,
         "notes": [
@@ -522,6 +679,7 @@ def train() -> Path:
     }
     model_payload = {
         "model_type": "physics_informed_numpy_rbf_kernel_regressor",
+        "kernel": selected.get("kernel", "scalar"),
         "targets": TARGETS,
         "core_targets": CORE_TARGETS,
         "raw_features": RAW_FEATURES,
@@ -537,6 +695,9 @@ def train() -> Path:
         "metrics_same_split": metrics["physics_kernel"],
         "normalized_core_same_split": normalized_core["physics_kernel"],
         "selection": selected,
+        "feature_screening": selected.get("feature_screening"),
+        "cv_repeats": len(CV_SEEDS),
+        "uncertainty_calibration": calibration,
         "notes": [
             "Default PS inverse design and EIG model after physics-informed update.",
             "Features are raw annealing inputs plus selected TNM/ARRT-inspired path features.",

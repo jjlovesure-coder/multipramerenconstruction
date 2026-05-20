@@ -29,6 +29,55 @@ def _read_csv(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(f))
 
 
+def _series_temperature_k(row: dict[str, str]) -> float:
+    return float(row["series"].split()[0])
+
+
+def interpolate_by_temperature_log_time(
+    rows: Iterable[dict[str, str]],
+    temperature_k: float,
+    time_s: float,
+    value_key: str,
+) -> float:
+    """Bilinearly interpolate sparse paper data in T and log(time).
+
+    Digitized S*/H* supplementary data are measured on temperature series.
+    Nearest-neighbor matching creates discontinuities when a requested
+    annealing condition falls between series or between log-spaced times, so
+    the dataset builder uses this smoother interpolation when possible and
+    naturally falls back to edge interpolation at the boundary.
+    """
+    rows = list(rows)
+    if not rows:
+        raise ValueError("Cannot interpolate an empty row set")
+    target_temp = float(temperature_k)
+    target_log_time = float(np.log10(max(float(time_s), 1e-12)))
+    temps = sorted({_series_temperature_k(row) for row in rows})
+    lower_temps = [temp for temp in temps if temp <= target_temp]
+    upper_temps = [temp for temp in temps if temp >= target_temp]
+    temp_lo = lower_temps[-1] if lower_temps else temps[0]
+    temp_hi = upper_temps[0] if upper_temps else temps[-1]
+
+    def interp_time(temp: float) -> float:
+        candidates = sorted(
+            (float(np.log10(float(row["annealing_time_s"]))), float(row[value_key]))
+            for row in rows
+            if _series_temperature_k(row) == temp
+        )
+        if not candidates:
+            raise ValueError(f"No rows at {temp} K")
+        log_times = np.array([item[0] for item in candidates], dtype=float)
+        values = np.array([item[1] for item in candidates], dtype=float)
+        return float(np.interp(target_log_time, log_times, values))
+
+    value_lo = interp_time(temp_lo)
+    value_hi = interp_time(temp_hi)
+    if temp_hi == temp_lo:
+        return value_lo
+    weight = (target_temp - temp_lo) / (temp_hi - temp_lo)
+    return float(value_lo + weight * (value_hi - value_lo))
+
+
 def _nearest_by_log_time(rows: Iterable[dict[str, str]], temperature_k: float, time_s: float) -> dict[str, str]:
     rows = list(rows)
     available_temps = sorted({float(r["series"].split()[0]) for r in rows})
@@ -69,8 +118,8 @@ def build_dataset() -> Path:
         t2_s = float(row["t2_s"])
         delta_h = float(row["delta_h_kj_mol"])
 
-        s1 = float(_nearest_by_log_time(s7_rows, t1_temperature_k, t1_s)["s_star_j_mol_k"])
-        s2 = float(_nearest_by_log_time(s7_rows, t2_temperature_k, t2_s)["s_star_j_mol_k"])
+        s1 = interpolate_by_temperature_log_time(s7_rows, t1_temperature_k, t1_s, "s_star_j_mol_k")
+        s2 = interpolate_by_temperature_log_time(s7_rows, t2_temperature_k, t2_s, "s_star_j_mol_k")
         h1 = activation_enthalpy_from_entropy(t1_temperature_k, t1_s, s1)
         h2 = activation_enthalpy_from_entropy(t2_temperature_k, t2_s, s2)
         fig3_h1 = _nearest_fig3_h(fig3_h_rows, t1_s)

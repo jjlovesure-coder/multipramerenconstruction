@@ -24,7 +24,7 @@ from src.models.kernel_regression import KernelRegressor
 from src.physics.arrt import H_PLANCK, K_B, R
 from src.ps.dsc_processing import build_ps_dataset
 from src.ps.eig_design import (
-    TARGET_WEIGHTS,
+    DEFAULT_TARGET_WEIGHTS,
     candidate_table,
     eig_components,
     nearest_distance,
@@ -58,6 +58,23 @@ PAPER_NOISE_FLOORS = {
     "paper_delta_h_peak_J_g": 0.13,
     "paper_s_star_eff_J_mol_K": 5.0,
     "paper_h_star_eff_kJ_mol": 20.0,
+}
+
+CURRENT_WEIGHTS = {
+    **DEFAULT_TARGET_WEIGHTS,
+    "onset_temperature_C": 0.3,
+    "kovacs_peak_label": 0.0,
+}
+
+CURRENT_NOISE_FLOORS = {
+    "delta_h_total_J_g": 0.20,
+    "peak_area_J_g": 0.13,
+    "peak_temperature_Tp_C": 5.0,
+    "peak_height_uW": 50.0,
+    "onset_temperature_C": 5.0,
+    "recovery_index": 0.15,
+    "path_dependence_index": 0.20,
+    "kovacs_peak_label": 1.0,
 }
 
 
@@ -526,6 +543,124 @@ path_dependence_index
     DOC_PATH.write_text(text, encoding="utf-8")
 
 
+def write_report_clean(summary: dict, current_result: dict, paper_result: dict) -> None:
+    metric_rows = [["Target set", "Target", "MAE", "RMSE", "R2", "MAE/test std"]]
+    for label, result in [("Current PS targets", current_result), ("Paper-style targets", paper_result)]:
+        for target, value in result["metrics"].items():
+            std = value["target_std"]
+            ratio = value["mae"] / std if std > 0 else math.nan
+            metric_rows.append([
+                label,
+                target,
+                f"{value['mae']:.4g}",
+                f"{value['rmse']:.4g}",
+                f"{value['r2']:.3f}",
+                f"{ratio:.3f}",
+            ])
+
+    eig_rows = [["Target set", "Mean EIG", "P90", "P99", "Max"]]
+    for label, stats in [
+        ("Current PS targets", summary["current_eig_stats"]),
+        ("Paper-style targets", summary["paper_eig_stats"]),
+    ]:
+        eig_rows.append([label, f"{stats['mean']:.3f}", f"{stats['p90']:.3f}", f"{stats['p99']:.3f}", f"{stats['max']:.3f}"])
+
+    top_rows = [["Rank", "Current target top condition", "Paper-style top condition"]]
+    for idx in range(10):
+        cur = summary["current_top10"][idx]
+        pap = summary["paper_top10"][idx]
+        top_rows.append([
+            str(idx + 1),
+            f"{cur['T1_C']}C {cur['t1_s']}s -> {cur['T2_C']}C {cur['t2_s']}s",
+            f"{pap['T1_C']}C {pap['t1_s']}s -> {pap['T2_C']}C {pap['t2_s']}s",
+        ])
+
+    text = f"""# PS Current Targets vs Paper-Style Targets
+
+## 1. Purpose
+
+This report compares two target definitions on the same PS dataset:
+
+```text
+current targets = delta_h_total, peak_area, Tp, peak_height, onset,
+                  recovery_index, path_dependence_index, kovacs_peak_label
+paper-style targets = delta_h, delta_h_peak, S*, H*
+```
+
+The paper-style set is lower dimensional and closer to the original metallic-glass workflow. For PS, `S*` and `H*` are effective ARRT proxies inferred from the annealing timescale and DSC peak position, not independently measured material constants.
+
+## 2. Effective S* / H*
+
+For each condition the script solves the two-rate ARRT relation:
+
+```text
+k_ann  = 1 / total_anneal_time
+k_peak = beta / Tp
+ln(k) - ln(kB T / h) = S*/R - H*/(R T)
+```
+
+This makes `S* / H*` a compact kinetic coordinate for comparing annealing and heating-peak constraints.
+
+## 3. Prediction Metrics
+
+Dataset size: `{summary['n_samples']}`; train rows: `{summary['n_train']}`; test rows: `{summary['n_test']}`. Both target sets use the same input features, grouped split, and RBF bandwidth.
+
+{markdown_table(metric_rows)}
+
+Normalized metric summary:
+
+```json
+{json.dumps(summary['normalized_metric_summary'], indent=2)}
+```
+
+## 4. EIG Distribution
+
+{markdown_table(eig_rows)}
+
+![EIG distribution]({summary['figures']['eig_distribution']})
+
+Target-correlation summary:
+
+```json
+{json.dumps(summary['target_correlation_summary'], indent=2)}
+```
+
+![Current target correlation]({summary['figures']['current_target_correlation']})
+
+![Paper-style target correlation]({summary['figures']['paper_target_correlation']})
+
+## 5. Top EIG Conditions
+
+{markdown_table(top_rows)}
+
+## 6. Interpretation
+
+The current target set contains real redundancy: several DSC peak-shape descriptors describe overlapping response modes. The paper-style target set is more compact and raises the EIG contrast, but its `S* / H*` values are proxy variables inferred from `Tp` and total annealing time, so they should be used as physics-informed coordinates rather than ground-truth constants.
+
+Recommended hybrid target set for the next model:
+
+```text
+delta_h_total_J_g
+peak_area_J_g
+paper_s_star_eff_J_mol_K
+paper_h_star_eff_kJ_mol
+path_dependence_index
+```
+
+Keep `Tp / peak_height / onset / recovery_index` as diagnostics or derived outputs.
+
+## 7. Outputs
+
+- Summary: `results/ps/paper_style_comparison/summary.json`
+- Paper-style model: `results/ps/paper_style_comparison/paper_style_model.json`
+- Paper-style predictions: `results/ps/paper_style_comparison/paper_style_test_predictions.csv`
+- Current-target EIG ranking: `results/ps/paper_style_comparison/current_target_eig_ranking_top100.csv`
+- Paper-style EIG ranking: `results/ps/paper_style_comparison/paper_style_eig_ranking_top100.csv`
+- Figures: `results/ps/paper_style_comparison/figures/`
+"""
+    DOC_PATH.write_text(text, encoding="utf-8")
+
+
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     dataset_path = build_ps_dataset()
@@ -537,17 +672,8 @@ def main() -> None:
     current_ranking, current_eig_stats = eig_ranking(
         current,
         CURRENT_TARGETS,
-        TARGET_WEIGHTS,
-        {
-            "delta_h_total_J_g": 0.20,
-            "peak_area_J_g": 0.13,
-            "peak_temperature_Tp_C": 5.0,
-            "peak_height_uW": 50.0,
-            "onset_temperature_C": 5.0,
-            "recovery_index": 0.15,
-            "path_dependence_index": 0.20,
-            "kovacs_peak_label": 1.0,
-        },
+        CURRENT_WEIGHTS,
+        CURRENT_NOISE_FLOORS,
         candidates,
     )
     paper_ranking, paper_eig_stats = eig_ranking(
@@ -561,17 +687,8 @@ def main() -> None:
     current_eig_values = full_eig_values(
         current,
         CURRENT_TARGETS,
-        TARGET_WEIGHTS,
-        {
-            "delta_h_total_J_g": 0.20,
-            "peak_area_J_g": 0.13,
-            "peak_temperature_Tp_C": 5.0,
-            "peak_height_uW": 50.0,
-            "onset_temperature_C": 5.0,
-            "recovery_index": 0.15,
-            "path_dependence_index": 0.20,
-            "kovacs_peak_label": 1.0,
-        },
+        CURRENT_WEIGHTS,
+        CURRENT_NOISE_FLOORS,
         candidates,
     )
     paper_eig_values = full_eig_values(paper, PAPER_TARGETS, PAPER_WEIGHTS, PAPER_NOISE_FLOORS, candidates)
@@ -630,7 +747,7 @@ def main() -> None:
         },
     }
     (OUT_DIR / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
-    write_report(summary, current, paper)
+    write_report_clean(summary, current, paper)
     print(json.dumps(summary, indent=2))
 
 

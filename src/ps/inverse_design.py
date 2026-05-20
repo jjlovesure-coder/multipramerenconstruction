@@ -26,7 +26,7 @@ def load_model(path: Path = MODEL_PATH) -> KernelRegressor:
         y_train=np.array(data["y_train"], dtype=float),
         x_mean=np.array(data["x_mean"], dtype=float),
         x_std=np.array(data["x_std"], dtype=float),
-        bandwidth=float(data["bandwidth"]),
+        bandwidth=data["bandwidth"],
     )
 
 
@@ -94,14 +94,7 @@ def candidate_rows() -> list[dict[str, str]]:
     return rows
 
 
-def search(target: dict[str, float] | None = None, top_k: int = 10) -> Path:
-    target = target or {"recovery_index": 0.8}
-    payload = load_model_payload()
-    model = load_model()
-    candidates = candidate_rows()
-    x = candidate_feature_matrix(candidates, payload)
-    pred, unc = model.predict(x)
-
+def _target_loss(pred: np.ndarray, target: dict[str, float]) -> float:
     scale = {
         "delta_h_total_J_g": 10.0,
         "peak_area_J_g": 5.0,
@@ -110,28 +103,135 @@ def search(target: dict[str, float] | None = None, top_k: int = 10) -> Path:
         "recovery_index": 0.15,
         "path_dependence_index": 1.0,
     }
-    active = [TARGETS.index(name) for name in target]
-    losses = np.zeros(len(candidates))
+    loss = 0.0
     for name, value in target.items():
         idx = TARGETS.index(name)
-        losses += np.abs((pred[:, idx] - float(value)) / scale[name])
-    losses = losses / max(len(active), 1)
+        loss += abs((float(pred[idx]) - float(value)) / scale[name])
+    return loss / max(len(target), 1)
+
+
+def _row_from_vector(values: np.ndarray) -> dict[str, str]:
+    t1, log_t1, t2, log_t2 = values
+    t1_s = float(np.clip(10.0 ** log_t1, 10.0, 1800.0))
+    t2_s = float(np.clip(10.0 ** log_t2, 10.0, 1800.0))
+    return {
+        "mode": "two_step",
+        "T1_C": f"{float(np.clip(t1, 50.0, 100.0)):.6g}",
+        "t1_s": f"{t1_s:.6g}",
+        "T2_C": f"{float(np.clip(t2, 50.0, 100.0)):.6g}",
+        "t2_s": f"{t2_s:.6g}",
+        "total_anneal_time_s": f"{t1_s + t2_s:.6g}",
+    }
+
+
+def _vector_from_row(row: dict[str, str]) -> np.ndarray:
+    t2 = float(row["T2_C"]) if row.get("T2_C") not in {"", "nan", "NaN"} else float(row["T1_C"])
+    t2_s = float(row["t2_s"]) if row.get("t2_s") not in {"", "nan", "NaN"} else float(row["t1_s"])
+    return np.array([
+        float(row["T1_C"]),
+        np.log10(max(float(row["t1_s"]), 10.0)),
+        t2,
+        np.log10(max(t2_s, 10.0)),
+    ])
+
+
+def refine_candidate(
+    row: dict[str, str],
+    target: dict[str, float],
+    payload: dict,
+    model: KernelRegressor,
+) -> tuple[dict[str, str], bool]:
+    """Continuously refine a two-step grid candidate when scipy is available."""
+    try:
+        from scipy.optimize import minimize
+    except Exception:
+        return row, False
+
+    def objective(values: np.ndarray) -> float:
+        candidate = _row_from_vector(values)
+        pred, unc = model.predict(candidate_feature_matrix([candidate], payload))
+        total_time = float(candidate["total_anneal_time_s"])
+        return _target_loss(pred[0], target) + 0.05 * total_time / 1800.0 + 0.02 * float(np.mean(unc[0]))
+
+    start = _vector_from_row(row)
+    bounds = [(50.0, 100.0), (1.0, np.log10(1800.0)), (50.0, 100.0), (1.0, np.log10(1800.0))]
+    result = minimize(objective, start, method="Nelder-Mead", options={"maxiter": 120, "xatol": 1e-3, "fatol": 1e-3})
+    candidate = _row_from_vector(np.asarray(result.x, dtype=float))
+    if objective(start) <= objective(_vector_from_row(candidate)):
+        return row, True
+    return candidate, True
+
+
+def pareto_front(rows: list[dict]) -> list[dict]:
+    """Return non-dominated rows for loss/time/uncertainty/path-dependence."""
+    metrics = ("loss", "total_anneal_time_s", "mean_uncertainty", "abs_path_dependence")
+    front = []
+    for row in rows:
+        dominated = False
+        row_values = np.array([float(row[metric]) for metric in metrics], dtype=float)
+        for other in rows:
+            if other is row:
+                continue
+            other_values = np.array([float(other[metric]) for metric in metrics], dtype=float)
+            if np.all(other_values <= row_values) and np.any(other_values < row_values):
+                dominated = True
+                break
+        if not dominated:
+            front.append(row)
+    return front
+
+
+def search(target: dict[str, float] | None = None, top_k: int = 10) -> Path:
+    target = target or {"recovery_index": 0.8}
+    payload = load_model_payload()
+    model = load_model()
+    candidates = candidate_rows()
+    x = candidate_feature_matrix(candidates, payload)
+    pred, unc = model.predict(x)
+
+    losses = np.zeros(len(candidates))
+    for i in range(len(candidates)):
+        losses[i] = _target_loss(pred[i], target)
     total_time = np.array([float(row["total_anneal_time_s"]) for row in candidates])
     losses += 0.05 * total_time / 1800.0
 
-    order = np.argsort(losses)[:top_k]
+    order = np.argsort(losses)[:max(top_k * 3, top_k)]
     results = []
-    for rank, idx in enumerate(order, start=1):
+    scipy_used = False
+    for idx in order:
         row = dict(candidates[idx])
-        row["rank"] = rank
-        row["loss"] = float(losses[idx])
+        if row["mode"] == "two_step":
+            row, refined = refine_candidate(row, target, payload, model)
+            scipy_used = scipy_used or refined
+            row["refined_continuously"] = refined
+            pred_one, unc_one = model.predict(candidate_feature_matrix([row], payload))
+            row_loss = _target_loss(pred_one[0], target) + 0.05 * float(row["total_anneal_time_s"]) / 1800.0
+            pred_values = pred_one[0]
+            unc_values = unc_one[0]
+        else:
+            row["refined_continuously"] = False
+            row_loss = float(losses[idx])
+            pred_values = pred[idx]
+            unc_values = unc[idx]
+        row["loss"] = float(row_loss)
+        row["mean_uncertainty"] = float(np.mean(unc_values))
+        row["abs_path_dependence"] = float(abs(pred_values[TARGETS.index("path_dependence_index")]))
         for j, target_name in enumerate(TARGETS):
-            row[f"pred_{target_name}"] = float(pred[idx, j])
-            row[f"uncertainty_{target_name}"] = float(unc[idx, j])
+            row[f"pred_{target_name}"] = float(pred_values[j])
+            row[f"uncertainty_{target_name}"] = float(unc_values[j])
         results.append(row)
 
+    results = sorted(results, key=lambda item: float(item["loss"]))[:top_k]
+    for rank, row in enumerate(results, start=1):
+        row["rank"] = rank
+    front = pareto_front(results)
+    for row in front:
+        row["pareto_optimal"] = True
+    for row in results:
+        row.setdefault("pareto_optimal", False)
+
     output = OUT_DIR / "ps_inverse_design_top10.json"
-    output.write_text(json.dumps({"target": target, "results": results}, indent=2), encoding="utf-8")
+    output.write_text(json.dumps({"target": target, "results": results, "pareto_front": front, "continuous_refinement_used": scipy_used}, indent=2), encoding="utf-8")
     print(json.dumps({"target": target, "top_result": results[0], "output": str(output)}, indent=2))
     return output
 

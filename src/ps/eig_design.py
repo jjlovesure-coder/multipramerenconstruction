@@ -58,6 +58,49 @@ def load_model_payload(path: Path = MODEL_PATH) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _safe_corr(a: np.ndarray, b: np.ndarray) -> float:
+    if len(a) < 3 or np.std(a) <= 1e-12 or np.std(b) <= 1e-12:
+        return 0.0
+    value = float(np.corrcoef(a, b)[0, 1])
+    return value if np.isfinite(value) else 0.0
+
+
+def uncertainty_calibration(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    uncertainty: np.ndarray,
+    targets: list[str],
+) -> dict[str, object]:
+    """Summarize whether predicted uncertainty tracks held-out errors."""
+    out: dict[str, object] = {}
+    abs_corrs = []
+    for j, target in enumerate(targets):
+        errors = np.abs(y_pred[:, j] - y_true[:, j])
+        unc = uncertainty[:, j]
+        corr = _safe_corr(errors, unc)
+        abs_corrs.append(abs(corr))
+        out[target] = {
+            "uncertainty_error_corr": corr,
+            "mean_abs_error": float(np.mean(errors)),
+            "mean_uncertainty": float(np.mean(unc)),
+            "uncertainty_to_error_ratio": float(np.mean(unc) / max(np.mean(errors), 1e-12)),
+        }
+    mean_abs = float(np.mean(abs_corrs)) if abs_corrs else 0.0
+    out["summary"] = {
+        "mean_abs_uncertainty_error_corr": mean_abs,
+        "calibration_quality": "weak" if mean_abs < 0.25 else "moderate" if mean_abs < 0.5 else "strong",
+    }
+    return out
+
+
+def payload_calibration_quality(payload: dict) -> dict[str, object]:
+    calibration = payload.get("uncertainty_calibration") or payload.get("calibration") or {}
+    summary = calibration.get("summary", {}) if isinstance(calibration, dict) else {}
+    mean_abs = float(summary.get("mean_abs_uncertainty_error_corr", 0.0) or 0.0)
+    quality = str(summary.get("calibration_quality", "weak" if mean_abs < 0.25 else "moderate" if mean_abs < 0.5 else "strong"))
+    return {"mean_abs_uncertainty_error_corr": mean_abs, "calibration_quality": quality}
+
+
 def targets_from_payload(payload: dict) -> list[str]:
     return list(payload.get("targets", DEFAULT_TARGET_WEIGHTS))
 
@@ -261,6 +304,10 @@ def design_next_batch(
 ) -> dict:
     config = config or EigConfig()
     payload = load_model_payload()
+    calibration_quality = payload_calibration_quality(payload)
+    effective_novelty_weight = config.novelty_weight
+    if calibration_quality["calibration_quality"] == "weak":
+        effective_novelty_weight *= 1.75
     targets = targets_from_payload(payload)
     model = load_model()
     rows = candidate_table(mode_filter)
@@ -278,7 +325,7 @@ def design_next_batch(
     time_penalty = config.time_penalty_weight * total_time / 1800.0
     raw_score = (
         eig
-        + config.novelty_weight * known_distance
+        + effective_novelty_weight * known_distance
         + config.inverse_identifiability_weight * inverse_identifiability
         - time_penalty
     )
@@ -293,6 +340,8 @@ def design_next_batch(
         out["expected_information_gain"] = float(eig[idx])
         out["inverse_identifiability_score"] = float(inverse_identifiability[idx])
         out["nearest_existing_distance"] = float(known_distance[idx])
+        out["novelty_component"] = float(effective_novelty_weight * known_distance[idx])
+        out["inverse_identifiability_component"] = float(config.inverse_identifiability_weight * inverse_identifiability[idx])
         out["time_penalty"] = float(time_penalty[idx])
         for parameter, values in sensitivity_norms.items():
             out[f"sensitivity_{parameter}"] = float(values[idx])
@@ -319,6 +368,9 @@ def design_next_batch(
         "target_weights": {target: DEFAULT_TARGET_WEIGHTS[target] for target in targets},
         "noise_scales": {target: float(scales[i]) for i, target in enumerate(targets)},
         "config": config.__dict__,
+        "calibration": calibration_quality,
+        "effective_novelty_weight": effective_novelty_weight,
+        "score_formula": "EIG + novelty_component + inverse_identifiability_component - time_penalty - greedy redundancy penalty during batch selection.",
         "outputs": {
             "next_experiments": str(next_experiments_path.relative_to(ROOT)),
             "candidate_ranking": str(ranking_path.relative_to(ROOT)),
