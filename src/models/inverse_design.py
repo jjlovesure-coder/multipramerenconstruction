@@ -8,7 +8,8 @@ from typing import Iterable
 
 import numpy as np
 
-from src.models.dataset import _read_csv, _nearest_by_log_time, _nearest_fig3_h, S7, FIG3_H
+from src.models.dataset import FIG3_H, S7
+from src.models.dataset import _read_csv, interpolate_by_temperature_log_time, interpolate_fig3_by_log_time
 from src.models.kernel_regression import KernelRegressor
 from src.models.train_forward import FEATURES, TARGETS, MODEL_DIR
 from src.physics.arrt import activation_enthalpy_from_entropy
@@ -28,19 +29,19 @@ def load_model(path: Path | None = None) -> KernelRegressor:
         y_train=np.array(data["y_train"], dtype=float),
         x_mean=np.array(data["x_mean"], dtype=float),
         x_std=np.array(data["x_std"], dtype=float),
-        bandwidth=float(data["bandwidth"]),
+        bandwidth=data["bandwidth"],
     )
 
 
 def feature_row(t1_temperature_k: float, t1_s: float, t2_temperature_k: float, t2_s: float) -> list[float]:
     s7 = _read_csv(S7)
     fig3_h = _read_csv(FIG3_H)
-    s1 = float(_nearest_by_log_time(s7, t1_temperature_k, t1_s)["s_star_j_mol_k"])
-    s2 = float(_nearest_by_log_time(s7, t2_temperature_k, t2_s)["s_star_j_mol_k"])
+    s1 = interpolate_by_temperature_log_time(s7, t1_temperature_k, t1_s, "s_star_j_mol_k")
+    s2 = interpolate_by_temperature_log_time(s7, t2_temperature_k, t2_s, "s_star_j_mol_k")
     h1 = activation_enthalpy_from_entropy(t1_temperature_k, t1_s, s1)
     h2 = activation_enthalpy_from_entropy(t2_temperature_k, t2_s, s2)
-    h_fig3_1 = _nearest_fig3_h(fig3_h, t1_s)
-    h_fig3_2 = _nearest_fig3_h(fig3_h, t2_s)
+    h_fig3_1 = interpolate_fig3_by_log_time(fig3_h, t1_s)
+    h_fig3_2 = interpolate_fig3_by_log_time(fig3_h, t2_s)
     values = {
         "t1_temperature_k": t1_temperature_k,
         "t2_temperature_k": t2_temperature_k,
@@ -78,6 +79,8 @@ def candidate_grid() -> Iterable[tuple[float, float, float, float]]:
 
 
 def search(target: dict[str, float], top_k: int = 10) -> Path:
+    if not target:
+        raise ValueError("target must contain at least one objective")
     model = load_model()
     rows = []
     xs = []

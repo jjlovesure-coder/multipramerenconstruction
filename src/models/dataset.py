@@ -78,6 +78,21 @@ def interpolate_by_temperature_log_time(
     return float(value_lo + weight * (value_hi - value_lo))
 
 
+def interpolate_by_log_time(rows: Iterable[dict[str, str]], time_s: float, value_key: str) -> float:
+    """Interpolate one-dimensional digitized relationships in log(time)."""
+    rows = list(rows)
+    if not rows:
+        raise ValueError("Cannot interpolate an empty row set")
+    target_log_time = float(np.log10(max(float(time_s), 1e-12)))
+    candidates = sorted(
+        (float(np.log10(float(row["annealing_time_s"]))), float(row[value_key]))
+        for row in rows
+    )
+    log_times = np.array([item[0] for item in candidates], dtype=float)
+    values = np.array([item[1] for item in candidates], dtype=float)
+    return float(np.interp(target_log_time, log_times, values))
+
+
 def _nearest_by_log_time(rows: Iterable[dict[str, str]], temperature_k: float, time_s: float) -> dict[str, str]:
     rows = list(rows)
     available_temps = sorted({float(r["series"].split()[0]) for r in rows})
@@ -101,6 +116,14 @@ def _nearest_fig3_h(rows: Iterable[dict[str, str]], time_s: float) -> dict[str, 
     return min(rows, key=lambda r: abs(np.log10(float(r["annealing_time_s"]) / float(time_s))))
 
 
+def interpolate_fig3_by_log_time(rows: Iterable[dict[str, str]], time_s: float) -> dict[str, float]:
+    rows = list(rows)
+    return {
+        "h_star_kj_mol": interpolate_by_log_time(rows, time_s, "h_star_kj_mol"),
+        "tp_1000kps_k": interpolate_by_log_time(rows, time_s, "tp_1000kps_k"),
+    }
+
+
 def build_dataset() -> Path:
     """Create data/processed/annealing_dataset.csv."""
     PROCESSED.mkdir(parents=True, exist_ok=True)
@@ -122,8 +145,8 @@ def build_dataset() -> Path:
         s2 = interpolate_by_temperature_log_time(s7_rows, t2_temperature_k, t2_s, "s_star_j_mol_k")
         h1 = activation_enthalpy_from_entropy(t1_temperature_k, t1_s, s1)
         h2 = activation_enthalpy_from_entropy(t2_temperature_k, t2_s, s2)
-        fig3_h1 = _nearest_fig3_h(fig3_h_rows, t1_s)
-        fig3_h2 = _nearest_fig3_h(fig3_h_rows, t2_s)
+        fig3_h1 = interpolate_fig3_by_log_time(fig3_h_rows, t1_s)
+        fig3_h2 = interpolate_fig3_by_log_time(fig3_h_rows, t2_s)
         d1 = stretched_dose(t1_temperature_k, t1_s)
         d2 = stretched_dose(t2_temperature_k, t2_s)
         delta_h_peak = _nearest_s6(s6_rows, t1_temperature_k, delta_h)

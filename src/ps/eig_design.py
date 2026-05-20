@@ -49,6 +49,7 @@ class EigConfig:
     min_single_step: int = 4
     novelty_weight: float = 0.12
     inverse_identifiability_weight: float = 1.20
+    extrapolation_penalty_weight: float = 0.35
     time_penalty_weight: float = 0.03
     redundancy_weight: float = 0.55
     diversity_bandwidth: float = 1.0
@@ -222,6 +223,50 @@ def read_existing_conditions(path: Path = DATA_DIR / "ps_preexperiment_features.
         return {exact_condition_key(row) for row in csv.DictReader(f)}
 
 
+def read_existing_rows(path: Path = DATA_DIR / "ps_preexperiment_features.csv") -> list[dict[str, str]]:
+    if not path.exists():
+        return []
+    with path.open(encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f))
+
+
+def _row_parameter_vector(row: dict[str, str]) -> np.ndarray:
+    t1 = max(float(row.get("t1_s", 1.0) or 1.0), 1e-9)
+    t2_raw = row.get("t2_s", "")
+    t2 = max(float(t2_raw), 1e-9) if t2_raw not in {"", "nan", "NaN"} else t1
+    t1_c = float(row["T1_C"])
+    t2_c = float(row["T2_C"]) if row.get("T2_C") not in {"", "nan", "NaN"} else t1_c
+    return np.array([t1_c, t2_c, np.log10(t1), np.log10(t2)], dtype=float)
+
+
+def support_from_existing_rows(rows: list[dict[str, str]], quantile: float = 0.0) -> dict[str, object]:
+    vectors = np.array([_row_parameter_vector(row) for row in rows if row.get("mode") == "two_step"], dtype=float)
+    if len(vectors) == 0:
+        return {"lower": None, "upper": None, "quantile": quantile}
+    lower = np.quantile(vectors, quantile, axis=0)
+    upper = np.quantile(vectors, 1.0 - quantile, axis=0)
+    return {"lower": lower.tolist(), "upper": upper.tolist(), "quantile": quantile}
+
+
+def extrapolation_penalty(rows: list[dict[str, str]], support: dict[str, object]) -> np.ndarray:
+    lower_raw = support.get("lower")
+    upper_raw = support.get("upper")
+    if lower_raw is None or upper_raw is None:
+        return np.zeros(len(rows), dtype=float)
+    lower = np.array(lower_raw, dtype=float)
+    upper = np.array(upper_raw, dtype=float)
+    span = np.maximum(upper - lower, 1e-9)
+    penalties = np.zeros(len(rows), dtype=float)
+    for idx, row in enumerate(rows):
+        if row.get("mode") != "two_step":
+            continue
+        values = _row_parameter_vector(row)
+        below = np.maximum(lower - values, 0.0) / span
+        above = np.maximum(values - upper, 0.0) / span
+        penalties[idx] = float(np.linalg.norm(below + above))
+    return penalties
+
+
 def candidate_table(mode_filter: str | None = None) -> list[dict[str, str]]:
     existing = read_existing_conditions()
     rows = []
@@ -321,12 +366,15 @@ def design_next_batch(
     eig = components @ weights
     inverse_identifiability, sensitivity_norms = inverse_identifiability_scores(rows, payload, targets, scales)
     known_distance = nearest_distance(x_scaled, np.array(payload["x_train"], dtype=float))
+    support = support_from_existing_rows(read_existing_rows())
+    extra_penalty = extrapolation_penalty(rows, support)
     total_time = np.array([float(row["total_anneal_time_s"]) for row in rows], dtype=float)
     time_penalty = config.time_penalty_weight * total_time / 1800.0
     raw_score = (
         eig
         + effective_novelty_weight * known_distance
         + config.inverse_identifiability_weight * inverse_identifiability
+        - config.extrapolation_penalty_weight * extra_penalty
         - time_penalty
     )
 
@@ -342,6 +390,8 @@ def design_next_batch(
         out["nearest_existing_distance"] = float(known_distance[idx])
         out["novelty_component"] = float(effective_novelty_weight * known_distance[idx])
         out["inverse_identifiability_component"] = float(config.inverse_identifiability_weight * inverse_identifiability[idx])
+        out["extrapolation_penalty"] = float(extra_penalty[idx])
+        out["extrapolation_penalty_component"] = float(config.extrapolation_penalty_weight * extra_penalty[idx])
         out["time_penalty"] = float(time_penalty[idx])
         for parameter, values in sensitivity_norms.items():
             out[f"sensitivity_{parameter}"] = float(values[idx])
@@ -370,7 +420,9 @@ def design_next_batch(
         "config": config.__dict__,
         "calibration": calibration_quality,
         "effective_novelty_weight": effective_novelty_weight,
-        "score_formula": "EIG + novelty_component + inverse_identifiability_component - time_penalty - greedy redundancy penalty during batch selection.",
+        "candidate_space_policy": "Candidates outside the observed two-step T1/T2/log-time support receive an extrapolation penalty instead of a novelty reward alone.",
+        "observed_support": support,
+        "score_formula": "EIG + novelty_component + inverse_identifiability_component - extrapolation_penalty_component - time_penalty - greedy redundancy penalty during batch selection.",
         "outputs": {
             "next_experiments": str(next_experiments_path.relative_to(ROOT)),
             "candidate_ranking": str(ranking_path.relative_to(ROOT)),

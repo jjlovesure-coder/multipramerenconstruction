@@ -30,30 +30,28 @@ Dataset size: `105`; train rows: `99`; test rows: `6`. Both target sets use the 
 
 | Target set | Target | MAE | RMSE | R2 | MAE/test std |
 | --- | --- | --- | --- | --- | --- |
-| Current PS targets | delta_h_total_J_g | 0.1744 | 0.1945 | -0.175 | 0.972 |
-| Current PS targets | peak_area_J_g | 0.1252 | 0.139 | 0.063 | 0.872 |
-| Current PS targets | peak_temperature_Tp_C | 0.6305 | 0.7484 | -3.156 | 1.718 |
-| Current PS targets | peak_height_uW | 11.31 | 13.24 | 0.503 | 0.602 |
-| Current PS targets | onset_temperature_C | 0.00544 | 0.005776 | -0.019 | 0.951 |
-| Current PS targets | recovery_index | 0.2537 | 0.2695 | -0.842 | 1.278 |
-| Current PS targets | path_dependence_index | 0.1298 | 0.148 | -0.190 | 0.957 |
-| Current PS targets | kovacs_peak_label | 0 | 0 | nan | nan |
-| Paper-style targets | paper_delta_h_J_g | 0.1744 | 0.1945 | -0.175 | 0.972 |
-| Paper-style targets | paper_delta_h_peak_J_g | 0.1252 | 0.139 | 0.063 | 0.872 |
-| Paper-style targets | paper_s_star_eff_J_mol_K | 193.8 | 258.4 | -0.025 | 0.759 |
-| Paper-style targets | paper_h_star_eff_kJ_mol | 73.27 | 97.53 | -0.026 | 0.761 |
+| Current PS targets | delta_h_total_J_g | 0.1445 | 0.1719 | 0.082 | 0.805 |
+| Current PS targets | peak_area_J_g | 0.09277 | 0.1179 | 0.327 | 0.646 |
+| Current PS targets | peak_temperature_Tp_C | 0.4347 | 0.5966 | -1.641 | 1.184 |
+| Current PS targets | peak_height_uW | 7.192 | 9.099 | 0.765 | 0.383 |
+| Current PS targets | recovery_index | 0.1951 | 0.2158 | -0.181 | 0.982 |
+| Current PS targets | path_dependence_index | 0.09926 | 0.124 | 0.164 | 0.732 |
+| Paper-style targets | paper_delta_h_J_g | 0.1445 | 0.1719 | 0.082 | 0.805 |
+| Paper-style targets | paper_delta_h_peak_J_g | 0.09277 | 0.1179 | 0.327 | 0.646 |
+| Paper-style targets | paper_s_star_eff_J_mol_K | 246.3 | 329.8 | -0.669 | 0.965 |
+| Paper-style targets | paper_h_star_eff_kJ_mol | 92.98 | 124.5 | -0.671 | 0.966 |
 
 Normalized metric summary:
 
 ```json
 {
   "current_targets": {
-    "mean_mae_over_test_std": 1.0498236034988404,
-    "median_mae_over_test_std": 0.9570356374035932
+    "mean_mae_over_test_std": 0.7887167759073604,
+    "median_mae_over_test_std": 0.7685310101254524
   },
   "paper_style_targets": {
-    "mean_mae_over_test_std": 0.8409754436943516,
-    "median_mae_over_test_std": 0.8163879290936771
+    "mean_mae_over_test_std": 0.8453530127796917,
+    "median_mae_over_test_std": 0.8849677829733256
   }
 }
 ```
@@ -62,8 +60,8 @@ Normalized metric summary:
 
 | Target set | Mean EIG | P90 | P99 | Max |
 | --- | --- | --- | --- | --- |
-| Current PS targets | 1.200 | 1.359 | 1.444 | 1.486 |
-| Paper-style targets | 1.433 | 1.614 | 1.760 | 1.907 |
+| Current PS targets | 1.179 | 1.609 | 1.759 | 1.823 |
+| Paper-style targets | 1.221 | 1.589 | 1.726 | 1.834 |
 
 ![EIG distribution](E:\knowledgepaper\multipramereconstruction\results\ps\paper_style_comparison\figures\eig_distribution_current_vs_paper_style.png)
 
@@ -72,8 +70,8 @@ Target-correlation summary:
 ```json
 {
   "current_targets": {
-    "mean_abs_offdiag_corr": 0.4662412530474596,
-    "median_abs_offdiag_corr": 0.572555145384634,
+    "mean_abs_offdiag_corr": 0.6394515650887693,
+    "median_abs_offdiag_corr": 0.6570493379427871,
     "max_abs_offdiag_corr": 0.9524126803463178
   },
   "paper_style_targets": {
@@ -92,16 +90,16 @@ Target-correlation summary:
 
 | Rank | Current target top condition | Paper-style top condition |
 | --- | --- | --- |
-| 1 | 100C 100s -> 50C 100s | 100C 10s -> 100C 10s |
-| 2 | 100C 100s -> 50C 60s | 100C 30s -> 100C 10s |
-| 3 | 100C 100s -> 50C 30s | 100C 60s -> 100C 10s |
-| 4 | 100C 60s -> 50C 300s | 100C 10s -> 100C 30s |
-| 5 | 100C 100s -> 50C 300s | 100C 10s -> 100C 60s |
-| 6 | 100C 100s -> 50C 10s | 100C 30s -> 100C 30s |
-| 7 | 100C 60s -> 50C 600s | 100C 100s -> 100C 10s |
-| 8 | 100C 60s -> 50C 100s | 100C 10s -> 100C 100s |
-| 9 | 100C 30s -> 50C 600s | 100C 60s -> 100C 30s |
-| 10 | 100C 30s -> 50C 900s | 100C 30s -> 100C 60s |
+| 1 | 50C 900s -> 55C 900s | 100C 10s -> 50C 1800s |
+| 2 | 50C 1200s -> 55C 1200s | 100C 10s -> 50C 1200s |
+| 3 | 50C 900s -> 50C 900s | 100C 10s -> 50C 900s |
+| 4 | 50C 600s -> 50C 600s | 100C 10s -> 50C 600s |
+| 5 | 50C 1200s -> 50C 1200s | 95C 10s -> 50C 1800s |
+| 6 | 50C 1200s -> 55C 900s | 100C 30s -> 50C 1800s |
+| 7 | 50C 1200s -> 60C 1200s | 100C 1800s -> 50C 10s |
+| 8 | 50C 900s -> 55C 1200s | 100C 10s -> 55C 1800s |
+| 9 | 50C 600s -> 55C 600s | 95C 10s -> 50C 1200s |
+| 10 | 55C 600s -> 60C 600s | 100C 30s -> 50C 1200s |
 
 ## 6. Interpretation
 

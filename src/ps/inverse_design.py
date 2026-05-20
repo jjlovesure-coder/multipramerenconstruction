@@ -11,6 +11,8 @@ from src.models.kernel_regression import KernelRegressor
 from src.ps.physics_features import physics_feature_dict
 from src.ps.train_physics_informed_ps_model import PHYSICS_BETA_FEATURES
 from src.ps.train_physics_informed_ps_model import TARGETS
+from src.ps.train_ps_model import FEATURES as DEFAULT_RAW_FEATURES
+from src.ps.train_ps_model import featurize
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -34,32 +36,18 @@ def load_model_payload(path: Path = MODEL_PATH) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def raw_features(row: dict[str, str]) -> list[float]:
-    is_two = 1.0 if row["mode"] == "two_step" else 0.0
-    t1 = max(float(row["t1_s"]), 1e-9)
-    t2_raw = row.get("t2_s", "")
-    t2 = max(float(t2_raw), 1e-9) if t2_raw not in {"", "nan", "NaN"} else 1e-9
-    T1 = float(row["T1_C"])
-    T2 = float(row["T2_C"]) if row.get("T2_C") not in {"", "nan", "NaN"} else T1
-    total = max(float(row["total_anneal_time_s"]), 1e-9)
-    return [
-        is_two,
-        T1,
-        T2,
-        T2 - T1,
-        float(np.log10(t1)),
-        float(np.log10(t2)),
-        float(np.log10(total)),
-    ]
+def raw_features(row: dict[str, str], feature_names: list[str] | None = None) -> list[float]:
+    return featurize(row, feature_names or DEFAULT_RAW_FEATURES)
 
 
 def candidate_feature_matrix(rows: list[dict[str, str]], payload: dict | None = None) -> np.ndarray:
     payload = payload or (load_model_payload() if MODEL_PATH.exists() else {})
+    raw_feature_names = list(payload.get("raw_features", DEFAULT_RAW_FEATURES))
     physics_features = list(payload.get("physics_features", PHYSICS_BETA_FEATURES))
     matrix = []
     for row in rows:
         physics = physics_feature_dict(row)
-        matrix.append(raw_features(row) + [float(physics[name]) for name in physics_features])
+        matrix.append(raw_features(row, raw_feature_names) + [float(physics[name]) for name in physics_features])
     return np.array(matrix, dtype=float)
 
 

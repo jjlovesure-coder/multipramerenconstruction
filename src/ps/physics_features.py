@@ -106,9 +106,16 @@ def physics_feature_dict(row: dict[str, object]) -> dict[str, float]:
         "phys_inv_T2_K": 1.0 / T2,
         "phys_equivalent_T_K": equivalent_T,
         "phys_inv_equivalent_T_K": 1.0 / equivalent_T,
+        "phys_log_t1_s": math.log10(max(t1, 1e-9)),
+        "phys_log_t2_s": math.log10(max(t2, 1e-9)) if mode == "two_step" else 0.0,
+        "phys_log_t_ratio": math.log10(max(t2, 1e-9) / max(t1, 1e-9)) if mode == "two_step" else 0.0,
         "phys_log_total_time_s": math.log10(total),
         "phys_step_time_fraction_1": t1 / total,
         "phys_step_time_fraction_2": t2 / total,
+        "phys_time_asymmetry": abs(t1 - t2) / total if mode == "two_step" else 0.0,
+        "phys_delta_T_K": T2 - T1,
+        "phys_delta_T_times_log_ratio": (T2 - T1) * (math.log10(max(t2, 1e-9) / max(t1, 1e-9)) if mode == "two_step" else 0.0),
+        "phys_inv_T_diff": (1.0 / T1) - (1.0 / T2),
     }
 
     for energy in ENERGY_GRID_KJ_MOL:

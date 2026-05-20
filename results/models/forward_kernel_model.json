@@ -10227,17 +10227,17 @@
   "dataset": "data\\processed\\annealing_dataset.csv",
   "n_samples": 390,
   "metrics": {
-    "loo_mae_delta_h_kj_mol": 0.03772846467946561,
-    "loo_mae_delta_h_peak_kj_mol": 0.007899197712093447,
+    "loo_mae_delta_h_kj_mol": 0.0377284646794656,
+    "loo_mae_delta_h_peak_kj_mol": 0.007899197712093449,
     "loo_mae_s2_j_mol_k": 4.931424252602266,
-    "loo_mae_delta_s_j_mol_k": 5.9435676803335795,
+    "loo_mae_delta_s_j_mol_k": 5.943567680333579,
     "loo_mae_memory_effect_label": 0.0900266374631706
   },
   "baseline_metrics_without_fig3_h_tp": {
-    "loo_mae_delta_h_kj_mol": 0.03827075328240991,
+    "loo_mae_delta_h_kj_mol": 0.038270753282409906,
     "loo_mae_delta_h_peak_kj_mol": 0.008014603330701094,
     "loo_mae_s2_j_mol_k": 5.465145448172295,
-    "loo_mae_delta_s_j_mol_k": 7.367412480211413,
+    "loo_mae_delta_s_j_mol_k": 7.367412480211415,
     "loo_mae_memory_effect_label": 0.10851081153018287
   },
   "notes": [

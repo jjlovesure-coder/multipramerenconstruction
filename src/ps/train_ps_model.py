@@ -29,6 +29,13 @@ FEATURES = [
     "log_t1_s",
     "log_t2_s",
     "log_total_time_s",
+    "T1_logt1",
+    "T2_logt2",
+    "delta_T_log_time_ratio",
+    "inv_T1_inv_T2_product",
+    "inv_T_diff",
+    "log_t_ratio",
+    "step_time_asymmetry",
 ]
 
 TARGETS = [
@@ -36,10 +43,8 @@ TARGETS = [
     "peak_area_J_g",
     "peak_temperature_Tp_C",
     "peak_height_uW",
-    "onset_temperature_C",
     "recovery_index",
     "path_dependence_index",
-    "kovacs_peak_label",
 ]
 
 
@@ -48,7 +53,7 @@ def read_rows(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(f))
 
 
-def featurize(row: dict[str, str]) -> list[float]:
+def feature_values(row: dict[str, str]) -> dict[str, float]:
     is_two = 1.0 if row["mode"] == "two_step" else 0.0
     t1 = max(float(row["t1_s"]), 1e-9)
     t2_raw = row.get("t2_s", "")
@@ -56,16 +61,34 @@ def featurize(row: dict[str, str]) -> list[float]:
     T1 = float(row["T1_C"])
     T2 = float(row["T2_C"]) if row.get("T2_C") not in {"", "nan", "NaN"} else T1
     total = max(float(row["total_anneal_time_s"]), 1e-9)
-    values = {
+    log_t1 = float(np.log10(t1))
+    log_t2 = float(np.log10(t2))
+    log_total = float(np.log10(total))
+    T1_K = T1 + 273.15
+    T2_K = T2 + 273.15
+    log_t_ratio = float(np.log10(t2 / max(t1, 1e-9)))
+    return {
         "is_two_step": is_two,
         "T1_C": T1,
         "T2_C_filled": T2,
         "delta_T_C": T2 - T1,
-        "log_t1_s": np.log10(t1),
-        "log_t2_s": np.log10(t2),
-        "log_total_time_s": np.log10(total),
+        "log_t1_s": log_t1,
+        "log_t2_s": log_t2,
+        "log_total_time_s": log_total,
+        "T1_logt1": T1 * log_t1,
+        "T2_logt2": T2 * log_t2,
+        "delta_T_log_time_ratio": (T2 - T1) * log_t_ratio,
+        "inv_T1_inv_T2_product": (1.0 / T1_K) * (1.0 / T2_K),
+        "inv_T_diff": (1.0 / T1_K) - (1.0 / T2_K),
+        "log_t_ratio": log_t_ratio,
+        "step_time_asymmetry": abs(t1 - t2) / total,
     }
-    return [float(values[name]) for name in FEATURES]
+
+
+def featurize(row: dict[str, str], features: list[str] | None = None) -> list[float]:
+    values = feature_values(row)
+    features = features or FEATURES
+    return [float(values[name]) for name in features]
 
 
 def matrices(rows: list[dict[str, str]]) -> tuple[np.ndarray, np.ndarray]:

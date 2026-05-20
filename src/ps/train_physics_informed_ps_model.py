@@ -45,9 +45,15 @@ PHYSICS_COMPACT_FEATURES = [
     "phys_inv_T1_K",
     "phys_inv_T2_K",
     "phys_inv_equivalent_T_K",
+    "phys_log_t1_s",
+    "phys_log_t2_s",
+    "phys_log_t_ratio",
     "phys_log_total_time_s",
     "phys_step_time_fraction_1",
     "phys_step_time_fraction_2",
+    "phys_time_asymmetry",
+    "phys_delta_T_times_log_ratio",
+    "phys_inv_T_diff",
     "tnm_state_total_e120_b050",
     "tnm_state_total_e160_b050",
     "tnm_state_total_e200_b050",
@@ -109,6 +115,14 @@ PHYSICS_ARRT_SEQUENTIAL_FEATURES = [
 ]
 
 PHYSICS_ARRT_IDENTIFIABILITY_FEATURES = [
+    "phys_log_t1_s",
+    "phys_log_t2_s",
+    "phys_log_t_ratio",
+    "phys_step_time_fraction_1",
+    "phys_step_time_fraction_2",
+    "phys_time_asymmetry",
+    "phys_delta_T_times_log_ratio",
+    "phys_inv_T_diff",
     "arrt_state_step1_hs70_b035",
     "arrt_state_total_hs70_b035",
     "arrt_step1_fraction_of_total_hs70_b035",
@@ -323,6 +337,31 @@ def normalized_summary(metrics: dict[str, dict[str, float]], targets: list[str])
     }
 
 
+def summarize_cv_scores(scores: list[float], seeds: list[int] | tuple[int, ...], n_folds: int) -> dict[str, object]:
+    values = np.array(scores, dtype=float)
+    if len(values) == 0:
+        return {
+            "n_scores": 0,
+            "mean": math.nan,
+            "std": math.nan,
+            "median": math.nan,
+            "p10": math.nan,
+            "p90": math.nan,
+            "seeds": list(seeds),
+            "n_folds": n_folds,
+        }
+    return {
+        "n_scores": int(len(values)),
+        "mean": float(np.mean(values)),
+        "std": float(np.std(values)),
+        "median": float(np.median(values)),
+        "p10": float(np.percentile(values, 10)),
+        "p90": float(np.percentile(values, 90)),
+        "seeds": list(seeds),
+        "n_folds": n_folds,
+    }
+
+
 def core_normalized_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     indices = [TARGETS.index(target) for target in CORE_TARGETS]
     err = np.abs(y_pred[:, indices] - y_true[:, indices])
@@ -399,9 +438,16 @@ def select_physics_kernel(
                     model = KernelRegressor.fit(x[inner_train], y[inner_train], bandwidth=bandwidth)
                     pred, _ = model.predict(x[val])
                     scores.append(core_normalized_score(y[val], pred))
-            score = float(np.mean(scores))
-            std = float(np.std(scores))
-            cv_rows.append({"feature_set": name, "kernel": "scalar", "bandwidth": bandwidth, "cv_core_score": score, "cv_core_std": std})
+            cv_summary = summarize_cv_scores(scores, CV_SEEDS, n_folds=5)
+            score = float(cv_summary["mean"])
+            cv_rows.append({
+                "feature_set": name,
+                "kernel": "scalar",
+                "bandwidth": bandwidth,
+                "cv_core_score": score,
+                "cv_core_std": float(cv_summary["std"]),
+                "cv_summary": cv_summary,
+            })
             if score < float(best["score"]):
                 best = {
                     "score": score,
@@ -424,8 +470,8 @@ def select_physics_kernel(
                         model = KernelRegressor.fit(x_screened[inner_train], y[inner_train], bandwidth=bandwidth_vector)
                         pred, _ = model.predict(x_screened[val])
                         ard_scores.append(core_normalized_score(y[val], pred))
-                ard_score = float(np.mean(ard_scores))
-                ard_std = float(np.std(ard_scores))
+                ard_cv_summary = summarize_cv_scores(ard_scores, CV_SEEDS, n_folds=5)
+                ard_score = float(ard_cv_summary["mean"])
                 cv_rows.append({
                     "feature_set": f"{name}_screened",
                     "base_feature_set": name,
@@ -433,7 +479,8 @@ def select_physics_kernel(
                     "bandwidth": bandwidth,
                     "bandwidth_vector": bandwidth_vector,
                     "cv_core_score": ard_score,
-                    "cv_core_std": ard_std,
+                    "cv_core_std": float(ard_cv_summary["std"]),
+                    "cv_summary": ard_cv_summary,
                     "screening": screening,
                 })
                 if ard_score < float(best["score"]):
@@ -450,6 +497,10 @@ def select_physics_kernel(
     best["cv_grid"] = cv_rows
     best["cv_repeats"] = len(CV_SEEDS)
     best["cv_seeds"] = list(CV_SEEDS)
+    best["selected_cv_summary"] = next(
+        (row.get("cv_summary") for row in cv_rows if row["feature_set"] == best["feature_set"] and row["bandwidth"] == best["bandwidth"]),
+        None,
+    )
     return best
 
 
