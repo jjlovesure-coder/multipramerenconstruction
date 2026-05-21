@@ -1,0 +1,149 @@
+{
+  "model_type": "two_stage_process_auxiliary_kernel_regressor",
+  "targets": [
+    "delta_h_total_J_g",
+    "peak_area_J_g",
+    "recovery_index",
+    "path_dependence_index",
+    "peak_temperature_Tp_C",
+    "peak_height_uW"
+  ],
+  "raw_features": [
+    "is_two_step",
+    "T1_C",
+    "T2_C_filled",
+    "delta_T_C",
+    "log_t1_s",
+    "log_t2_s",
+    "log_total_time_s",
+    "T1_logt1",
+    "T2_logt2",
+    "delta_T_log_time_ratio",
+    "inv_T1_inv_T2_product",
+    "inv_T_diff",
+    "log_t_ratio",
+    "step_time_asymmetry"
+  ],
+  "physics_features": [
+    "tnm_state_total_e460_b035",
+    "tnm_state_total_e460_b065",
+    "tnm_path_excess_e460_b035",
+    "tnm_path_excess_e540_b050"
+  ],
+  "process_auxiliary_features": [
+    "process_total_integral_uW_min",
+    "process_total_abs_integral_uW_min",
+    "process_total_mean_uW",
+    "process_total_std_uW",
+    "process_hold_integral_uW_min",
+    "process_hold_abs_integral_uW_min",
+    "process_cooling_integral_uW_min",
+    "process_cooling_abs_integral_uW_min",
+    "process_between_step_heating_integral_uW_min",
+    "process_step1_hold_mean_uW",
+    "process_step1_hold_slope_uW_min",
+    "process_step1_hold_delta_uW",
+    "process_step2_hold_mean_uW",
+    "process_step2_hold_slope_uW_min",
+    "process_step2_hold_delta_uW",
+    "process_final_cooling_mean_uW",
+    "process_final_cooling_slope_uW_min",
+    "process_pre_scan_start_dsc_uW",
+    "process_pre_scan_end_dsc_uW",
+    "process_pre_scan_dsc_shift_uW"
+  ],
+  "policy": "Measured annealing/cooling process summaries are auxiliary labels only. Test predictions use process summaries predicted from annealing parameters, not measured test-cycle process data.",
+  "dataset": "data\\ps\\ps_preexperiment_features.csv",
+  "metrics_same_split": {
+    "process_auxiliary_kernel": {
+      "delta_h_total_J_g": {
+        "mae": 0.14134941468301707,
+        "rmse": 0.1770169609741655,
+        "r2": 0.02674421296535512,
+        "target_std": 0.17943261362861795
+      },
+      "peak_area_J_g": {
+        "mae": 0.0926523692980074,
+        "rmse": 0.12557517509195587,
+        "r2": 0.2355962126227925,
+        "target_std": 0.1436290795464113
+      },
+      "recovery_index": {
+        "mae": 0.18518990164925256,
+        "rmse": 0.21689004887109034,
+        "r2": -0.19278461639890976,
+        "target_std": 0.19859056525891283
+      },
+      "path_dependence_index": {
+        "mae": 0.10657669913595547,
+        "rmse": 0.13480473445770266,
+        "r2": 0.011894414312347501,
+        "target_std": 0.13561366969300728
+      },
+      "peak_temperature_Tp_C": {
+        "mae": 0.505094096325017,
+        "rmse": 0.6324863416763278,
+        "r2": -1.9683069201428838,
+        "target_std": 0.36711045178788054
+      },
+      "peak_height_uW": {
+        "mae": 8.611127320860495,
+        "rmse": 10.940817302833485,
+        "r2": 0.6605541075436561,
+        "target_std": 18.778655167734986
+      }
+    },
+    "physics_process_auxiliary_kernel": {
+      "delta_h_total_J_g": {
+        "mae": 0.1393839024112729,
+        "rmse": 0.18125364601520855,
+        "r2": -0.020400673324697083,
+        "target_std": 0.17943261362861795
+      },
+      "peak_area_J_g": {
+        "mae": 0.09753238285174388,
+        "rmse": 0.13306638220562753,
+        "r2": 0.14167463987376094,
+        "target_std": 0.1436290795464113
+      },
+      "recovery_index": {
+        "mae": 0.19842916940465657,
+        "rmse": 0.22150854545436108,
+        "r2": -0.24412422527096234,
+        "target_std": 0.19859056525891283
+      },
+      "path_dependence_index": {
+        "mae": 0.0747007235743793,
+        "rmse": 0.10313210110917252,
+        "r2": 0.4216632431679923,
+        "target_std": 0.13561366969300728
+      },
+      "peak_temperature_Tp_C": {
+        "mae": 0.45405080184392216,
+        "rmse": 0.6056931596365929,
+        "r2": -1.7221486642583872,
+        "target_std": 0.36711045178788054
+      },
+      "peak_height_uW": {
+        "mae": 7.795835873774308,
+        "rmse": 11.12961113276931,
+        "r2": 0.6487381319156236,
+        "target_std": 18.778655167734986
+      }
+    }
+  },
+  "normalized_core_same_split": {
+    "process_auxiliary_kernel": {
+      "mean_mae_over_test_std": 0.7878110720182327,
+      "median_mae_over_test_std": 0.7868211436434421
+    },
+    "physics_process_auxiliary_kernel": {
+      "mean_mae_over_test_std": 0.7514707558414883,
+      "median_mae_over_test_std": 0.7279304835733089
+    }
+  },
+  "notes": [
+    "This file documents the auxiliary-supervision experiment.",
+    "It is not the default inverse/EIG deployment model until a dedicated candidate-time process predictor is validated."
+  ]
+}

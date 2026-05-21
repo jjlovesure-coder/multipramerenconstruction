@@ -162,19 +162,37 @@ def calculate_group_results(rows: list[dict[str, object]]) -> tuple[list[dict[st
             diagnostic["reason"] = "not enough valid Tp values"
             continue
         result = activation_from_peak_rates(points)
+        mean_delta_h = float(np_mean([v.get("delta_h_total_J_g") for v in values]))
+        mean_peak_area = float(np_mean([v.get("peak_area_J_g") for v in values]))
+        mean_recovery = float(np_mean([v.get("recovery_index") for v in values]))
+        total_time = float(np_mean([v.get("total_anneal_time_s") for v in values]))
+        r2 = float(result.r2)
         calculated.append(
             {
                 **diagnostic,
+                "total_anneal_time_s": total_time,
+                "mean_delta_h_total_J_g": mean_delta_h,
+                "mean_peak_area_J_g": mean_peak_area,
+                "mean_recovery_index": mean_recovery,
                 "activation_energy_E_kj_mol": result.activation_energy_kj_mol,
                 "activation_enthalpy_H_star_kj_mol": result.activation_enthalpy_kj_mol,
                 "activation_entropy_S_star_j_mol_K": result.activation_entropy_j_mol_k,
                 "mean_peak_temperature_Tp_K": result.mean_peak_temperature_k,
                 "kissinger_slope": result.slope,
                 "kissinger_intercept": result.intercept,
-                "kissinger_r2": result.r2,
+                "kissinger_r2": r2,
+                "kissinger_confidence": "high" if r2 >= 0.95 else "low",
             }
         )
     return calculated, diagnostics
+
+
+def np_mean(values: list[object]) -> float:
+    finite_values = []
+    for value in values:
+        if finite(value):
+            finite_values.append(float(value))
+    return sum(finite_values) / len(finite_values) if finite_values else math.nan
 
 
 def write_csv(path: Path, rows: list[dict[str, object]]) -> None:

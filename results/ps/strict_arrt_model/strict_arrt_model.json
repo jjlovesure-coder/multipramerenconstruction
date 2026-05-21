@@ -1,0 +1,490 @@
+{
+  "status": "trained",
+  "model_type": "strict_arrt_numpy_rbf_kernel_regressor",
+  "targets": [
+    "activation_enthalpy_H_star_kj_mol",
+    "activation_entropy_S_star_j_mol_K"
+  ],
+  "features": "src.ps.train_ps_model.FEATURES",
+  "bandwidth": 1.2,
+  "n_samples": 6,
+  "n_low_confidence": 1,
+  "n_high_confidence": 5,
+  "evaluation_policy": "leave-one-condition-out CV because strict ARRT labels are condition-level small samples",
+  "metrics": {
+    "activation_enthalpy_H_star_kj_mol": {
+      "mae": 75.03337847006976,
+      "rmse": 83.39242858530477,
+      "r2": -1.3047347424938063
+    },
+    "activation_entropy_S_star_j_mol_K": {
+      "mae": 200.79491821695308,
+      "rmse": 223.18687062277672,
+      "r2": -1.291168682098589
+    }
+  },
+  "loocv": {
+    "n_samples": 6,
+    "targets": [
+      "activation_enthalpy_H_star_kj_mol",
+      "activation_entropy_S_star_j_mol_K"
+    ],
+    "metrics": {
+      "activation_enthalpy_H_star_kj_mol": {
+        "mae": 75.03337847006976,
+        "rmse": 83.39242858530477,
+        "r2": -1.3047347424938063
+      },
+      "activation_entropy_S_star_j_mol_K": {
+        "mae": 200.79491821695308,
+        "rmse": 223.18687062277672,
+        "r2": -1.291168682098589
+      }
+    },
+    "predictions": [
+      {
+        "condition_key": "single_step|70|300||",
+        "mode": "single_step",
+        "T1_C": "70",
+        "t1_s": "300",
+        "T2_C": "",
+        "t2_s": "",
+        "kissinger_r2": 0.9855576761617019,
+        "kissinger_confidence": "high",
+        "actual_activation_enthalpy_H_star_kj_mol": 427.25184355786695,
+        "pred_activation_enthalpy_H_star_kj_mol": 532.3738674591433,
+        "error_activation_enthalpy_H_star_kj_mol": 105.12202390127635,
+        "uncertainty_activation_enthalpy_H_star_kj_mol": 25.27636289280041,
+        "actual_activation_entropy_S_star_j_mol_K": 910.2131890320542,
+        "pred_activation_entropy_S_star_j_mol_K": 1191.5178725246744,
+        "error_activation_entropy_S_star_j_mol_K": 281.30468349262026,
+        "uncertainty_activation_entropy_S_star_j_mol_K": 67.21737105167252
+      },
+      {
+        "condition_key": "single_step|90|100||",
+        "mode": "single_step",
+        "T1_C": "90",
+        "t1_s": "100",
+        "T2_C": "",
+        "t2_s": "",
+        "kissinger_r2": 0.9924989269092245,
+        "kissinger_confidence": "high",
+        "actual_activation_enthalpy_H_star_kj_mol": 540.6682955354911,
+        "pred_activation_enthalpy_H_star_kj_mol": 454.2187392387802,
+        "error_activation_enthalpy_H_star_kj_mol": -86.44955629671091,
+        "uncertainty_activation_enthalpy_H_star_kj_mol": 5.682730208867413,
+        "actual_activation_entropy_S_star_j_mol_K": 1213.5745978534464,
+        "pred_activation_entropy_S_star_j_mol_K": 983.6088889688424,
+        "error_activation_entropy_S_star_j_mol_K": -229.96570888460406,
+        "uncertainty_activation_entropy_S_star_j_mol_K": 15.466522499100476
+      },
+      {
+        "condition_key": "single_step|95|100.02||",
+        "mode": "single_step",
+        "T1_C": "95",
+        "t1_s": "100.02",
+        "T2_C": "",
+        "t2_s": "",
+        "kissinger_r2": 0.988900164864611,
+        "kissinger_confidence": "high",
+        "actual_activation_enthalpy_H_star_kj_mol": 455.4153145851741,
+        "pred_activation_enthalpy_H_star_kj_mol": 540.2008278429778,
+        "error_activation_enthalpy_H_star_kj_mol": 84.7855132578037,
+        "uncertainty_activation_enthalpy_H_star_kj_mol": 7.266481798188213,
+        "actual_activation_entropy_S_star_j_mol_K": 986.8656138214928,
+        "pred_activation_entropy_S_star_j_mol_K": 1212.324239267372,
+        "error_activation_entropy_S_star_j_mol_K": 225.45862544587908,
+        "uncertainty_activation_entropy_S_star_j_mol_K": 19.43608215380771
+      },
+      {
+        "condition_key": "two_step|50|10|100|1800",
+        "mode": "two_step",
+        "T1_C": "50",
+        "t1_s": "10",
+        "T2_C": "100",
+        "t2_s": "1800",
+        "kissinger_r2": 0.9930591716759654,
+        "kissinger_confidence": "high",
+        "actual_activation_enthalpy_H_star_kj_mol": 464.080702165651,
+        "pred_activation_enthalpy_H_star_kj_mol": 499.4276064658798,
+        "error_activation_enthalpy_H_star_kj_mol": 35.3469043002288,
+        "uncertainty_activation_enthalpy_H_star_kj_mol": 48.230953574819246,
+        "actual_activation_entropy_S_star_j_mol_K": 1009.1671352867368,
+        "pred_activation_entropy_S_star_j_mol_K": 1103.9680042913362,
+        "error_activation_entropy_S_star_j_mol_K": 94.80086900459946,
+        "uncertainty_activation_entropy_S_star_j_mol_K": 129.96105121337052
+      },
+      {
+        "condition_key": "two_step|50|10|80|1800",
+        "mode": "two_step",
+        "T1_C": "50",
+        "t1_s": "10",
+        "T2_C": "80",
+        "t2_s": "1800",
+        "kissinger_r2": 0.9418301279391021,
+        "kissinger_confidence": "low",
+        "actual_activation_enthalpy_H_star_kj_mol": 587.2107401307184,
+        "pred_activation_enthalpy_H_star_kj_mol": 467.1048536936656,
+        "error_activation_enthalpy_H_star_kj_mol": -120.10588643705279,
+        "uncertainty_activation_enthalpy_H_star_kj_mol": 4.204613642944096,
+        "actual_activation_entropy_S_star_j_mol_K": 1340.5046877972368,
+        "pred_activation_entropy_S_star_j_mol_K": 1017.1643246150268,
+        "error_activation_entropy_S_star_j_mol_K": -323.34036318221,
+        "uncertainty_activation_entropy_S_star_j_mol_K": 11.11933748775482
+      },
+      {
+        "condition_key": "two_step|65|10|100|1200",
+        "mode": "two_step",
+        "T1_C": "65",
+        "t1_s": "10",
+        "T2_C": "100",
+        "t2_s": "1200",
+        "kissinger_r2": 0.9932904005675028,
+        "kissinger_confidence": "high",
+        "actual_activation_enthalpy_H_star_kj_mol": 472.92829617146856,
+        "pred_activation_enthalpy_H_star_kj_mol": 491.31868279881456,
+        "error_activation_enthalpy_H_star_kj_mol": 18.390386627346004,
+        "uncertainty_activation_enthalpy_H_star_kj_mol": 51.10691627709629,
+        "actual_activation_entropy_S_star_j_mol_K": 1032.564089767893,
+        "pred_activation_entropy_S_star_j_mol_K": 1082.4633490596984,
+        "error_activation_entropy_S_star_j_mol_K": 49.89925929180549,
+        "uncertainty_activation_entropy_S_star_j_mol_K": 137.5264698128351
+      }
+    ]
+  },
+  "high_confidence_only_loocv": {
+    "n_samples": 5,
+    "targets": [
+      "activation_enthalpy_H_star_kj_mol",
+      "activation_entropy_S_star_j_mol_K"
+    ],
+    "metrics": {
+      "activation_enthalpy_H_star_kj_mol": {
+        "mae": 57.30427299454085,
+        "rmse": 69.77391878628114,
+        "r2": -2.4496648006067034
+      },
+      "activation_entropy_S_star_j_mol_K": {
+        "mae": 152.67448420655938,
+        "rmse": 186.0150437918979,
+        "r2": -2.436206962818627
+      }
+    },
+    "predictions": [
+      {
+        "condition_key": "single_step|70|300||",
+        "mode": "single_step",
+        "T1_C": "70",
+        "t1_s": "300",
+        "T2_C": "",
+        "t2_s": "",
+        "kissinger_r2": 0.9855576761617019,
+        "kissinger_confidence": "high",
+        "actual_activation_enthalpy_H_star_kj_mol": 427.25184355786695,
+        "pred_activation_enthalpy_H_star_kj_mol": 524.8460564862567,
+        "error_activation_enthalpy_H_star_kj_mol": 97.59421292838971,
+        "uncertainty_activation_enthalpy_H_star_kj_mol": 31.181431628459336,
+        "actual_activation_entropy_S_star_j_mol_K": 910.2131890320542,
+        "pred_activation_entropy_S_star_j_mol_K": 1171.3890921417608,
+        "error_activation_entropy_S_star_j_mol_K": 261.1759031097066,
+        "uncertainty_activation_entropy_S_star_j_mol_K": 83.11733313619715
+      },
+      {
+        "condition_key": "single_step|90|100||",
+        "mode": "single_step",
+        "T1_C": "90",
+        "t1_s": "100",
+        "T2_C": "",
+        "t2_s": "",
+        "kissinger_r2": 0.9924989269092245,
+        "kissinger_confidence": "high",
+        "actual_activation_enthalpy_H_star_kj_mol": 540.6682955354911,
+        "pred_activation_enthalpy_H_star_kj_mol": 454.5046237225169,
+        "error_activation_enthalpy_H_star_kj_mol": -86.1636718129742,
+        "uncertainty_activation_enthalpy_H_star_kj_mol": 4.982015934251976,
+        "actual_activation_entropy_S_star_j_mol_K": 1213.5745978534464,
+        "pred_activation_entropy_S_star_j_mol_K": 984.3869849758742,
+        "error_activation_entropy_S_star_j_mol_K": -229.1876128775723,
+        "uncertainty_activation_entropy_S_star_j_mol_K": 13.559522113729546
+      },
+      {
+        "condition_key": "single_step|95|100.02||",
+        "mode": "single_step",
+        "T1_C": "95",
+        "t1_s": "100.02",
+        "T2_C": "",
+        "t2_s": "",
+        "kissinger_r2": 0.988900164864611,
+        "kissinger_confidence": "high",
+        "actual_activation_enthalpy_H_star_kj_mol": 455.4153145851741,
+        "pred_activation_enthalpy_H_star_kj_mol": 540.4837104248278,
+        "error_activation_enthalpy_H_star_kj_mol": 85.0683958396537,
+        "uncertainty_activation_enthalpy_H_star_kj_mol": 4.570910421196321,
+        "actual_activation_entropy_S_star_j_mol_K": 986.8656138214928,
+        "pred_activation_entropy_S_star_j_mol_K": 1213.0808784006515,
+        "error_activation_entropy_S_star_j_mol_K": 226.21526457915866,
+        "uncertainty_activation_entropy_S_star_j_mol_K": 12.226060150642665
+      },
+      {
+        "condition_key": "two_step|50|10|100|1800",
+        "mode": "two_step",
+        "T1_C": "50",
+        "t1_s": "10",
+        "T2_C": "100",
+        "t2_s": "1800",
+        "kissinger_r2": 0.9930591716759654,
+        "kissinger_confidence": "high",
+        "actual_activation_enthalpy_H_star_kj_mol": 464.080702165651,
+        "pred_activation_enthalpy_H_star_kj_mol": 472.9283456567015,
+        "error_activation_enthalpy_H_star_kj_mol": 8.847643491050462,
+        "uncertainty_activation_enthalpy_H_star_kj_mol": 0.27554187384553075,
+        "actual_activation_entropy_S_star_j_mol_K": 1009.1671352867368,
+        "pred_activation_entropy_S_star_j_mol_K": 1032.5642307140472,
+        "error_activation_entropy_S_star_j_mol_K": 23.397095427310433,
+        "uncertainty_activation_entropy_S_star_j_mol_K": 0.736071393249749
+      },
+      {
+        "condition_key": "two_step|65|10|100|1200",
+        "mode": "two_step",
+        "T1_C": "65",
+        "t1_s": "10",
+        "T2_C": "100",
+        "t2_s": "1200",
+        "kissinger_r2": 0.9932904005675028,
+        "kissinger_confidence": "high",
+        "actual_activation_enthalpy_H_star_kj_mol": 472.92829617146856,
+        "pred_activation_enthalpy_H_star_kj_mol": 464.0808552708324,
+        "error_activation_enthalpy_H_star_kj_mol": -8.847440900636173,
+        "uncertainty_activation_enthalpy_H_star_kj_mol": 0.18903400502072454,
+        "actual_activation_entropy_S_star_j_mol_K": 1032.564089767893,
+        "pred_activation_entropy_S_star_j_mol_K": 1009.1675447288441,
+        "error_activation_entropy_S_star_j_mol_K": -23.396545039048874,
+        "uncertainty_activation_entropy_S_star_j_mol_K": 0.5049679394250027
+      }
+    ]
+  },
+  "x_mean": [
+    0.5,
+    70.0,
+    89.16666666666667,
+    19.166666666666668,
+    1.5795346841552185,
+    -2.901712290624294,
+    2.6792252517250525,
+    118.06778976674718,
+    -233.52213741277376,
+    42.198857336655216,
+    8.072371920900835e-06,
+    0.00015915182333885863,
+    -4.481246974779512,
+    0.9935615981226745
+  ],
+  "x_std": [
+    0.5,
+    17.55942292142123,
+    10.96078869830492,
+    20.08661798865658,
+    0.600957320763784,
+    6.098570187697194,
+    0.5470371768279636,
+    63.449655975095816,
+    536.2571746904385,
+    44.542995958335595,
+    4.907323456554485e-07,
+    0.00016633553967895217,
+    6.6799735417687085,
+    0.006691799512823614
+  ],
+  "x_train": [
+    [
+      -1.0,
+      0.0,
+      -1.7486576189203231,
+      -0.9542007856917758,
+      1.4935945358376872,
+      -0.9999536812215332,
+      -0.3694520328166821,
+      0.8720409466892408,
+      -0.7393427655603829,
+      -0.9473735753231994,
+      0.8559827558493401,
+      -0.9568118974816868,
+      -1.0472907169760735,
+      0.9621331095849651
+    ],
+    [
+      -1.0,
+      1.138989594902999,
+      0.07602859212697012,
+      -0.9542007856917758,
+      0.6996591959482131,
+      -0.9999536812215332,
+      -1.2416420892552336,
+      0.9760842558005578,
+      -1.075002610305411,
+      -0.9473735753231994,
+      -0.9976957488651345,
+      -0.9568118974816868,
+      -0.9758650965396589,
+      0.961834235916848
+    ],
+    [
+      -1.0,
+      1.4237369936287485,
+      0.5322001448887934,
+      -0.9542007856917758,
+      0.6998037157146729,
+      -0.9999536812215332,
+      -1.2414849123261398,
+      1.1338195597403449,
+      -1.158917571491668,
+      -0.9473735753231994,
+      -1.414564351524794,
+      -0.9568118974816868,
+      -0.9758780981198456,
+      0.9621331085890195
+    ],
+    [
+      1.0,
+      -1.138989594902999,
+      0.9883716976506168,
+      1.5350186552432914,
+      -0.9643524825001906,
+      1.0095784103867897,
+      1.0574296454532965,
+      -1.0727842211384724,
+      1.0425023930837345,
+      1.5841944709896614,
+      0.4496177807672119,
+      1.5360449883983993,
+      1.0084649943237853,
+      -0.68910205668461
+    ],
+    [
+      1.0,
+      -1.138989594902999,
+      -0.8363145133966765,
+      0.5393308788692646,
+      -0.9643524825001906,
+      1.0095784103867897,
+      1.0574296454532965,
+      -1.0727842211384724,
+      0.9210952526764304,
+      0.571567252464517,
+      1.4066763017579194,
+      0.6236092498486044,
+      1.0084649943237853,
+      -0.68910205668461
+    ],
+    [
+      1.0,
+      -0.2847473987257497,
+      0.9883716976506168,
+      0.7882528229627712,
+      -0.9643524825001906,
+      0.9807042228910199,
+      0.7377197434914617,
+      -0.8363763199531996,
+      1.0096653015972974,
+      0.686359002515421,
+      -0.3000167379845291,
+      0.7107814541980565,
+      0.9821039229880064,
+      -1.5078963407215793
+    ]
+  ],
+  "y_train": [
+    [
+      427.25184355786695,
+      910.2131890320542
+    ],
+    [
+      540.6682955354911,
+      1213.5745978534464
+    ],
+    [
+      455.4153145851741,
+      986.8656138214928
+    ],
+    [
+      464.080702165651,
+      1009.1671352867368
+    ],
+    [
+      587.2107401307184,
+      1340.5046877972368
+    ],
+    [
+      472.92829617146856,
+      1032.564089767893
+    ]
+  ],
+  "conditions": [
+    {
+      "condition_key": "single_step|70|300||",
+      "mode": "single_step",
+      "T1_C": "70",
+      "t1_s": "300",
+      "T2_C": "",
+      "t2_s": "",
+      "total_anneal_time_s": "300.0",
+      "kissinger_r2": "0.9855576761617019",
+      "kissinger_confidence": "high"
+    },
+    {
+      "condition_key": "single_step|90|100||",
+      "mode": "single_step",
+      "T1_C": "90",
+      "t1_s": "100",
+      "T2_C": "",
+      "t2_s": "",
+      "total_anneal_time_s": "100.0002",
+      "kissinger_r2": "0.9924989269092245",
+      "kissinger_confidence": "high"
+    },
+    {
+      "condition_key": "single_step|95|100.02||",
+      "mode": "single_step",
+      "T1_C": "95",
+      "t1_s": "100.02",
+      "T2_C": "",
+      "t2_s": "",
+      "total_anneal_time_s": "100.02",
+      "kissinger_r2": "0.988900164864611",
+      "kissinger_confidence": "high"
+    },
+    {
+      "condition_key": "two_step|50|10|100|1800",
+      "mode": "two_step",
+      "T1_C": "50",
+      "t1_s": "10",
+      "T2_C": "100",
+      "t2_s": "1800",
+      "total_anneal_time_s": "1810.00002",
+      "kissinger_r2": "0.9930591716759654",
+      "kissinger_confidence": "high"
+    },
+    {
+      "condition_key": "two_step|50|10|80|1800",
+      "mode": "two_step",
+      "T1_C": "50",
+      "t1_s": "10",
+      "T2_C": "80",
+      "t2_s": "1800",
+      "total_anneal_time_s": "1810.00002",
+      "kissinger_r2": "0.9418301279391021",
+      "kissinger_confidence": "low"
+    },
+    {
+      "condition_key": "two_step|65|10|100|1200",
+      "mode": "two_step",
+      "T1_C": "65",
+      "t1_s": "10",
+      "T2_C": "100",
+      "t2_s": "1200",
+      "total_anneal_time_s": "1210.00002",
+      "kissinger_r2": "0.9932904005675028",
+      "kissinger_confidence": "high"
+    }
+  ]
+}

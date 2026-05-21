@@ -1,0 +1,34 @@
+{
+  "model": "results\\ps\\models\\ps_calibrated_tnm_model.json",
+  "selected_parameters": {
+    "activation_energy_kj_mol": 220.0,
+    "beta": 0.75,
+    "log10_tau_ref_s": 2.0,
+    "nonlinearity_x": 0.9,
+    "initial_fictive_temperature_k": 393.15,
+    "tau_ref_s": 100.0,
+    "preexponential_A_s": 1.6008513042763764e-29,
+    "activation_entropy_j_mol_k": 304.4961898086539
+  },
+  "n_two_step_samples": 60,
+  "candidate_grid_size": 9801,
+  "mae_T1_C": 11.5,
+  "mae_T2_C": 9.666666666666666,
+  "mae_log10_t1": 0.45568770424038496,
+  "mae_log10_t2": 0.7948711158036019,
+  "median_target_loss": 0.10696646950690462,
+  "posterior_coverage": {
+    "T1_C": 0.9666666666666667,
+    "T2_C": 0.9,
+    "t1_s": 1.0,
+    "t2_s": 0.6666666666666666
+  },
+  "posterior_median_width": {
+    "T1_C": 45.0,
+    "T2_C": 43.75,
+    "log10_t1_s": 1.9854771935913997,
+    "log10_t2_s": 2.0479465618955497
+  },
+  "output": "results\\ps\\tnm_calibrated\\tnm_inverse_reconstruction_by_sample.csv",
+  "interpretation": "This is a TNM-forward inverse search over candidate annealing conditions. It tests identifiability under the calibrated H*/S* kinetic basis; it is not a proof of unique inversion."
+}

@@ -119,6 +119,126 @@ def grouped_split(rows: list[dict[str, str]], test_fraction: float = 0.25, seed:
     return np.array(sorted(train_idx)), np.array(sorted(test_idx))
 
 
+def grouped_folds(rows: list[dict[str, str]], indices: np.ndarray | None = None, n_folds: int = 5, seed: int = 7) -> list[tuple[np.ndarray, np.ndarray]]:
+    indices = np.arange(len(rows), dtype=int) if indices is None else np.asarray(indices, dtype=int)
+    groups: dict[tuple[str, str, str], list[int]] = defaultdict(list)
+    for idx in indices:
+        row = rows[int(idx)]
+        groups[(row["mode"], row.get("source_file", ""), row["T1_C"])].append(int(idx))
+    keys = list(groups)
+    if not keys:
+        return []
+    rng = np.random.default_rng(seed)
+    order = rng.permutation(len(keys))
+    fold_count = min(max(2, n_folds), len(keys))
+    fold_keys = [[] for _ in range(fold_count)]
+    for pos, key_idx in enumerate(order):
+        fold_keys[pos % fold_count].append(keys[int(key_idx)])
+    all_indices = {int(idx) for idx in indices}
+    folds = []
+    for keys_for_fold in fold_keys:
+        val = []
+        for key in keys_for_fold:
+            val.extend(groups[key])
+        val_set = set(val)
+        train = sorted(all_indices - val_set)
+        if train and val:
+            folds.append((np.array(train, dtype=int), np.array(sorted(val), dtype=int)))
+    return folds
+
+
+def temperature_bin(value: float, prefix: str = "") -> str:
+    if 50 <= value <= 60:
+        label = "50-60"
+    elif 65 <= value <= 75:
+        label = "65-75"
+    elif 80 <= value <= 90:
+        label = "80-90"
+    elif 95 <= value <= 100:
+        label = "95-100"
+    else:
+        label = "other"
+    return f"{prefix}{label}" if prefix else label
+
+
+def time_bin(value: float) -> str:
+    if value <= 60:
+        return "short_<=60s"
+    if value <= 300:
+        return "medium_60-300s"
+    if value <= 900:
+        return "long_300-900s"
+    return "very_long_>900s"
+
+
+def row_path_class(row: dict[str, str]) -> str:
+    if row.get("mode") != "two_step" or row.get("T2_C", "") in {"", "nan", "NaN"}:
+        return "single_step"
+    t1 = float(row["T1_C"])
+    t2 = float(row["T2_C"])
+    if abs(t1 - t2) <= 1e-9:
+        return "isothermal"
+    return "up-jump" if t2 > t1 else "down-jump"
+
+
+def _summarize_category(rows: list[dict[str, str]], labels: list[str], value_fn) -> dict[str, dict[str, float | int | bool]]:
+    total = max(len(rows), 1)
+    out: dict[str, dict[str, float | int | bool]] = {}
+    for label in labels:
+        selected = [row for row in rows if value_fn(row) == label]
+        n = len(selected)
+        out[label] = {
+            "n": n,
+            "fraction": float(n / total),
+            "is_low_support_region": bool(n < 2),
+        }
+    return out
+
+
+def coverage_summary(rows: list[dict[str, str]]) -> dict[str, object]:
+    return {
+        "n_samples": len(rows),
+        "T1_bin": _summarize_category(rows, ["50-60", "65-75", "80-90", "95-100", "other"], lambda row: temperature_bin(float(row["T1_C"]))),
+        "T2_bin": _summarize_category(
+            rows,
+            ["T2 50-60", "T2 65-75", "T2 80-90", "T2 95-100", "T2 other"],
+            lambda row: "T2 " + temperature_bin(float(row["T2_C"]) if row.get("T2_C") not in {"", "nan", "NaN"} else float(row["T1_C"])),
+        ),
+        "path_class": _summarize_category(rows, ["single_step", "isothermal", "up-jump", "down-jump"], row_path_class),
+        "time_bin": _summarize_category(rows, ["short_<=60s", "medium_60-300s", "long_300-900s", "very_long_>900s"], lambda row: time_bin(float(row["total_anneal_time_s"]))),
+    }
+
+
+def repeated_grouped_cv_summary(rows: list[dict[str, str]], seeds: tuple[int, ...] = (2, 3, 4, 7, 13, 17, 23), n_folds: int = 5, bandwidth: float = 1.2) -> dict[str, object]:
+    x, y = matrices(rows)
+    scores = []
+    per_target_mae: dict[str, list[float]] = {target: [] for target in TARGETS}
+    for seed in seeds:
+        for train_idx, val_idx in grouped_folds(rows, np.arange(len(rows), dtype=int), n_folds=n_folds, seed=seed):
+            model = KernelRegressor.fit(x[train_idx], y[train_idx], bandwidth=bandwidth)
+            pred, _ = model.predict(x[val_idx])
+            fold_metrics = metrics(y[val_idx], pred)
+            ratios = []
+            for target in TARGETS:
+                mae = fold_metrics[target]["mae"]
+                per_target_mae[target].append(mae)
+                std = float(np.std(y[val_idx, TARGETS.index(target)]))
+                if std > 0:
+                    ratios.append(mae / std)
+            if ratios:
+                scores.append(float(np.mean(ratios)))
+    return {
+        "n_scores": len(scores),
+        "seeds": list(seeds),
+        "n_folds": n_folds,
+        "score_mean": float(np.mean(scores)) if scores else float("nan"),
+        "score_std": float(np.std(scores)) if scores else float("nan"),
+        "score_median": float(np.median(scores)) if scores else float("nan"),
+        "mean_metrics": {target: {"mae": float(np.mean(values)) if values else float("nan")} for target, values in per_target_mae.items()},
+        "std_metrics": {target: {"mae": float(np.std(values)) if values else float("nan")} for target, values in per_target_mae.items()},
+    }
+
+
 def metrics(y_true: np.ndarray, y_pred: np.ndarray) -> dict[str, dict[str, float]]:
     out = {}
     for j, target in enumerate(TARGETS):
@@ -174,6 +294,8 @@ def train() -> Path:
         "n_train": int(len(train_idx)),
         "n_test": int(len(test_idx)),
         "metrics": eval_metrics,
+        "repeated_grouped_cv": repeated_grouped_cv_summary(rows),
+        "coverage_summary": coverage_summary(rows),
         "sample_mass_mg": 4.7,
         "notes": [
             "DSC temperature integrals are converted to specific enthalpy using PS sample mass = 4.7 mg.",

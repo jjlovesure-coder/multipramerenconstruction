@@ -10,7 +10,9 @@ if str(ROOT) not in sys.path:
 
 from src.ps.inverse_design import MODEL_PATH, TARGETS, candidate_feature_matrix
 from src.ps.inverse_design import candidate_rows
+from src.ps.train_physics_informed_ps_model import predict_auxiliary_features
 from src.ps.train_ps_model import FEATURES as RAW_FEATURES
+import numpy as np
 
 
 def test_inverse_design_defaults_to_physics_informed_model() -> None:
@@ -34,6 +36,19 @@ def test_candidate_feature_matrix_respects_payload_raw_features() -> None:
     }
     x = candidate_feature_matrix([row], payload)
     assert x.shape == (1, len(RAW_FEATURES) + 2)
+
+
+def test_auxiliary_process_prediction_does_not_use_test_measurements() -> None:
+    x = np.array([[0.0], [1.0], [2.0]], dtype=float)
+    z = np.array([[0.0, 0.0], [1.0, 1.0], [999.0, 999.0]], dtype=float)
+    train_idx = np.array([0, 1])
+    test_idx = np.array([2])
+
+    _, test_pred = predict_auxiliary_features(x, z, train_idx, test_idx, bandwidth=1.0)
+
+    assert test_pred.shape == (1, 2)
+    assert np.all(test_pred < 2.0)
+    assert not np.allclose(test_pred, z[test_idx])
 
 
 if __name__ == "__main__":

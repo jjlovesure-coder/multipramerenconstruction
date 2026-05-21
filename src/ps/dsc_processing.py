@@ -32,6 +32,7 @@ RAW_FILES = {
     "kovacs_eig_03": RAW_DIR / "ps-kovacs-03.xlsx",
     "kovacs_eig_04": RAW_DIR / "ps-kovacs-04.xlsx",
     "hs_01": RAW_DIR / "ps-hs-01.xlsx",
+    "hs_02": RAW_DIR / "ps-hs-02.xlsx",
     "kovacs_80_to_90": RAW_DIR / "pskovacs.xlsx",
     "twostep_90_to_80": RAW_DIR / "twosteps.xlsx",
 }
@@ -39,6 +40,29 @@ RAW_FILES = {
 PS_SAMPLE_MASS_MG = 4.7
 PS_SAMPLE_MASS_G = PS_SAMPLE_MASS_MG / 1000.0
 DEFAULT_HEATING_RATE_C_MIN = 10.0
+
+PROCESS_FEATURES = [
+    "process_total_integral_uW_min",
+    "process_total_abs_integral_uW_min",
+    "process_total_mean_uW",
+    "process_total_std_uW",
+    "process_hold_integral_uW_min",
+    "process_hold_abs_integral_uW_min",
+    "process_cooling_integral_uW_min",
+    "process_cooling_abs_integral_uW_min",
+    "process_between_step_heating_integral_uW_min",
+    "process_step1_hold_mean_uW",
+    "process_step1_hold_slope_uW_min",
+    "process_step1_hold_delta_uW",
+    "process_step2_hold_mean_uW",
+    "process_step2_hold_slope_uW_min",
+    "process_step2_hold_delta_uW",
+    "process_final_cooling_mean_uW",
+    "process_final_cooling_slope_uW_min",
+    "process_pre_scan_start_dsc_uW",
+    "process_pre_scan_end_dsc_uW",
+    "process_pre_scan_dsc_shift_uW",
+]
 
 
 @dataclass(frozen=True)
@@ -128,6 +152,122 @@ def scan_for_segment(df: pd.DataFrame, segment: Segment, bounds: tuple[float, fl
     scan = df[(df["Time"] >= start_min) & (df["Time"] <= ramp_end)].copy()
     scan = scan[(scan["Temp_C"] >= 30.0) & (scan["Temp_C"] <= 200.0)]
     return scan.reset_index(drop=True)
+
+
+def process_feature_names() -> list[str]:
+    return list(PROCESS_FEATURES)
+
+
+def _empty_process_features() -> dict[str, float]:
+    return {name: 0.0 for name in PROCESS_FEATURES}
+
+
+def _window_for_bounds(df: pd.DataFrame, bounds: tuple[float, float]) -> pd.DataFrame:
+    start_min, end_min = bounds
+    return df[(df["Time"] >= start_min) & (df["Time"] <= end_min)].copy().reset_index(drop=True)
+
+
+def _hold_window(df: pd.DataFrame, segment: Segment, bounds: tuple[float, float]) -> pd.DataFrame:
+    if segment.hold_min <= 0.0:
+        return df.iloc[0:0].copy()
+    start_min, _ = bounds
+    hold_start = start_min + segment.ramp_min
+    hold_end = hold_start + segment.hold_min
+    return df[(df["Time"] >= hold_start) & (df["Time"] <= hold_end)].copy().reset_index(drop=True)
+
+
+def _integral_time_uW_min(window: pd.DataFrame, absolute: bool = False) -> float:
+    if len(window) < 2:
+        return 0.0
+    y = window["DSC"].to_numpy(dtype=float)
+    if absolute:
+        y = np.abs(y)
+    return float(np.trapezoid(y, window["Time"].to_numpy(dtype=float)))
+
+
+def _mean(window: pd.DataFrame) -> float:
+    return float(window["DSC"].mean()) if len(window) else 0.0
+
+
+def _std(window: pd.DataFrame) -> float:
+    return float(window["DSC"].std(ddof=0)) if len(window) else 0.0
+
+
+def _slope(window: pd.DataFrame) -> float:
+    if len(window) < 2:
+        return 0.0
+    x = window["Time"].to_numpy(dtype=float)
+    y = window["DSC"].to_numpy(dtype=float)
+    if float(np.ptp(x)) <= 1e-12:
+        return 0.0
+    return float(np.polyfit(x, y, 1)[0])
+
+
+def _delta(window: pd.DataFrame) -> float:
+    if len(window) < 2:
+        return 0.0
+    y = window["DSC"].to_numpy(dtype=float)
+    return float(y[-1] - y[0])
+
+
+def extract_pre_scan_process_features(
+    df: pd.DataFrame,
+    pre_scan_segments: list[Segment],
+    pre_scan_bounds: list[tuple[float, float]],
+) -> dict[str, float]:
+    """Summarize only the annealing/cooling program before the final heating scan.
+
+    These features can be used as auxiliary training targets. They deliberately
+    exclude the final 30->200 C scan, which remains the supervised output.
+    """
+    features = _empty_process_features()
+    if not pre_scan_segments or not pre_scan_bounds:
+        return features
+
+    windows = [_window_for_bounds(df, bounds) for bounds in pre_scan_bounds]
+    total = pd.concat([window for window in windows if len(window)], ignore_index=True) if any(len(w) for w in windows) else df.iloc[0:0].copy()
+    cooling_windows = [
+        window
+        for segment, window in zip(pre_scan_segments, windows)
+        if segment.end_c < segment.start_c and len(window)
+    ]
+    between_heating_windows = [
+        window
+        for segment, window in zip(pre_scan_segments, windows)
+        if segment.end_c > segment.start_c and len(window)
+    ]
+    hold_windows = [_hold_window(df, segment, bounds) for segment, bounds in zip(pre_scan_segments, pre_scan_bounds)]
+    nonempty_holds = [window for window in hold_windows if len(window)]
+    final_cooling = cooling_windows[-1] if cooling_windows else df.iloc[0:0].copy()
+
+    features.update({
+        "process_total_integral_uW_min": _integral_time_uW_min(total),
+        "process_total_abs_integral_uW_min": _integral_time_uW_min(total, absolute=True),
+        "process_total_mean_uW": _mean(total),
+        "process_total_std_uW": _std(total),
+        "process_hold_integral_uW_min": sum(_integral_time_uW_min(window) for window in nonempty_holds),
+        "process_hold_abs_integral_uW_min": sum(_integral_time_uW_min(window, absolute=True) for window in nonempty_holds),
+        "process_cooling_integral_uW_min": sum(_integral_time_uW_min(window) for window in cooling_windows),
+        "process_cooling_abs_integral_uW_min": sum(_integral_time_uW_min(window, absolute=True) for window in cooling_windows),
+        "process_between_step_heating_integral_uW_min": sum(_integral_time_uW_min(window) for window in between_heating_windows),
+        "process_final_cooling_mean_uW": _mean(final_cooling),
+        "process_final_cooling_slope_uW_min": _slope(final_cooling),
+    })
+    if len(nonempty_holds) >= 1:
+        features["process_step1_hold_mean_uW"] = _mean(nonempty_holds[0])
+        features["process_step1_hold_slope_uW_min"] = _slope(nonempty_holds[0])
+        features["process_step1_hold_delta_uW"] = _delta(nonempty_holds[0])
+    if len(nonempty_holds) >= 2:
+        features["process_step2_hold_mean_uW"] = _mean(nonempty_holds[1])
+        features["process_step2_hold_slope_uW_min"] = _slope(nonempty_holds[1])
+        features["process_step2_hold_delta_uW"] = _delta(nonempty_holds[1])
+    if len(total):
+        start = float(total["DSC"].iloc[0])
+        end = float(total["DSC"].iloc[-1])
+        features["process_pre_scan_start_dsc_uW"] = start
+        features["process_pre_scan_end_dsc_uW"] = end
+        features["process_pre_scan_dsc_shift_uW"] = end - start
+    return features
 
 
 def infer_condition(file_key: str, cycle_segments: list[Segment]) -> dict[str, float | str]:
@@ -260,7 +400,8 @@ def build_ps_dataset() -> Path:
         prev_scan = -1
         cycle_id = 0
         for heat_idx in scan_indices:
-            cycle_segments = segments[prev_scan + 1: heat_idx + 1]
+            cycle_start_idx = prev_scan + 1
+            cycle_segments = segments[cycle_start_idx: heat_idx + 1]
             prev_scan = heat_idx
             if abs(segments[heat_idx].rate_c_min - DEFAULT_HEATING_RATE_C_MIN) > 2.0:
                 continue
@@ -268,6 +409,9 @@ def build_ps_dataset() -> Path:
             condition = infer_condition(file_key, cycle_segments)
             if condition["mode"] == "unknown":
                 continue
+            pre_segments = cycle_segments[:-1]
+            cycle_bound_slice = bounds[cycle_start_idx: heat_idx + 1]
+            process_features = extract_pre_scan_process_features(df, pre_segments, cycle_bound_slice[:-1])
             scan = scan_for_segment(df, segments[heat_idx], bounds[heat_idx])
             if len(scan) < 20:
                 continue
@@ -289,6 +433,7 @@ def build_ps_dataset() -> Path:
                 "heating_rate_C_min": segments[heat_idx].rate_c_min,
                 "cooling_rate_C_min": 60.0,
                 "noise_sigma_uW": noise,
+                **process_features,
                 **features,
             })
 

@@ -10,7 +10,16 @@ from pathlib import Path
 
 import numpy as np
 
-from src.ps.inverse_design import candidate_feature_matrix, load_model, load_model_payload
+from src.ps.inverse_design import (
+    candidate_feature_matrix,
+    candidate_rows,
+    combined_inverse_loss,
+    load_inverse_diagnostics,
+    load_model,
+    load_model_payload,
+    posterior_summary,
+    t2_candidates_from_target,
+)
 from src.ps.train_ps_model import read_rows
 
 
@@ -93,41 +102,55 @@ def near_match(candidate: dict[str, str], actual: dict[str, str]) -> bool:
     return t1_ok and t2_ok and tf1_ok and tf2_ok
 
 
-def build_candidate_predictions() -> tuple[list[dict[str, str]], np.ndarray]:
+def build_candidate_predictions() -> tuple[list[dict[str, str]], np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     model = load_model()
     payload = load_model_payload()
-    temps = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
-    times = [0.1, 0.5, 0.8, 1, 10, 30, 60, 100, 300, 600, 900, 1200, 1800]
-    candidates = []
-    for t1 in temps:
-        for t2 in temps:
-            for t1_s in times:
-                for t2_s in times:
-                    candidates.append({
-                        "mode": "two_step",
-                        "T1_C": str(t1),
-                        "t1_s": str(t1_s),
-                        "T2_C": str(t2),
-                        "t2_s": str(t2_s),
-                        "total_anneal_time_s": str(t1_s + t2_s),
-                    })
+    candidates = [row for row in candidate_rows() if row["mode"] == "two_step"]
     x = candidate_feature_matrix(candidates, payload)
-    pred, _ = model.predict(x)
-    return candidates, pred
+    pred, unc = model.predict(x)
+    targets = list(payload["targets"])
+    diagnostics = load_inverse_diagnostics(candidates, payload, targets)
+    identifiability = diagnostics["inverse_identifiability"]
+    extrapolation = diagnostics["extrapolation_penalty"]
+    return candidates, pred, unc, identifiability, extrapolation
 
 
-def inverse_rank(row: dict[str, str], candidates: list[dict[str, str]], pred: np.ndarray, targets: list[str]) -> dict:
-    losses = np.zeros(len(candidates), dtype=float)
+def inverse_rank(
+    row: dict[str, str],
+    candidates: list[dict[str, str]],
+    pred: np.ndarray,
+    unc: np.ndarray,
+    identifiability: np.ndarray,
+    extrapolation: np.ndarray,
+    targets: list[str],
+) -> dict:
+    target_losses = np.zeros(len(candidates), dtype=float)
     for target in ACTIVE_TARGETS:
         if target not in targets:
             continue
         idx = targets.index(target)
         actual = as_float(row[target])
-        losses += np.abs((pred[:, idx] - actual) / SCALES[target])
-    losses /= max(sum(target in targets for target in ACTIVE_TARGETS), 1)
+        target_losses += np.abs((pred[:, idx] - actual) / SCALES[target])
+    target_losses /= max(sum(target in targets for target in ACTIVE_TARGETS), 1)
+    allowed_t2 = set(t2_candidates_from_target({"peak_temperature_Tp_C": as_float(row["peak_temperature_Tp_C"])}))
+    valid_mask = np.array([round(float(candidate["T2_C"])) in allowed_t2 for candidate in candidates], dtype=bool)
+    losses = np.full(len(candidates), np.inf, dtype=float)
+    for idx, candidate in enumerate(candidates):
+        if not valid_mask[idx]:
+            continue
+        losses[idx] = combined_inverse_loss(
+            target_loss=float(target_losses[idx]),
+            total_time_s=float(candidate["total_anneal_time_s"]),
+            mean_uncertainty=float(np.mean(unc[idx])),
+            extrapolation_penalty=float(extrapolation[idx]),
+            inverse_identifiability=float(identifiability[idx]),
+        )
     order = np.argsort(losses)
     best_idx = int(order[0])
     best = candidates[best_idx]
+    valid_candidates = [candidates[int(idx)] for idx in np.where(np.isfinite(losses))[0]]
+    valid_losses = losses[np.isfinite(losses)]
+    posterior = posterior_summary(valid_candidates, valid_losses)
     actual_t1 = as_float(row["T1_C"])
     actual_t2 = as_float(row["T2_C"])
     actual_time1 = as_float(row["t1_s"])
@@ -160,6 +183,9 @@ def inverse_rank(row: dict[str, str], candidates: list[dict[str, str]], pred: np
         "pred_T2_C": pred_t2,
         "pred_t2_s": pred_time2,
         "loss": float(losses[best_idx]),
+        "target_loss": float(target_losses[best_idx]),
+        "inverse_identifiability": float(identifiability[best_idx]),
+        "extrapolation_penalty": float(extrapolation[best_idx]),
         "T1_abs_error_C": abs(pred_t1 - actual_t1),
         "T2_abs_error_C": abs(pred_t2 - actual_t2),
         "t1_factor_error": time_factor(pred_time1, actual_time1),
@@ -168,6 +194,16 @@ def inverse_rank(row: dict[str, str], candidates: list[dict[str, str]], pred: np
         "top5_near_match": any(near_match(candidate, row) for candidate in top5),
         "top10_near_match": any(near_match(candidate, row) for candidate in top10),
         "actual_like_rank": near_rank if near_rank is not None else "",
+        "posterior_contains_actual_T1": posterior["T1_C"]["p5"] <= actual_t1 <= posterior["T1_C"]["p95"],
+        "posterior_contains_actual_T2": posterior["T2_C"]["p5"] <= actual_t2 <= posterior["T2_C"]["p95"],
+        "posterior_contains_actual_t1": posterior["log10_t1_s"]["p5"] <= math.log10(actual_time1) <= posterior["log10_t1_s"]["p95"],
+        "posterior_contains_actual_t2": posterior["log10_t2_s"]["p5"] <= math.log10(actual_time2) <= posterior["log10_t2_s"]["p95"],
+        "posterior_width_T1_C": posterior["T1_C"]["width"],
+        "posterior_width_T2_C": posterior["T2_C"]["width"],
+        "posterior_width_log10_t1_s": posterior["log10_t1_s"]["width"],
+        "posterior_width_log10_t2_s": posterior["log10_t2_s"]["width"],
+        "loss_flatness_ratio": posterior["loss_flatness_ratio"],
+        "posterior_n_valid_candidates": posterior["n_valid_candidates"],
     }
 
 
@@ -188,6 +224,13 @@ def summarize(rows: list[dict], group_key: str) -> list[dict]:
             "top1_near_rate": float(np.mean([v["top1_near_match"] for v in values])),
             "top5_near_rate": float(np.mean([v["top5_near_match"] for v in values])),
             "top10_near_rate": float(np.mean([v["top10_near_match"] for v in values])),
+            "posterior_T1_coverage": float(np.mean([v["posterior_contains_actual_T1"] for v in values])),
+            "posterior_T2_coverage": float(np.mean([v["posterior_contains_actual_T2"] for v in values])),
+            "posterior_t1_coverage": float(np.mean([v["posterior_contains_actual_t1"] for v in values])),
+            "posterior_t2_coverage": float(np.mean([v["posterior_contains_actual_t2"] for v in values])),
+            "median_posterior_width_T1_C": float(np.median([v["posterior_width_T1_C"] for v in values])),
+            "median_posterior_width_T2_C": float(np.median([v["posterior_width_T2_C"] for v in values])),
+            "median_loss_flatness_ratio": float(np.median([v["loss_flatness_ratio"] for v in values])),
             "mean_loss": float(np.mean([v["loss"] for v in values])),
         })
     return summary
@@ -276,8 +319,8 @@ def main() -> None:
     targets = list(payload["targets"])
     rows = read_rows(DATASET_PATH)
     two_step_rows = [row for row in rows if row["mode"] == "two_step"]
-    candidates, pred = build_candidate_predictions()
-    evaluations = [inverse_rank(row, candidates, pred, targets) for row in two_step_rows]
+    candidates, pred, unc, identifiability, extrapolation = build_candidate_predictions()
+    evaluations = [inverse_rank(row, candidates, pred, unc, identifiability, extrapolation, targets) for row in two_step_rows]
     by_t1 = summarize(evaluations, "T1_bin")
     by_t2 = summarize(evaluations, "T2_bin")
     by_path = summarize(evaluations, "path_class")
@@ -294,6 +337,8 @@ def main() -> None:
         "n_two_step_samples": len(two_step_rows),
         "active_targets": ACTIVE_TARGETS,
         "near_match_definition": "T1/T2 within 5 deg C and each time within a factor of 3.",
+        "candidate_time_grid_s": "10,30,60,100,300,600,900,1200,1800",
+        "posterior_definition": "Best 5 percent of finite regularized inverse losses after Tp-based T2 soft filtering.",
         "summary_by_T1_bin": by_t1,
         "summary_by_T2_bin": by_t2,
         "summary_by_path_class": by_path,

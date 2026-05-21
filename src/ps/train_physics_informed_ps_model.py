@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from src.models.kernel_regression import KernelRegressor
-from src.ps.dsc_processing import build_ps_dataset
+from src.ps.dsc_processing import PROCESS_FEATURES, build_ps_dataset
 from src.ps.physics_features import physics_feature_dict
 from src.ps.train_ps_model import FEATURES as RAW_FEATURES
 from src.ps.train_ps_model import featurize, grouped_split, read_rows
@@ -26,6 +26,7 @@ SUMMARY_PATH = OUT_DIR / "physics_informed_model_comparison.json"
 PREDICTIONS_PATH = OUT_DIR / "physics_informed_test_predictions.csv"
 REPORT_PATH = ROOT / "docs" / "ps_physics_informed_model_update.md"
 PHYSICS_MODEL_PATH = MODEL_DIR / "ps_physics_informed_kernel_model.json"
+PROCESS_MODEL_PATH = MODEL_DIR / "ps_process_auxiliary_kernel_model.json"
 
 CORE_TARGETS = [
     "delta_h_total_J_g",
@@ -215,6 +216,11 @@ def physics_vector(row: dict[str, str], feature_names: list[str]) -> list[float]
 def feature_matrix(rows: list[dict[str, str]], raw: np.ndarray, feature_names: list[str], include_raw: bool = True) -> np.ndarray:
     phys = np.array([physics_vector(row, feature_names) for row in rows], dtype=float)
     return np.column_stack([raw, phys]) if include_raw else phys
+
+
+def process_matrix(rows: list[dict[str, str]], feature_names: list[str] | None = None) -> np.ndarray:
+    names = feature_names or PROCESS_FEATURES
+    return np.array([[float(row.get(name, 0.0) or 0.0) for name in names] for row in rows], dtype=float)
 
 
 def _safe_corr(a: np.ndarray, b: np.ndarray) -> float:
@@ -520,6 +526,47 @@ def fit_physics_kernel(
     return model.predict(x_aug[test_idx])
 
 
+def predict_auxiliary_features(
+    x_base: np.ndarray,
+    z_auxiliary: np.ndarray,
+    train_idx: np.ndarray,
+    test_idx: np.ndarray,
+    bandwidth: float = 1.4,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Predict pre-scan process summaries from known annealing inputs only.
+
+    The measured process summaries are labels for the auxiliary model. Test-set
+    summaries are never copied into the downstream target predictor.
+    """
+    model = KernelRegressor.fit(x_base[train_idx], z_auxiliary[train_idx], bandwidth=bandwidth)
+    train_pred, _ = model.predict(x_base[train_idx])
+    test_pred, _ = model.predict(x_base[test_idx])
+    return train_pred, test_pred
+
+
+def fit_process_auxiliary_kernel(
+    x_base: np.ndarray,
+    z_process: np.ndarray,
+    y: np.ndarray,
+    train_idx: np.ndarray,
+    test_idx: np.ndarray,
+    process_bandwidth: float = 1.4,
+    target_bandwidth: float | list[float] = 1.8,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    z_train_pred, z_test_pred = predict_auxiliary_features(
+        x_base,
+        z_process,
+        train_idx,
+        test_idx,
+        bandwidth=process_bandwidth,
+    )
+    x_train = np.column_stack([x_base[train_idx], z_train_pred])
+    x_test = np.column_stack([x_base[test_idx], z_test_pred])
+    target_model = KernelRegressor.fit(x_train, y[train_idx], bandwidth=target_bandwidth)
+    pred, unc = target_model.predict(x_test)
+    return pred, unc, z_train_pred, z_test_pred
+
+
 def fit_residual_model(
     x_phys: np.ndarray,
     x_aug: np.ndarray,
@@ -568,11 +615,12 @@ def write_predictions(
 def write_figure(metrics_by_model: dict[str, dict[str, dict[str, float]]]) -> None:
     labels = [target.replace("_", "\n") for target in TARGETS]
     x = np.arange(len(TARGETS))
-    width = 0.25
+    width = min(0.18, 0.8 / max(len(metrics_by_model), 1))
     fig, ax = plt.subplots(figsize=(12, 5.2))
     for offset, model_name in enumerate(metrics_by_model):
         values = [metrics_by_model[model_name][target]["mae"] for target in TARGETS]
-        ax.bar(x + (offset - 1) * width, values, width, label=model_name)
+        centered_offset = offset - (len(metrics_by_model) - 1) / 2.0
+        ax.bar(x + centered_offset * width, values, width, label=model_name)
     ax.set_xticks(x)
     ax.set_xticklabels(labels, fontsize=8)
     ax.set_ylabel("MAE")
@@ -604,12 +652,16 @@ def write_report(summary: dict) -> None:
                 target,
                 _fmt(summary["metrics"]["raw_kernel"][target]["mae"]),
                 _fmt(summary["metrics"]["physics_kernel"][target]["mae"]),
+                _fmt(summary["metrics"]["process_auxiliary_kernel"][target]["mae"]),
+                _fmt(summary["metrics"]["physics_process_auxiliary_kernel"][target]["mae"]),
                 _fmt(summary["metrics"]["physics_residual"][target]["mae"]),
                 _fmt(summary["metrics"]["physics_residual"][target]["r2"]),
             ]
         )
     raw_core = summary["normalized_core"]["raw_kernel"]["mean_mae_over_test_std"]
     physics_core = summary["normalized_core"]["physics_kernel"]["mean_mae_over_test_std"]
+    process_core = summary["normalized_core"]["process_auxiliary_kernel"]["mean_mae_over_test_std"]
+    physics_process_core = summary["normalized_core"]["physics_process_auxiliary_kernel"]["mean_mae_over_test_std"]
     residual_core = summary["normalized_core"]["physics_residual"]["mean_mae_over_test_std"]
     physics_gain = (physics_core - raw_core) / raw_core
     report = f"""# PS Physics-Informed Model Update
@@ -622,7 +674,11 @@ This update tests whether embedding TNM/ARRT-style relaxation priors improves th
 
 - `raw_kernel`: the existing RBF surrogate using only mode, temperature, and log-time features.
 - `physics_kernel`: RBF using raw features plus Arrhenius/TNM dose, sequential state, and path-memory features.
+- `process_auxiliary_kernel`: two-stage model. First predicts measured pre-scan annealing/cooling summaries from programmed parameters, then uses the predicted summaries to predict the final heating-scan targets.
+- `physics_process_auxiliary_kernel`: same two-stage auxiliary setup, but with selected physics features in the first and second stages.
 - `physics_residual`: a ridge physics baseline trained on physics features, plus an RBF model trained only on its residual.
+
+The process-assisted variants do not use measured test-cycle annealing/cooling curves as inputs. Those curves are auxiliary labels during training only, so the validation still follows the rule that only the final heating curve provides the supervised output.
 
 The `physics_kernel` feature subset and bandwidth are selected by repeated grouped cross-validation inside the training split:
 
@@ -634,7 +690,7 @@ The `physics_kernel` feature subset and bandwidth are selected by repeated group
 
 The split is identical across models and grouped by source file / mode / T1. Lower MAE is better.
 
-{markdown_table(["target", "raw_MAE", "physics_kernel_MAE", "physics_residual_MAE", "physics_residual_R2"], metric_rows)}
+{markdown_table(["target", "raw_MAE", "physics_kernel_MAE", "process_aux_MAE", "physics_process_aux_MAE", "physics_residual_MAE", "physics_residual_R2"], metric_rows)}
 
 ![Physics-informed MAE comparison]({FIG_PATH.as_posix()})
 
@@ -647,6 +703,8 @@ The split is identical across models and grouped by source file / mode / T1. Low
 ## Interpretation
 
 The selected `physics_kernel` lowers the mean normalized core-target error from `{_fmt(raw_core)}` to `{_fmt(physics_core)}`, a relative change of `{physics_gain * 100:.1f}%`. It improves all four core targets in this split: total enthalpy, peak area, recovery index, and path-dependence index.
+
+The process-assisted variants test whether the annealing/cooling curve contains useful training signal without being used as a test-time input. Their core normalized errors are `{_fmt(process_core)}` for `process_auxiliary_kernel` and `{_fmt(physics_process_core)}` for `physics_process_auxiliary_kernel`.
 
 The `physics_residual` variant is not recommended as the main model right now. It improves peak area and diagnostic peak shape, but it damages `recovery_index` and `path_dependence_index`, which are the targets that matter most for inverse annealing design. The better small-sample choice is therefore the lower-dimensional `physics_kernel`: raw annealing inputs plus TNM path/dose features selected by grouped CV.
 """
@@ -670,15 +728,36 @@ def train() -> Path:
         selected_bandwidth = float(selected["bandwidth"])
     x_phys = feature_matrix(rows, x_raw, PHYSICS_COMPACT_FEATURES, include_raw=False)
     x_aug = feature_matrix(rows, x_raw, selected_features, include_raw=True)
+    z_process = process_matrix(rows)
 
     raw_pred, raw_unc = fit_raw_kernel(x_raw, y, train_idx, test_idx)
     physics_pred, physics_unc = fit_physics_kernel(x_aug, y, train_idx, test_idx, selected_bandwidth)
+    process_pred, process_unc, process_train_aux, process_test_aux = fit_process_auxiliary_kernel(
+        x_raw,
+        z_process,
+        y,
+        train_idx,
+        test_idx,
+        process_bandwidth=1.4,
+        target_bandwidth=1.8,
+    )
+    physics_process_pred, physics_process_unc, physics_process_train_aux, physics_process_test_aux = fit_process_auxiliary_kernel(
+        x_aug,
+        z_process,
+        y,
+        train_idx,
+        test_idx,
+        process_bandwidth=1.4,
+        target_bandwidth=1.8,
+    )
     residual_pred, residual_unc, baseline_pred = fit_residual_model(x_phys, x_aug, y, train_idx, test_idx)
     final_model = KernelRegressor.fit(x_aug, y, bandwidth=selected_bandwidth)
 
     metrics = {
         "raw_kernel": regression_metrics(y_test, raw_pred),
         "physics_kernel": regression_metrics(y_test, physics_pred),
+        "process_auxiliary_kernel": regression_metrics(y_test, process_pred),
+        "physics_process_auxiliary_kernel": regression_metrics(y_test, physics_process_pred),
         "physics_residual": regression_metrics(y_test, residual_pred),
         "physics_baseline_only": regression_metrics(y_test, baseline_pred),
     }
@@ -701,12 +780,16 @@ def train() -> Path:
         "targets": TARGETS,
         "core_targets": CORE_TARGETS,
         "raw_features": RAW_FEATURES,
+        "process_auxiliary_features": PROCESS_FEATURES,
+        "process_auxiliary_policy": "Measured annealing/cooling process summaries are auxiliary labels only. Test predictions use process summaries predicted from annealing parameters, not measured test-cycle process data.",
         "physics_feature_sets": PHYSICS_FEATURE_SETS,
         "selected_physics_kernel": selected,
         "residual_baseline_features": PHYSICS_COMPACT_FEATURES,
         "model_variants": [
             "raw_kernel",
             "physics_kernel",
+            "process_auxiliary_kernel",
+            "physics_process_auxiliary_kernel",
             "physics_residual",
             "physics_baseline_only",
         ],
@@ -716,6 +799,7 @@ def train() -> Path:
         "normalized_all": normalized_all,
         "notes": [
             "Physics features are deterministic functions of annealing conditions only.",
+            "Process auxiliary variants use pre-scan annealing/cooling DSC summaries as training labels, but not as test-time inputs.",
             "The residual model uses a ridge physics baseline plus RBF residual correction.",
             "ARRT/TNM constants are a basis prior, not claimed fitted PS material constants.",
             "The high-energy PS basis values 430/460/540 kJ/mol come from ps-hs-01 multi-rate Kissinger fits.",
@@ -723,6 +807,7 @@ def train() -> Path:
         "outputs": {
             "summary": str(SUMMARY_PATH.relative_to(ROOT)),
             "model": str(PHYSICS_MODEL_PATH.relative_to(ROOT)),
+            "process_auxiliary_model": str(PROCESS_MODEL_PATH.relative_to(ROOT)),
             "predictions": str(PREDICTIONS_PATH.relative_to(ROOT)),
             "figure": str(FIG_PATH.relative_to(ROOT)),
             "report": str(REPORT_PATH.relative_to(ROOT)),
@@ -757,6 +842,28 @@ def train() -> Path:
     }
     SUMMARY_PATH.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     PHYSICS_MODEL_PATH.write_text(json.dumps(model_payload, indent=2), encoding="utf-8")
+    process_model_payload = {
+        "model_type": "two_stage_process_auxiliary_kernel_regressor",
+        "targets": TARGETS,
+        "raw_features": RAW_FEATURES,
+        "physics_features": selected_features,
+        "process_auxiliary_features": PROCESS_FEATURES,
+        "policy": summary["process_auxiliary_policy"],
+        "dataset": str(dataset_path.relative_to(ROOT)),
+        "metrics_same_split": {
+            "process_auxiliary_kernel": metrics["process_auxiliary_kernel"],
+            "physics_process_auxiliary_kernel": metrics["physics_process_auxiliary_kernel"],
+        },
+        "normalized_core_same_split": {
+            "process_auxiliary_kernel": normalized_core["process_auxiliary_kernel"],
+            "physics_process_auxiliary_kernel": normalized_core["physics_process_auxiliary_kernel"],
+        },
+        "notes": [
+            "This file documents the auxiliary-supervision experiment.",
+            "It is not the default inverse/EIG deployment model until a dedicated candidate-time process predictor is validated.",
+        ],
+    }
+    PROCESS_MODEL_PATH.write_text(json.dumps(process_model_payload, indent=2), encoding="utf-8")
     write_predictions(
         PREDICTIONS_PATH,
         rows,
@@ -765,11 +872,16 @@ def train() -> Path:
         {
             "raw_kernel": raw_pred,
             "physics_kernel": physics_pred,
+            "process_auxiliary_kernel": process_pred,
+            "physics_process_auxiliary_kernel": physics_process_pred,
             "physics_residual": residual_pred,
             "physics_baseline_only": baseline_pred,
         },
     )
-    write_figure({name: metrics[name] for name in ["raw_kernel", "physics_kernel", "physics_residual"]})
+    write_figure({
+        name: metrics[name]
+        for name in ["raw_kernel", "physics_kernel", "process_auxiliary_kernel", "physics_process_auxiliary_kernel", "physics_residual"]
+    })
     write_report(summary)
     print(json.dumps({
         "summary": str(SUMMARY_PATH),
@@ -779,7 +891,14 @@ def train() -> Path:
                 target: metrics[name][target]["mae"]
                 for target in CORE_TARGETS
             }
-            for name in ["raw_kernel", "physics_kernel", "physics_residual", "physics_baseline_only"]
+            for name in [
+                "raw_kernel",
+                "physics_kernel",
+                "process_auxiliary_kernel",
+                "physics_process_auxiliary_kernel",
+                "physics_residual",
+                "physics_baseline_only",
+            ]
         },
     }, indent=2))
     return SUMMARY_PATH
