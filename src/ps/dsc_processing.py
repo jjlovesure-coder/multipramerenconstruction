@@ -24,15 +24,17 @@ OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 RAW_FILES = {
     "empty": RAW_DIR / "ps-empty-01.xlsx",
-    "ref": RAW_DIR / "ps-ref-01.xlsx",
+    "ref": RAW_DIR / "ps-refori-01.xlsx",
     "onestep_50": RAW_DIR / "PS-onestep-01.xlsx",
     "onestep_70": RAW_DIR / "PS-onestep-02.xlsx",
+    "single_90_500_repeat": RAW_DIR / "ps-single-500hs-01.xlsx",
     "single_eig_01": RAW_DIR / "ps-single-01.xlsx",
     "kovacs_eig_01": RAW_DIR / "ps-kovacs-01.xlsx",
     "kovacs_eig_03": RAW_DIR / "ps-kovacs-03.xlsx",
     "kovacs_eig_04": RAW_DIR / "ps-kovacs-04.xlsx",
     "hs_01": RAW_DIR / "ps-hs-01.xlsx",
     "hs_02": RAW_DIR / "ps-hs-02.xlsx",
+    "single_hs_80_90_01": RAW_DIR / "ps-single-hs-01.xlsx",
     "kovacs_80_to_90": RAW_DIR / "pskovacs.xlsx",
     "twostep_90_to_80": RAW_DIR / "twosteps.xlsx",
 }
@@ -40,6 +42,14 @@ RAW_FILES = {
 PS_SAMPLE_MASS_MG = 4.7
 PS_SAMPLE_MASS_G = PS_SAMPLE_MASS_MG / 1000.0
 DEFAULT_HEATING_RATE_C_MIN = 10.0
+MAIN_INTEGRATION_LOW_C = 40.0
+MAIN_INTEGRATION_HIGH_C = 105.0
+LEGACY_INTEGRATION_LOW_C = 40.0
+LEGACY_INTEGRATION_HIGH_C = 160.0
+MAIN_PEAK_LOW_C = 70.0
+MAIN_PEAK_HIGH_C = 105.0
+LEGACY_PEAK_LOW_C = 70.0
+LEGACY_PEAK_HIGH_C = 140.0
 
 PROCESS_FEATURES = [
     "process_total_integral_uW_min",
@@ -313,14 +323,18 @@ def corrected_signal(scan: pd.DataFrame, ref_scan: pd.DataFrame) -> pd.DataFrame
 
 
 def detrend_window(scan: pd.DataFrame, low_c: float = 40.0, high_c: float = 160.0) -> pd.DataFrame:
+    """Return the sample-minus-reference window without extra baseline removal.
+
+    The DSC enthalpy target is the direct difference between the experiment
+    final-heating curve and the reference-state final-heating curve.  We keep
+    the historical column name `DSC_detrended_uW` for compatibility with older
+    feature code, but no linear endpoint baseline is subtracted here.
+    """
     window = scan[(scan["Temp_C"] >= low_c) & (scan["Temp_C"] <= high_c)].copy()
     if len(window) < 5:
         window["DSC_detrended_uW"] = np.nan
         return window
-    x = window["Temp_C"].to_numpy()
-    y = window["DSC_corrected_uW"].to_numpy()
-    baseline = np.interp(x, [x[0], x[-1]], [y[0], y[-1]])
-    window["DSC_detrended_uW"] = y - baseline
+    window["DSC_detrended_uW"] = window["DSC_corrected_uW"].to_numpy(dtype=float)
     return window
 
 
@@ -330,7 +344,7 @@ def estimate_noise(empty_scan: pd.DataFrame, ref_scan: pd.DataFrame) -> float:
     values = window["DSC_detrended_uW"].dropna().to_numpy()
     if len(values) == 0:
         return 1.0
-    return float(np.std(values))
+    return float(np.std(values - np.mean(values)))
 
 
 def integral_uW_C_to_J_g(integral_uW_C: float, heating_rate_C_min: float = DEFAULT_HEATING_RATE_C_MIN) -> float:
@@ -339,9 +353,17 @@ def integral_uW_C_to_J_g(integral_uW_C: float, heating_rate_C_min: float = DEFAU
     return energy_j / PS_SAMPLE_MASS_G
 
 
-def extract_features(scan: pd.DataFrame, noise_sigma_uW: float, heating_rate_c_min: float = DEFAULT_HEATING_RATE_C_MIN) -> dict[str, float | int]:
-    window = detrend_window(scan, 40.0, 160.0)
-    peak_window = window[(window["Temp_C"] >= 70.0) & (window["Temp_C"] <= 140.0)].copy()
+def _recovery_feature_block(
+    scan: pd.DataFrame,
+    noise_sigma_uW: float,
+    heating_rate_c_min: float,
+    integration_low_c: float,
+    integration_high_c: float,
+    peak_low_c: float,
+    peak_high_c: float,
+) -> dict[str, float | int]:
+    window = detrend_window(scan, integration_low_c, integration_high_c)
+    peak_window = window[(window["Temp_C"] >= peak_low_c) & (window["Temp_C"] <= peak_high_c)].copy()
     if len(peak_window) < 5:
         return {
             "delta_h_total_rel": math.nan,
@@ -381,6 +403,60 @@ def extract_features(scan: pd.DataFrame, noise_sigma_uW: float, heating_rate_c_m
         # The current PS pre-experiments did not show a clear Kovacs peak, so
         # keep this conservative until manual cycle-level annotations exist.
         "kovacs_peak_label": 0,
+    }
+
+
+def _rename_feature_block(block: dict[str, float | int], suffix: str) -> dict[str, float | int]:
+    return {
+        f"delta_h_total_{suffix}_rel": block["delta_h_total_rel"],
+        f"delta_h_total_{suffix}_J_g": block["delta_h_total_J_g"],
+        f"peak_area_{suffix}_rel": block["peak_area_rel"],
+        f"peak_area_{suffix}_J_g": block["peak_area_J_g"],
+        f"peak_temperature_Tp_{suffix}_C": block["peak_temperature_Tp_C"],
+        f"peak_height_{suffix}_uW": block["peak_height_uW"],
+        f"onset_temperature_{suffix}_C": block["onset_temperature_C"],
+    }
+
+
+def extract_features(scan: pd.DataFrame, noise_sigma_uW: float, heating_rate_c_min: float = DEFAULT_HEATING_RATE_C_MIN) -> dict[str, float | int]:
+    """Extract final-heating features.
+
+    The primary enthalpy-recovery features intentionally stop at 105 C to avoid
+    mixing the high-temperature liquid/supercooled-liquid baseline into the PS
+    finite-time recovery target.  The signal is experiment minus reference
+    state only; no additional endpoint baseline subtraction is applied.  The
+    earlier wider-window fields are preserved under explicit suffixes for audit
+    and backwards comparison.
+    """
+    main = _recovery_feature_block(
+        scan,
+        noise_sigma_uW,
+        heating_rate_c_min,
+        MAIN_INTEGRATION_LOW_C,
+        MAIN_INTEGRATION_HIGH_C,
+        MAIN_PEAK_LOW_C,
+        MAIN_PEAK_HIGH_C,
+    )
+    legacy = _recovery_feature_block(
+        scan,
+        noise_sigma_uW,
+        heating_rate_c_min,
+        LEGACY_INTEGRATION_LOW_C,
+        LEGACY_INTEGRATION_HIGH_C,
+        LEGACY_PEAK_LOW_C,
+        LEGACY_PEAK_HIGH_C,
+    )
+    return {
+        "feature_integration_low_C": MAIN_INTEGRATION_LOW_C,
+        "feature_integration_high_C": MAIN_INTEGRATION_HIGH_C,
+        "feature_peak_low_C": MAIN_PEAK_LOW_C,
+        "feature_peak_high_C": MAIN_PEAK_HIGH_C,
+        **main,
+        **_rename_feature_block(legacy, "40_160"),
+        "legacy_feature_integration_low_C": LEGACY_INTEGRATION_LOW_C,
+        "legacy_feature_integration_high_C": LEGACY_INTEGRATION_HIGH_C,
+        "legacy_feature_peak_low_C": LEGACY_PEAK_LOW_C,
+        "legacy_feature_peak_high_C": LEGACY_PEAK_HIGH_C,
     }
 
 

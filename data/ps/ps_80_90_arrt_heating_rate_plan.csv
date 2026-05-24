@@ -1,0 +1,25 @@
+run_id,condition_id,mode,T1_C,t1_s,T2_C,t2_s,purpose,final_heating_rate_C_min,final_scan_rate_mtd_C_s,core_or_extension,calculation_use
+1,ARRT-80-T0050,single_step,80,50,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,5,0.008333333333333333,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+2,ARRT-80-T0050,single_step,80,50,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,10,0.01666666666666667,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+3,ARRT-80-T0050,single_step,80,50,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,20,0.03333333333333333,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+4,ARRT-80-T0050,single_step,80,50,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,40,0.06666666666666667,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+5,ARRT-80-T0500,single_step,80,500,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,5,0.008333333333333333,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+6,ARRT-80-T0500,single_step,80,500,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,10,0.01666666666666667,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+7,ARRT-80-T0500,single_step,80,500,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,20,0.03333333333333333,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+8,ARRT-80-T0500,single_step,80,500,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,40,0.06666666666666667,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+9,ARRT-80-T1000,single_step,80,1000,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,5,0.008333333333333333,long-time extension,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+10,ARRT-80-T1000,single_step,80,1000,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,10,0.01666666666666667,long-time extension,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+11,ARRT-80-T1000,single_step,80,1000,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,20,0.03333333333333333,long-time extension,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+12,ARRT-80-T1000,single_step,80,1000,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,40,0.06666666666666667,long-time extension,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+13,ARRT-90-T0050,single_step,90,50,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,5,0.008333333333333333,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+14,ARRT-90-T0050,single_step,90,50,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,10,0.01666666666666667,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+15,ARRT-90-T0050,single_step,90,50,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,20,0.03333333333333333,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+16,ARRT-90-T0050,single_step,90,50,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,40,0.06666666666666667,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+17,ARRT-90-T0500,single_step,90,500,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,5,0.008333333333333333,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+18,ARRT-90-T0500,single_step,90,500,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,10,0.01666666666666667,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+19,ARRT-90-T0500,single_step,90,500,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,20,0.03333333333333333,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+20,ARRT-90-T0500,single_step,90,500,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,40,0.06666666666666667,core,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+21,ARRT-90-T1000,single_step,90,1000,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,5,0.008333333333333333,long-time extension,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+22,ARRT-90-T1000,single_step,90,1000,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,10,0.01666666666666667,long-time extension,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+23,ARRT-90-T1000,single_step,90,1000,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,20,0.03333333333333333,long-time extension,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation
+24,ARRT-90-T1000,single_step,90,1000,,,80/90 C single-step H*/S* anchor for fixed-temperature t2 inverse,40,0.06666666666666667,long-time extension,Tp(beta) for Kissinger fit and strict ARRT S*/H* calculation

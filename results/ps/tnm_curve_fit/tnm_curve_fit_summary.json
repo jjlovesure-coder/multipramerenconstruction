@@ -1,0 +1,40 @@
+{
+  "status": "complete",
+  "model_role": "curve-level TNM-inspired forward diagnostic, not a full material TNM solver",
+  "temperature_window_C": [
+    40.0,
+    100.0
+  ],
+  "targets": [
+    "area_rel",
+    "tp_c",
+    "height_uW",
+    "log_width_c"
+  ],
+  "tnm_parameters": {
+    "activation_energy_kj_mol": 300.0,
+    "beta": 0.75,
+    "log10_tau_ref_s": 2.0,
+    "nonlinearity_x": 0.9,
+    "initial_fictive_temperature_k": 393.15
+  },
+  "metrics": {
+    "n_curves": 113,
+    "curve_rmse_uW_mean": 45.65465669073802,
+    "curve_mae_uW_mean": 39.707465792802374,
+    "area_error_J_g_mae": 0.4111382505616823,
+    "tp_error_C_mae": 0.4648228052402133,
+    "peak_height_error_uW_mae": 9.390966760588162,
+    "curve_rmse_uW_median": 46.20878589385725,
+    "curve_mae_uW_median": 40.58413630934538
+  },
+  "figures": {
+    "actual_vs_predicted": "results\\ps\\tnm_curve_fit\\figures\\tnm_curve_fit_actual_vs_predicted.png",
+    "error_distributions": "results\\ps\\tnm_curve_fit\\figures\\tnm_curve_fit_error_distributions.png",
+    "representative_overlays": "results\\ps\\tnm_curve_fit\\figures\\tnm_curve_fit_representative_overlays.png"
+  },
+  "outputs": {
+    "by_sample": "results\\ps\\tnm_curve_fit\\tnm_curve_fit_by_sample.csv",
+    "report": "docs\\ps_tnm_curve_fit_forward_report.md"
+  }
+}

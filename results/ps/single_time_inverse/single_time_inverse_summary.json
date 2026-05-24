@@ -1,0 +1,412 @@
+{
+  "task": "single-step fixed-temperature annealing time prediction",
+  "n_strict_single_rows": 8,
+  "candidate_times_by_temperature": {
+    "70": [
+      300.0
+    ],
+    "80": [
+      50.0,
+      500.0,
+      1000.0
+    ],
+    "90": [
+      50.0,
+      100.0,
+      500.0
+    ],
+    "95": [
+      100.02
+    ]
+  },
+  "variants": {
+    "heating_only": {
+      "n": 6,
+      "log10_time_MAE": 0.5340199971093208,
+      "time_factor_error_median": 2.0,
+      "top1_near_factor3": 0.6666666666666666,
+      "top3_near_factor3": 0.6666666666666666,
+      "records": [
+        {
+          "variant": "heating_only",
+          "condition_key": "single_step|80|1000||",
+          "T1_C": 80.0,
+          "actual_t1_s": 1000.0,
+          "pred_t1_s": 500.0,
+          "t_log10_abs_error": 0.3010299956639812,
+          "time_factor_error": 2.0,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.9400574504498316,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,mean_peak_temperature_Tp_C,mean_peak_height_uW,mean_recovery_index",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "heating_only",
+          "condition_key": "single_step|80|50||",
+          "T1_C": 80.0,
+          "actual_t1_s": 50.0,
+          "pred_t1_s": 500.0,
+          "t_log10_abs_error": 1.0,
+          "time_factor_error": 10.0,
+          "top1_near_factor3": false,
+          "top3_near_factor3": false,
+          "loss": 1.328498990626652,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,mean_peak_temperature_Tp_C,mean_peak_height_uW,mean_recovery_index",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "heating_only",
+          "condition_key": "single_step|80|500||",
+          "T1_C": 80.0,
+          "actual_t1_s": 500.0,
+          "pred_t1_s": 1000.0,
+          "t_log10_abs_error": 0.3010299956639812,
+          "time_factor_error": 2.0,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.9400574504498316,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,mean_peak_temperature_Tp_C,mean_peak_height_uW,mean_recovery_index",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "heating_only",
+          "condition_key": "single_step|90|100||",
+          "T1_C": 90.0,
+          "actual_t1_s": 100.0,
+          "pred_t1_s": 50.0,
+          "t_log10_abs_error": 0.3010299956639812,
+          "time_factor_error": 2.0,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.4207293271208714,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,mean_peak_temperature_Tp_C,mean_peak_height_uW,mean_recovery_index",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "heating_only",
+          "condition_key": "single_step|90|50||",
+          "T1_C": 90.0,
+          "actual_t1_s": 50.0,
+          "pred_t1_s": 100.0,
+          "t_log10_abs_error": 0.3010299956639812,
+          "time_factor_error": 2.0,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.4207293271208715,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,mean_peak_temperature_Tp_C,mean_peak_height_uW,mean_recovery_index",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "heating_only",
+          "condition_key": "single_step|90|500||",
+          "T1_C": 90.0,
+          "actual_t1_s": 500.0,
+          "pred_t1_s": 50.0,
+          "t_log10_abs_error": 1.0,
+          "time_factor_error": 10.0,
+          "top1_near_factor3": false,
+          "top3_near_factor3": false,
+          "loss": 1.7909213516507443,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,mean_peak_temperature_Tp_C,mean_peak_height_uW,mean_recovery_index",
+          "n_same_temperature_candidates": 2
+        }
+      ]
+    },
+    "paper_style": {
+      "n": 6,
+      "log10_time_MAE": 0.5340199971093208,
+      "time_factor_error_median": 2.0,
+      "top1_near_factor3": 0.6666666666666666,
+      "top3_near_factor3": 0.6666666666666666,
+      "records": [
+        {
+          "variant": "paper_style",
+          "condition_key": "single_step|80|1000||",
+          "T1_C": 80.0,
+          "actual_t1_s": 1000.0,
+          "pred_t1_s": 500.0,
+          "t_log10_abs_error": 0.3010299956639812,
+          "time_factor_error": 2.0,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.6425004864358037,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,activation_enthalpy_H_star_kj_mol,activation_entropy_S_star_j_mol_K",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "paper_style",
+          "condition_key": "single_step|80|50||",
+          "T1_C": 80.0,
+          "actual_t1_s": 50.0,
+          "pred_t1_s": 500.0,
+          "t_log10_abs_error": 1.0,
+          "time_factor_error": 10.0,
+          "top1_near_factor3": false,
+          "top3_near_factor3": false,
+          "loss": 1.717327670479936,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,activation_enthalpy_H_star_kj_mol,activation_entropy_S_star_j_mol_K",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "paper_style",
+          "condition_key": "single_step|80|500||",
+          "T1_C": 80.0,
+          "actual_t1_s": 500.0,
+          "pred_t1_s": 1000.0,
+          "t_log10_abs_error": 0.3010299956639812,
+          "time_factor_error": 2.0,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.6425004864358037,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,activation_enthalpy_H_star_kj_mol,activation_entropy_S_star_j_mol_K",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "paper_style",
+          "condition_key": "single_step|90|100||",
+          "T1_C": 90.0,
+          "actual_t1_s": 100.0,
+          "pred_t1_s": 50.0,
+          "t_log10_abs_error": 0.3010299956639812,
+          "time_factor_error": 2.0,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.5067342064259613,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,activation_enthalpy_H_star_kj_mol,activation_entropy_S_star_j_mol_K",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "paper_style",
+          "condition_key": "single_step|90|50||",
+          "T1_C": 90.0,
+          "actual_t1_s": 50.0,
+          "pred_t1_s": 100.0,
+          "t_log10_abs_error": 0.3010299956639812,
+          "time_factor_error": 2.0,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.5067342064259615,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,activation_enthalpy_H_star_kj_mol,activation_entropy_S_star_j_mol_K",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "paper_style",
+          "condition_key": "single_step|90|500||",
+          "T1_C": 90.0,
+          "actual_t1_s": 500.0,
+          "pred_t1_s": 50.0,
+          "t_log10_abs_error": 1.0,
+          "time_factor_error": 10.0,
+          "top1_near_factor3": false,
+          "top3_near_factor3": false,
+          "loss": 1.7078423176598312,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,activation_enthalpy_H_star_kj_mol,activation_entropy_S_star_j_mol_K",
+          "n_same_temperature_candidates": 2
+        }
+      ]
+    },
+    "heating_only_direct_fit": {
+      "n": 6,
+      "log10_time_MAE": 0.39485025518768596,
+      "time_factor_error_median": 2.3553067079945693,
+      "top1_near_factor3": 0.8333333333333334,
+      "top3_near_factor3": 0.8333333333333334,
+      "records": [
+        {
+          "variant": "heating_only_direct_fit",
+          "strategy": "direct_univariate_logtime_fit",
+          "condition_key": "single_step|80|1000||",
+          "T1_C": 80.0,
+          "actual_t1_s": 1000.0,
+          "pred_t1_s": 1000.0,
+          "t_log10_abs_error": 0.0,
+          "time_factor_error": 1.0,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.0,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,mean_peak_temperature_Tp_C,mean_peak_height_uW,mean_recovery_index",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "heating_only_direct_fit",
+          "strategy": "direct_univariate_logtime_fit",
+          "condition_key": "single_step|80|50||",
+          "T1_C": 80.0,
+          "actual_t1_s": 50.0,
+          "pred_t1_s": 146.4254508280742,
+          "t_log10_abs_error": 0.466646565511621,
+          "time_factor_error": 2.9285090165614838,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.466646565511621,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,mean_peak_temperature_Tp_C,mean_peak_height_uW,mean_recovery_index",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "heating_only_direct_fit",
+          "strategy": "direct_univariate_logtime_fit",
+          "condition_key": "single_step|80|500||",
+          "T1_C": 80.0,
+          "actual_t1_s": 500.0,
+          "pred_t1_s": 339.32246861675327,
+          "t_log10_abs_error": 0.16835738644393228,
+          "time_factor_error": 1.4735245857377146,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.16835738644393228,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,mean_peak_temperature_Tp_C,mean_peak_height_uW,mean_recovery_index",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "heating_only_direct_fit",
+          "strategy": "direct_univariate_logtime_fit",
+          "condition_key": "single_step|90|100||",
+          "T1_C": 90.0,
+          "actual_t1_s": 100.0,
+          "pred_t1_s": 49.99999999999999,
+          "t_log10_abs_error": 0.30102999566398125,
+          "time_factor_error": 2.0000000000000004,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.30102999566398125,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,mean_peak_temperature_Tp_C,mean_peak_height_uW,mean_recovery_index",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "heating_only_direct_fit",
+          "strategy": "direct_univariate_logtime_fit",
+          "condition_key": "single_step|90|50||",
+          "T1_C": 90.0,
+          "actual_t1_s": 50.0,
+          "pred_t1_s": 135.53067079945694,
+          "t_log10_abs_error": 0.43306758350658114,
+          "time_factor_error": 2.7106134159891386,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.43306758350658114,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,mean_peak_temperature_Tp_C,mean_peak_height_uW,mean_recovery_index",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "heating_only_direct_fit",
+          "strategy": "direct_univariate_logtime_fit",
+          "condition_key": "single_step|90|500||",
+          "T1_C": 90.0,
+          "actual_t1_s": 500.0,
+          "pred_t1_s": 49.99999999999999,
+          "t_log10_abs_error": 1.0,
+          "time_factor_error": 10.000000000000002,
+          "top1_near_factor3": false,
+          "top3_near_factor3": false,
+          "loss": 1.0,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,mean_peak_temperature_Tp_C,mean_peak_height_uW,mean_recovery_index",
+          "n_same_temperature_candidates": 2
+        }
+      ]
+    },
+    "paper_style_direct_fit": {
+      "n": 6,
+      "log10_time_MAE": 0.30670238060099286,
+      "time_factor_error_median": 1.5880978312271354,
+      "top1_near_factor3": 0.8333333333333334,
+      "top3_near_factor3": 0.8333333333333334,
+      "records": [
+        {
+          "variant": "paper_style_direct_fit",
+          "strategy": "direct_univariate_logtime_fit",
+          "condition_key": "single_step|80|1000||",
+          "T1_C": 80.0,
+          "actual_t1_s": 1000.0,
+          "pred_t1_s": 1000.0,
+          "t_log10_abs_error": 0.0,
+          "time_factor_error": 1.0,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.0,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,activation_enthalpy_H_star_kj_mol,activation_entropy_S_star_j_mol_K",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "paper_style_direct_fit",
+          "strategy": "direct_univariate_logtime_fit",
+          "condition_key": "single_step|80|50||",
+          "T1_C": 80.0,
+          "actual_t1_s": 50.0,
+          "pred_t1_s": 58.809783122713526,
+          "t_log10_abs_error": 0.07047957348835454,
+          "time_factor_error": 1.1761956624542704,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.07047957348835454,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,activation_enthalpy_H_star_kj_mol,activation_entropy_S_star_j_mol_K",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "paper_style_direct_fit",
+          "strategy": "direct_univariate_logtime_fit",
+          "condition_key": "single_step|80|500||",
+          "T1_C": 80.0,
+          "actual_t1_s": 500.0,
+          "pred_t1_s": 450.2301964867199,
+          "t_log10_abs_error": 0.045535385000330386,
+          "time_factor_error": 1.1105430153322648,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.045535385000330386,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,activation_enthalpy_H_star_kj_mol,activation_entropy_S_star_j_mol_K",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "paper_style_direct_fit",
+          "strategy": "direct_univariate_logtime_fit",
+          "condition_key": "single_step|90|100||",
+          "T1_C": 90.0,
+          "actual_t1_s": 100.0,
+          "pred_t1_s": 49.99999999999999,
+          "t_log10_abs_error": 0.30102999566398125,
+          "time_factor_error": 2.0000000000000004,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.30102999566398125,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,activation_enthalpy_H_star_kj_mol,activation_entropy_S_star_j_mol_K",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "paper_style_direct_fit",
+          "strategy": "direct_univariate_logtime_fit",
+          "condition_key": "single_step|90|50||",
+          "T1_C": 90.0,
+          "actual_t1_s": 50.0,
+          "pred_t1_s": 132.47664890814025,
+          "t_log10_abs_error": 0.423169329453291,
+          "time_factor_error": 2.6495329781628048,
+          "top1_near_factor3": true,
+          "top3_near_factor3": true,
+          "loss": 0.423169329453291,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,activation_enthalpy_H_star_kj_mol,activation_entropy_S_star_j_mol_K",
+          "n_same_temperature_candidates": 2
+        },
+        {
+          "variant": "paper_style_direct_fit",
+          "strategy": "direct_univariate_logtime_fit",
+          "condition_key": "single_step|90|500||",
+          "T1_C": 90.0,
+          "actual_t1_s": 500.0,
+          "pred_t1_s": 49.99999999999999,
+          "t_log10_abs_error": 1.0,
+          "time_factor_error": 10.000000000000002,
+          "top1_near_factor3": false,
+          "top3_near_factor3": false,
+          "loss": 1.0,
+          "features": "mean_delta_h_total_J_g,mean_peak_area_J_g,activation_enthalpy_H_star_kj_mol,activation_entropy_S_star_j_mol_K",
+          "n_same_temperature_candidates": 2
+        }
+      ]
+    }
+  },
+  "notes": [
+    "Incomplete scans are excluded upstream by requiring coverage of the 95-125 C ARRT peak window.",
+    "Evaluation candidates are valid strict ARRT rows at the same temperature as the held-out condition."
+  ]
+}

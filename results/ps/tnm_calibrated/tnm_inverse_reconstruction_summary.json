@@ -2,7 +2,7 @@
   "model": "results\\ps\\models\\ps_calibrated_tnm_model.json",
   "selected_parameters": {
     "activation_energy_kj_mol": 220.0,
-    "beta": 0.75,
+    "beta": 0.65,
     "log10_tau_ref_s": 2.0,
     "nonlinearity_x": 0.9,
     "initial_fictive_temperature_k": 393.15,
@@ -12,22 +12,49 @@
   },
   "n_two_step_samples": 60,
   "candidate_grid_size": 9801,
-  "mae_T1_C": 11.5,
-  "mae_T2_C": 9.666666666666666,
-  "mae_log10_t1": 0.45568770424038496,
-  "mae_log10_t2": 0.7948711158036019,
-  "median_target_loss": 0.10696646950690462,
+  "mae_T1_C": 9.75,
+  "mae_T2_C": 11.666666666666666,
+  "mae_log10_t1": 0.8068899225499134,
+  "mae_log10_t2": 1.1436318988834802,
+  "median_target_loss": 0.18983708035730062,
   "posterior_coverage": {
-    "T1_C": 0.9666666666666667,
-    "T2_C": 0.9,
+    "T1_C": 0.9833333333333333,
+    "T2_C": 0.9333333333333333,
     "t1_s": 1.0,
     "t2_s": 0.6666666666666666
   },
   "posterior_median_width": {
     "T1_C": 45.0,
-    "T2_C": 43.75,
-    "log10_t1_s": 1.9854771935913997,
-    "log10_t2_s": 2.0479465618955497
+    "T2_C": 30.0,
+    "log10_t1_s": 2.255272505103306,
+    "log10_t2_s": 2.255272505103306
+  },
+  "posterior_confidence_counts": {
+    "overall": {
+      "high": 0,
+      "medium": 0,
+      "low": 60
+    },
+    "T1_C": {
+      "high": 0,
+      "medium": 0,
+      "low": 60
+    },
+    "T2_C": {
+      "high": 0,
+      "medium": 2,
+      "low": 58
+    },
+    "t1_s": {
+      "high": 0,
+      "medium": 0,
+      "low": 60
+    },
+    "t2_s": {
+      "high": 0,
+      "medium": 3,
+      "low": 57
+    }
   },
   "output": "results\\ps\\tnm_calibrated\\tnm_inverse_reconstruction_by_sample.csv",
   "interpretation": "This is a TNM-forward inverse search over candidate annealing conditions. It tests identifiability under the calibrated H*/S* kinetic basis; it is not a proof of unique inversion."

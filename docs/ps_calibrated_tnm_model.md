@@ -11,7 +11,7 @@ The model is not used to claim unique recovery of `T1, t1, T2, t2` from a single
 ```json
 {
   "activation_energy_kj_mol": 220.0,
-  "beta": 0.75,
+  "beta": 0.65,
   "log10_tau_ref_s": 2.0,
   "nonlinearity_x": 0.9,
   "initial_fictive_temperature_k": 393.15,
@@ -28,7 +28,7 @@ These parameters are effective predictive coordinates, not PS intrinsic material
 ```json
 {
   "activation_energy_kj_mol": 430.0,
-  "beta": 0.75,
+  "beta": 0.65,
   "log10_tau_ref_s": 2.0,
   "nonlinearity_x": 0.9,
   "initial_fictive_temperature_k": 393.15,
@@ -50,7 +50,7 @@ Fit-match weighted normalized MAE:
 
 ```json
 {
-  "calibration_split_weighted_normalized_mae": 0.6316154955487943,
+  "calibration_split_weighted_normalized_mae": 0.7336458676818015,
   "target_weights": [
     1.1,
     1.0,
@@ -65,9 +65,9 @@ Repeated grouped CV diagnostic:
 ```json
 {
   "predictive_unconstrained": {
-    "score_mean": 0.803373994395016,
-    "score_std": 0.4877595309470907,
-    "score_median": 0.664376725638945,
+    "score_mean": 1.0960757291160417,
+    "score_std": 0.5862915361637495,
+    "score_median": 0.9184131053301254,
     "n_scores": 35,
     "n_folds": 5,
     "seeds": [
@@ -81,9 +81,9 @@ Repeated grouped CV diagnostic:
     ]
   },
   "arrt_constrained": {
-    "score_mean": 0.8760410154663991,
-    "score_std": 0.2642864935074167,
-    "score_median": 0.8193765310566061,
+    "score_mean": 1.2905628014060782,
+    "score_std": 0.4771207399550069,
+    "score_median": 1.2012680735216903,
     "n_scores": 35,
     "n_folds": 5,
     "seeds": [
@@ -104,20 +104,20 @@ Dose dynamic range diagnostic:
 ```json
 {
   "predictive_unconstrained": {
-    "n": 108.0,
+    "n": 113.0,
     "step1_saturation_ratio": 0.0,
-    "step2_saturation_ratio": 0.05555555555555555,
-    "total_saturation_ratio": 0.05555555555555555,
-    "step1_range": 0.8976638575501539,
-    "total_range": 0.9998388835179871
+    "step2_saturation_ratio": 0.05309734513274336,
+    "total_saturation_ratio": 0.05309734513274336,
+    "step1_range": 0.8702666898680039,
+    "total_range": 0.9985658145322903
   },
   "arrt_constrained": {
-    "n": 108.0,
+    "n": 113.0,
     "step1_saturation_ratio": 0.0,
-    "step2_saturation_ratio": 0.05555555555555555,
-    "total_saturation_ratio": 0.05555555555555555,
-    "step1_range": 0.8976653599838524,
-    "total_range": 0.9998397779970836
+    "step2_saturation_ratio": 0.05309734513274336,
+    "total_saturation_ratio": 0.05309734513274336,
+    "step1_range": 0.8702756618123219,
+    "total_range": 0.9985635832821074
   }
 }
 ```
@@ -138,17 +138,17 @@ delta_h_total_J_g, peak_area_J_g, recovery_index, path_dependence_index
 
 | target | MAE | RMSE | R2 | target std |
 |---|---:|---:|---:|---:|
-| `delta_h_total_J_g` | 0.2483 | 0.2818 | -0.783 | 0.2110 |
-| `peak_area_J_g` | 0.1406 | 0.1725 | -0.543 | 0.1389 |
-| `recovery_index` | 0.1447 | 0.1530 | -0.207 | 0.1393 |
-| `path_dependence_index` | 0.1417 | 0.1644 | -1.090 | 0.1137 |
+| `delta_h_total_J_g` | 0.4613 | 0.6409 | 0.274 | 0.7520 |
+| `peak_area_J_g` | 0.3279 | 0.4510 | 0.278 | 0.5307 |
+| `recovery_index` | 0.1045 | 0.1219 | -0.857 | 0.0895 |
+| `path_dependence_index` | 0.4611 | 0.7637 | -4.421 | 0.3280 |
 
 Normalized core error:
 
 ```json
 {
-  "mean_mae_over_test_std": 1.118379535967137,
-  "median_mae_over_test_std": 1.107676676078941
+  "mean_mae_over_test_std": 0.9512552468900426,
+  "median_mae_over_test_std": 0.8928566782992698
 }
 ```
 

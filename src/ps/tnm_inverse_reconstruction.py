@@ -67,6 +67,23 @@ def posterior_from_losses(rows: list[dict[str, str]], losses: np.ndarray, percen
     return posterior_summary(rows, losses, percentile=percentile)
 
 
+def interval_confidence(width: float, high_threshold: float, medium_threshold: float) -> str:
+    """Classify posterior interval confidence from interval width."""
+    if width <= high_threshold:
+        return "high"
+    if width <= medium_threshold:
+        return "medium"
+    return "low"
+
+
+def overall_confidence(labels: list[str]) -> str:
+    if any(label == "low" for label in labels):
+        return "low"
+    if any(label == "medium" for label in labels):
+        return "medium"
+    return "high"
+
+
 def reconstruct() -> Path:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     params, head, payload = load_tnm_payload()
@@ -90,6 +107,10 @@ def reconstruct() -> Path:
         pred_t2 = float(best["T2_C"])
         pred_time1 = float(best["t1_s"])
         pred_time2 = float(best["t2_s"])
+        confidence_T1 = interval_confidence(float(posterior["T1_C"]["width"]), 5.0, 15.0)
+        confidence_T2 = interval_confidence(float(posterior["T2_C"]["width"]), 5.0, 15.0)
+        confidence_t1 = interval_confidence(float(posterior["log10_t1_s"]["width"]), math.log10(3.0), 1.0)
+        confidence_t2 = interval_confidence(float(posterior["log10_t2_s"]["width"]), math.log10(3.0), 1.0)
         record = {
             "sample_id": row.get("sample_id", ""),
             "source_file": row.get("source_file", ""),
@@ -115,6 +136,11 @@ def reconstruct() -> Path:
             "posterior_width_T2_C": float(posterior["T2_C"]["width"]),
             "posterior_width_log10_t1_s": float(posterior["log10_t1_s"]["width"]),
             "posterior_width_log10_t2_s": float(posterior["log10_t2_s"]["width"]),
+            "posterior_confidence_T1": confidence_T1,
+            "posterior_confidence_T2": confidence_T2,
+            "posterior_confidence_t1": confidence_t1,
+            "posterior_confidence_t2": confidence_t2,
+            "overall_posterior_confidence": overall_confidence([confidence_T1, confidence_T2, confidence_t1, confidence_t2]),
         }
         posterior_coverages.append(record)
         for j, name in enumerate(TARGETS):
@@ -149,6 +175,28 @@ def reconstruct() -> Path:
             "T2_C": float(np.median([r["posterior_width_T2_C"] for r in posterior_coverages])),
             "log10_t1_s": float(np.median([r["posterior_width_log10_t1_s"] for r in posterior_coverages])),
             "log10_t2_s": float(np.median([r["posterior_width_log10_t2_s"] for r in posterior_coverages])),
+        },
+        "posterior_confidence_counts": {
+            "overall": {
+                label: int(sum(1 for r in records if r["overall_posterior_confidence"] == label))
+                for label in ("high", "medium", "low")
+            },
+            "T1_C": {
+                label: int(sum(1 for r in records if r["posterior_confidence_T1"] == label))
+                for label in ("high", "medium", "low")
+            },
+            "T2_C": {
+                label: int(sum(1 for r in records if r["posterior_confidence_T2"] == label))
+                for label in ("high", "medium", "low")
+            },
+            "t1_s": {
+                label: int(sum(1 for r in records if r["posterior_confidence_t1"] == label))
+                for label in ("high", "medium", "low")
+            },
+            "t2_s": {
+                label: int(sum(1 for r in records if r["posterior_confidence_t2"] == label))
+                for label in ("high", "medium", "low")
+            },
         },
         "output": str(INVERSE_PATH.relative_to(ROOT)),
         "interpretation": (

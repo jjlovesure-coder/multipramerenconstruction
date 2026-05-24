@@ -42,6 +42,15 @@ def clean_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]:
     return [row for row in rows if all(finite(row.get(target)) for target in TARGETS)]
 
 
+def default_training_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Rows used for the deployable strict-ARRT model.
+
+    Suspect rows stay in the ARRT results file for diagnosis, but are excluded
+    until retest confirms the kinetic label is physically consistent.
+    """
+    return [row for row in clean_rows(rows) if row.get("quality_flag", "ok") == "ok"]
+
+
 def condition_id(row: dict[str, str]) -> str:
     return str(row.get("condition_key") or "|".join([
         row.get("mode", ""),
@@ -111,12 +120,15 @@ def leave_one_condition_out_predictions(rows: list[dict[str, str]]) -> dict[str,
 def train() -> Path:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     calculate_arrt()
-    rows = clean_rows(read_csv(ARRT_DIR / "arrt_kissinger_results.csv"))
+    all_rows = clean_rows(read_csv(ARRT_DIR / "arrt_kissinger_results.csv"))
+    rows = default_training_rows(all_rows)
     if len(rows) < 5:
         payload = {
             "status": "skipped",
             "reason": "Strict ARRT/Kissinger S*/H* labels require at least five calculable annealed states for a useful train/test split.",
             "n_calculable_rows": len(rows),
+            "n_calculable_rows_before_quality_filter": len(all_rows),
+            "excluded_quality_flags": sorted({row.get("quality_flag", "ok") for row in all_rows if row.get("quality_flag", "ok") != "ok"}),
             "targets": TARGETS,
             "input": str((ARRT_DIR / "arrt_kissinger_results.csv").relative_to(ROOT)),
         }
@@ -138,6 +150,17 @@ def train() -> Path:
         "features": "src.ps.train_ps_model.FEATURES",
         "bandwidth": model.bandwidth,
         "n_samples": len(rows),
+        "n_samples_before_quality_filter": len(all_rows),
+        "n_excluded_quality_filter": len(all_rows) - len(rows),
+        "excluded_conditions": [
+            {
+                "condition_key": condition_id(row),
+                "quality_flag": row.get("quality_flag", ""),
+                "quality_note": row.get("quality_note", ""),
+            }
+            for row in all_rows
+            if row.get("quality_flag", "ok") != "ok"
+        ],
         "n_low_confidence": sum(1 for row in rows if row.get("kissinger_confidence") == "low"),
         "n_high_confidence": sum(1 for row in rows if row.get("kissinger_confidence") != "low"),
         "evaluation_policy": "leave-one-condition-out CV because strict ARRT labels are condition-level small samples",

@@ -28,6 +28,9 @@ from src.ps.dsc_processing import (
 
 OUT_DIR = ROOT / "results" / "ps" / "arrt_kissinger"
 DOC_PATH = ROOT / "docs" / "ps_arrt_kissinger_calculation.md"
+ARRT_PEAK_LOW_C = 95.0
+ARRT_PEAK_HIGH_C = 125.0
+MIN_SCAN_POINTS = 20
 
 
 def finite(value: object) -> bool:
@@ -36,6 +39,22 @@ def finite(value: object) -> bool:
     except (TypeError, ValueError):
         return False
     return math.isfinite(number)
+
+
+def arrt_quality_flag(row: dict[str, object]) -> tuple[str, str]:
+    """Flag condition-level strict ARRT labels that should not train by default."""
+    try:
+        mode = str(row.get("mode", ""))
+        t1_c = float(row.get("T1_C", math.nan))
+        t1_s = float(row.get("t1_s", math.nan))
+    except (TypeError, ValueError):
+        return "ok", ""
+    if mode == "single_step" and abs(t1_c - 90.0) <= 1e-6 and abs(t1_s - 500.0) <= 1e-3:
+        return (
+            "suspect_retest_required",
+            "90 C 500 s H*/S* decreased unexpectedly relative to shorter 90 C holds; retest before using as a strict kinetic label.",
+        )
+    return "ok", ""
 
 
 def condition_key(row: dict[str, object]) -> tuple[str, str, str, str, str]:
@@ -62,12 +81,29 @@ def arrt_peak_temperature_c(corrected_scan) -> float:
     current PS data.
     """
     window = detrend_window(corrected_scan, 40.0, 160.0)
-    peak_window = window[(window["Temp_C"] >= 95.0) & (window["Temp_C"] <= 125.0)].copy()
+    peak_window = window[(window["Temp_C"] >= ARRT_PEAK_LOW_C) & (window["Temp_C"] <= ARRT_PEAK_HIGH_C)].copy()
     if len(peak_window) < 5:
         return math.nan
     values = peak_window["DSC_detrended_uW"].to_numpy()
     temps = peak_window["Temp_C"].to_numpy()
     return float(temps[int(values.argmin())])
+
+
+def scan_quality_fields(n_points: int, temp_min_c: float, temp_max_c: float) -> dict[str, object]:
+    covers_peak = (
+        finite(temp_min_c)
+        and finite(temp_max_c)
+        and float(temp_min_c) <= ARRT_PEAK_LOW_C
+        and float(temp_max_c) >= ARRT_PEAK_HIGH_C
+        and int(n_points) >= MIN_SCAN_POINTS
+    )
+    return {
+        "n_points": int(n_points),
+        "temp_min_C": float(temp_min_c) if finite(temp_min_c) else math.nan,
+        "temp_max_C": float(temp_max_c) if finite(temp_max_c) else math.nan,
+        "covers_arrt_peak_window": bool(covers_peak),
+        "is_truncated": bool(not covers_peak),
+    }
 
 
 def scan_all_recovery_features() -> list[dict[str, object]]:
@@ -92,12 +128,29 @@ def scan_all_recovery_features() -> list[dict[str, object]]:
             if condition["mode"] == "unknown":
                 continue
             scan = scan_for_segment(signal, segments[heat_idx], bounds[heat_idx])
-            if len(scan) < 20:
+            temp_min = float(scan["Temp_C"].min()) if len(scan) else math.nan
+            temp_max = float(scan["Temp_C"].max()) if len(scan) else math.nan
+            quality = scan_quality_fields(len(scan), temp_min, temp_max)
+            if len(scan) < MIN_SCAN_POINTS:
+                corrected = scan.copy()
+                arrt_tp = math.nan
+                features = {
+                    "delta_h_total_rel": math.nan,
+                    "delta_h_total_J_g": math.nan,
+                    "peak_area_rel": math.nan,
+                    "peak_area_J_g": math.nan,
+                    "peak_temperature_Tp_C": math.nan,
+                    "peak_height_uW": math.nan,
+                    "onset_temperature_C": math.nan,
+                    "kovacs_peak_label": 0,
+                }
+            else:
+                corrected = corrected_signal(scan, ref)
+                features = extract_features(corrected, noise, segments[heat_idx].rate_c_min)
+                arrt_tp = arrt_peak_temperature_c(corrected) if quality["covers_arrt_peak_window"] else math.nan
+            if len(scan) < MIN_SCAN_POINTS and condition["mode"] == "unknown":
                 continue
             cycle_id += 1
-            corrected = corrected_signal(scan, ref)
-            features = extract_features(corrected, noise, segments[heat_idx].rate_c_min)
-            arrt_tp = arrt_peak_temperature_c(corrected)
             total_time = float(condition["t1_s"])
             if condition["mode"] == "two_step":
                 total_time += float(condition["t2_s"])
@@ -114,6 +167,7 @@ def scan_all_recovery_features() -> list[dict[str, object]]:
                     "total_anneal_time_s": total_time,
                     "heating_rate_C_min": segments[heat_idx].rate_c_min,
                     "arrt_peak_temperature_Tp_C": arrt_tp,
+                    **quality,
                     **features,
                 }
             )
@@ -129,6 +183,13 @@ def calculate_group_results(rows: list[dict[str, object]]) -> tuple[list[dict[st
     diagnostics = []
     for key, values in sorted(groups.items()):
         rates = sorted({float(v["heating_rate_C_min"]) for v in values if finite(v["heating_rate_C_min"])})
+        valid_values = [
+            v for v in values
+            if finite(v.get("heating_rate_C_min"))
+            and finite(v.get("arrt_peak_temperature_Tp_C"))
+            and bool(v.get("covers_arrt_peak_window", True))
+        ]
+        valid_rates = sorted({float(v["heating_rate_C_min"]) for v in valid_values})
         diagnostic = {
             "condition_key": "|".join(key),
             "mode": key[0],
@@ -139,15 +200,18 @@ def calculate_group_results(rows: list[dict[str, object]]) -> tuple[list[dict[st
             "n_scans": len(values),
             "n_distinct_heating_rates": len(rates),
             "heating_rates_C_min": ";".join(f"{rate:g}" for rate in rates),
-            "can_calculate_arrt_kissinger": len(rates) >= 3,
-            "reason": "ok" if len(rates) >= 3 else "need at least three heating rates for the same annealed state",
+            "n_valid_peak_rates": len(valid_rates),
+            "valid_heating_rates_C_min": ";".join(f"{rate:g}" for rate in valid_rates),
+            "n_truncated_scans": sum(1 for v in values if bool(v.get("is_truncated", False))),
+            "can_calculate_arrt_kissinger": len(valid_rates) >= 3,
+            "reason": "ok" if len(valid_rates) >= 3 else "need at least three valid Tp values covering the ARRT peak window",
         }
         diagnostics.append(diagnostic)
-        if len(rates) < 3:
+        if len(valid_rates) < 3:
             continue
 
         points = []
-        for row in values:
+        for row in valid_values:
             tp_c = row.get("arrt_peak_temperature_Tp_C", row.get("peak_temperature_Tp_C"))
             if not finite(tp_c):
                 continue
@@ -165,8 +229,11 @@ def calculate_group_results(rows: list[dict[str, object]]) -> tuple[list[dict[st
         mean_delta_h = float(np_mean([v.get("delta_h_total_J_g") for v in values]))
         mean_peak_area = float(np_mean([v.get("peak_area_J_g") for v in values]))
         mean_recovery = float(np_mean([v.get("recovery_index") for v in values]))
+        mean_feature_tp = float(np_mean([v.get("peak_temperature_Tp_C") for v in values]))
+        mean_peak_height = float(np_mean([v.get("peak_height_uW") for v in values]))
         total_time = float(np_mean([v.get("total_anneal_time_s") for v in values]))
         r2 = float(result.r2)
+        quality_flag, quality_note = arrt_quality_flag(diagnostic)
         calculated.append(
             {
                 **diagnostic,
@@ -174,6 +241,8 @@ def calculate_group_results(rows: list[dict[str, object]]) -> tuple[list[dict[st
                 "mean_delta_h_total_J_g": mean_delta_h,
                 "mean_peak_area_J_g": mean_peak_area,
                 "mean_recovery_index": mean_recovery,
+                "mean_peak_temperature_Tp_C": mean_feature_tp,
+                "mean_peak_height_uW": mean_peak_height,
                 "activation_energy_E_kj_mol": result.activation_energy_kj_mol,
                 "activation_enthalpy_H_star_kj_mol": result.activation_enthalpy_kj_mol,
                 "activation_entropy_S_star_j_mol_K": result.activation_entropy_j_mol_k,
@@ -182,9 +251,27 @@ def calculate_group_results(rows: list[dict[str, object]]) -> tuple[list[dict[st
                 "kissinger_intercept": result.intercept,
                 "kissinger_r2": r2,
                 "kissinger_confidence": "high" if r2 >= 0.95 else "low",
+                "quality_flag": quality_flag,
+                "quality_note": quality_note,
             }
         )
     return calculated, diagnostics
+
+
+def add_recovery_indices(rows: list[dict[str, object]]) -> None:
+    maxima: dict[tuple[str, str], float] = {}
+    for row in rows:
+        if not finite(row.get("delta_h_total_J_g")):
+            continue
+        key = (str(row.get("mode", "")), f"{float(row['T1_C']):.6g}" if finite(row.get("T1_C")) else "")
+        maxima[key] = max(maxima.get(key, 0.0), abs(float(row["delta_h_total_J_g"])))
+    for row in rows:
+        key = (str(row.get("mode", "")), f"{float(row['T1_C']):.6g}" if finite(row.get("T1_C")) else "")
+        denom = maxima.get(key, 0.0)
+        if denom > 0.0 and finite(row.get("delta_h_total_J_g")):
+            row["recovery_index"] = abs(float(row["delta_h_total_J_g"])) / denom
+        else:
+            row["recovery_index"] = math.nan
 
 
 def np_mean(values: list[object]) -> float:
@@ -288,8 +375,29 @@ two-step: 65 °C 10 s -> 100 °C 1200 s
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     rows = scan_all_recovery_features()
+    add_recovery_indices(rows)
     calculated, diagnostics = calculate_group_results(rows)
     write_csv(OUT_DIR / "all_recovery_scan_features.csv", rows)
+    write_csv(OUT_DIR / "scan_truncation_diagnostics.csv", [
+        {
+            "sample_id": row.get("sample_id", ""),
+            "source_file": row.get("source_file", ""),
+            "cycle_id": row.get("cycle_id", ""),
+            "mode": row.get("mode", ""),
+            "T1_C": row.get("T1_C", ""),
+            "t1_s": row.get("t1_s", ""),
+            "T2_C": row.get("T2_C", ""),
+            "t2_s": row.get("t2_s", ""),
+            "heating_rate_C_min": row.get("heating_rate_C_min", ""),
+            "n_points": row.get("n_points", ""),
+            "temp_min_C": row.get("temp_min_C", ""),
+            "temp_max_C": row.get("temp_max_C", ""),
+            "covers_arrt_peak_window": row.get("covers_arrt_peak_window", ""),
+            "is_truncated": row.get("is_truncated", ""),
+            "arrt_peak_temperature_Tp_C": row.get("arrt_peak_temperature_Tp_C", ""),
+        }
+        for row in rows
+    ])
     write_csv(OUT_DIR / "condition_rate_diagnostics.csv", diagnostics)
     write_csv(OUT_DIR / "arrt_kissinger_results.csv", calculated)
     max_rates = max((int(row["n_distinct_heating_rates"]) for row in diagnostics), default=0)
@@ -304,6 +412,7 @@ def main() -> None:
         "outputs": {
             "all_recovery_scan_features": str((OUT_DIR / "all_recovery_scan_features.csv").relative_to(ROOT)),
             "condition_rate_diagnostics": str((OUT_DIR / "condition_rate_diagnostics.csv").relative_to(ROOT)),
+            "scan_truncation_diagnostics": str((OUT_DIR / "scan_truncation_diagnostics.csv").relative_to(ROOT)),
             "arrt_kissinger_results": str((OUT_DIR / "arrt_kissinger_results.csv").relative_to(ROOT)),
             "report": str(DOC_PATH.relative_to(ROOT)),
         },

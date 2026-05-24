@@ -1,14 +1,15 @@
 {
   "method": "Strict ARRT/Kissinger calculation from multi-heating-rate Tp data.",
-  "n_total_scans": 127,
-  "n_condition_groups": 84,
-  "n_calculable_groups": 6,
+  "n_total_scans": 151,
+  "n_condition_groups": 90,
+  "n_calculable_groups": 11,
   "max_distinct_heating_rates_per_group": 5,
   "minimum_required_distinct_heating_rates": 3,
   "can_train_with_strict_arrt_targets": true,
   "outputs": {
     "all_recovery_scan_features": "results\\ps\\arrt_kissinger\\all_recovery_scan_features.csv",
     "condition_rate_diagnostics": "results\\ps\\arrt_kissinger\\condition_rate_diagnostics.csv",
+    "scan_truncation_diagnostics": "results\\ps\\arrt_kissinger\\scan_truncation_diagnostics.csv",
     "arrt_kissinger_results": "results\\ps\\arrt_kissinger\\arrt_kissinger_results.csv",
     "report": "docs\\ps_arrt_kissinger_calculation.md"
   }

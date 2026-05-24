@@ -26,6 +26,7 @@ from src.ps.tnm_calibrated_model import (
     parameter_grid,
 )
 from src.ps.tnm_inverse_reconstruction import _target_loss as tnm_inverse_target_loss
+from src.ps.tnm_inverse_reconstruction import interval_confidence, overall_confidence
 from src.ps.tnm_inverse_reconstruction import posterior_from_losses as tnm_posterior_from_losses
 
 
@@ -202,3 +203,11 @@ def test_tnm_inverse_posterior_matches_kernel_inverse_schema() -> None:
     assert "log10_t2_s" in posterior
     assert "n_valid_candidates" in posterior
     assert posterior["n_valid_candidates"] == 2
+
+
+def test_tnm_inverse_interval_confidence_uses_posterior_width() -> None:
+    assert interval_confidence(4.0, high_threshold=5.0, medium_threshold=15.0) == "high"
+    assert interval_confidence(10.0, high_threshold=5.0, medium_threshold=15.0) == "medium"
+    assert interval_confidence(20.0, high_threshold=5.0, medium_threshold=15.0) == "low"
+    assert overall_confidence(["high", "medium", "high"]) == "medium"
+    assert overall_confidence(["high", "low", "high"]) == "low"
