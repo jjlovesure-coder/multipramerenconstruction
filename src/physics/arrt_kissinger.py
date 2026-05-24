@@ -35,12 +35,12 @@ class ArrtKissingerResult:
 
 
 def kissinger_fit(points: Iterable[PeakRatePoint]) -> tuple[float, float, float]:
-    """Fit ln(beta / Tp^2) = intercept + slope * (1 / Tp)."""
+    """Fit ln(beta / Tp^3) = intercept + slope * (1 / Tp)."""
     pts = list(points)
     if len(pts) < 3:
         raise ValueError("At least three heating rates are needed for a Kissinger fit.")
     x = np.array([1.0 / p.peak_temperature_k for p in pts], dtype=float)
-    y = np.array([math.log(p.heating_rate_k_s / (p.peak_temperature_k ** 2)) for p in pts], dtype=float)
+    y = np.array([math.log(p.heating_rate_k_s / (p.peak_temperature_k ** 3)) for p in pts], dtype=float)
     slope, intercept = np.polyfit(x, y, 1)
     y_hat = slope * x + intercept
     ss_res = float(np.sum((y - y_hat) ** 2))
@@ -58,14 +58,14 @@ def arrt_entropy_from_peak(
 
     Uses the common approximation:
 
-        ln(beta / Tp^2) = -H*/(R Tp) + ln(kB R / (h H*)) + S*/R
+        ln(beta / Tp^3) = -H*/(R Tp) + ln(kB R / (h H*)) + S*/R
 
     where beta is K/s and H* is J/mol.
     """
     h_j_mol = activation_enthalpy_kj_mol * 1000.0
     if h_j_mol <= 0:
         return math.nan
-    lhs = math.log(heating_rate_k_s / (peak_temperature_k ** 2))
+    lhs = math.log(heating_rate_k_s / (peak_temperature_k ** 3))
     prefactor = math.log(K_B * R / (H_PLANCK * h_j_mol))
     return R * (lhs + h_j_mol / (R * peak_temperature_k) - prefactor)
 

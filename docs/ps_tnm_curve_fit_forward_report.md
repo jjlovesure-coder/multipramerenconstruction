@@ -3,7 +3,7 @@
 ## Scope
 
 This is the first curve-level forward diagnostic after narrowing the DSC target
-window to `40-100 C`.  It tests whether compact TNM/fictive-temperature
+window to `70-105 C`.  It tests whether compact TNM/fictive-temperature
 coordinates can predict the full final-heating recovery curve shape before
 inverse reconstruction is trusted.
 
@@ -15,14 +15,14 @@ then reconstructs the full curve and reports residuals.
 
 ```json
 {
-  "n_curves": 113,
-  "curve_rmse_uW_mean": 45.65465669073802,
-  "curve_mae_uW_mean": 39.707465792802374,
-  "area_error_J_g_mae": 0.4111382505616823,
-  "tp_error_C_mae": 0.4648228052402133,
-  "peak_height_error_uW_mae": 9.390966760588162,
-  "curve_rmse_uW_median": 46.20878589385725,
-  "curve_mae_uW_median": 40.58413630934538
+  "n_curves": 114,
+  "curve_rmse_uW_mean": 52.66964323586883,
+  "curve_mae_uW_mean": 48.083542100907486,
+  "area_error_J_g_mae": 1.765981677235704,
+  "tp_error_C_mae": 5.0719603086794125,
+  "peak_height_error_uW_mae": 50.711593903469186,
+  "curve_rmse_uW_median": 43.539156738469345,
+  "curve_mae_uW_median": 37.05068525627824
 }
 ```
 

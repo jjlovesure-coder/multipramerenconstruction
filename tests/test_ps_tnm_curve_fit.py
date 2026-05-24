@@ -19,11 +19,11 @@ from src.ps.tnm_curve_fit import (
 )
 
 
-def test_observed_curve_parameters_use_40_to_100_c_window() -> None:
+def test_observed_curve_parameters_use_70_to_105_c_window() -> None:
     curve = pd.DataFrame(
         {
-            "Temp_C": [40, 60, 70, 75, 80, 85, 90, 95, 100],
-            "DSC_detrended_uW": [0, 0, 0, -1, -4, -9, -5, -2, 0],
+            "Temp_C": [70, 75, 80, 85, 90, 95, 100, 105],
+            "DSC_detrended_uW": [0, -1, -4, -9, -5, -2, 0, 0],
         }
     )
 
@@ -35,7 +35,7 @@ def test_observed_curve_parameters_use_40_to_100_c_window() -> None:
 
 
 def test_predicted_curve_returns_finite_shape() -> None:
-    temp = np.linspace(40.0, 100.0, 50)
+    temp = np.linspace(70.0, 105.0, 50)
 
     y = predicted_curve(temp, area_rel=-100.0, tp_c=85.0, height_uW=-10.0, log_width_c=np.log(8.0))
 
@@ -46,7 +46,7 @@ def test_predicted_curve_returns_finite_shape() -> None:
 
 def test_leave_one_out_curve_fit_reports_curve_metrics() -> None:
     rows = []
-    temp = np.linspace(40.0, 100.0, 61)
+    temp = np.linspace(70.0, 105.0, 36)
     for idx, time_s in enumerate([50.0, 100.0, 300.0, 500.0]):
         center = 82.0 + idx
         y = -10.0 * np.exp(-0.5 * ((temp - center) / 8.0) ** 2)

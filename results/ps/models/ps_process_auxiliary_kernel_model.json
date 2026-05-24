@@ -25,10 +25,20 @@
     "step_time_asymmetry"
   ],
   "physics_features": [
-    "tnm_state_total_e460_b035",
-    "tnm_state_total_e460_b065",
-    "tnm_path_excess_e460_b035",
-    "tnm_path_excess_e540_b050"
+    "phys_inv_T_diff",
+    "phys_log_t_ratio",
+    "arrt_step1_fraction_of_total_hs70_b035",
+    "arrt_step2_increment_hs70_b035",
+    "arrt_step1_fraction_of_total_hs90_b065",
+    "phys_step_time_fraction_2",
+    "arrt_state_total_hs70_b035",
+    "phys_delta_T_times_log_ratio",
+    "arrt_state_total_hs90_b065",
+    "phys_log_t2_s",
+    "arrt_step2_increment_hs90_b065",
+    "arrt_state_step1_hs70_b035",
+    "arrt_state_step1_hs90_b065",
+    "phys_log_t1_s"
   ],
   "process_auxiliary_features": [
     "process_total_integral_uW_min",
@@ -57,89 +67,89 @@
   "metrics_same_split": {
     "process_auxiliary_kernel": {
       "delta_h_total_J_g": {
-        "mae": 0.14134941468301707,
-        "rmse": 0.1770169609741655,
-        "r2": 0.02674421296535512,
-        "target_std": 0.17943261362861795
+        "mae": 1.2501848317496924,
+        "rmse": 1.889887024887555,
+        "r2": -5.032833032838946,
+        "target_std": 0.7694407631542081
       },
       "peak_area_J_g": {
-        "mae": 0.0926523692980074,
-        "rmse": 0.12557517509195587,
-        "r2": 0.2355962126227925,
-        "target_std": 0.1436290795464113
+        "mae": 1.0674992083428536,
+        "rmse": 1.4566246901842252,
+        "r2": -2.0235470848407524,
+        "target_std": 0.83770151142584
       },
       "recovery_index": {
-        "mae": 0.18518990164925256,
-        "rmse": 0.21689004887109034,
-        "r2": -0.19278461639890976,
-        "target_std": 0.19859056525891283
+        "mae": 0.3064376540657846,
+        "rmse": 0.34331356606309904,
+        "r2": -0.13105205177799717,
+        "target_std": 0.32281199885885375
       },
       "path_dependence_index": {
-        "mae": 0.10657669913595547,
-        "rmse": 0.13480473445770266,
-        "r2": 0.011894414312347501,
-        "target_std": 0.13561366969300728
+        "mae": 1.1809567622662864,
+        "rmse": 2.2972960740806534,
+        "r2": -5.139538595661084,
+        "target_std": 0.9271480804039658
       },
       "peak_temperature_Tp_C": {
-        "mae": 0.505094096325017,
-        "rmse": 0.6324863416763278,
-        "r2": -1.9683069201428838,
-        "target_std": 0.36711045178788054
+        "mae": 6.375744016557515,
+        "rmse": 8.238264741205617,
+        "r2": 0.08354084956792351,
+        "target_std": 8.605561016129815
       },
       "peak_height_uW": {
-        "mae": 8.611127320860495,
-        "rmse": 10.940817302833485,
-        "r2": 0.6605541075436561,
-        "target_std": 18.778655167734986
+        "mae": 44.20099214197353,
+        "rmse": 58.647264037629114,
+        "r2": -1.390120046680202,
+        "target_std": 37.934808790530354
       }
     },
     "physics_process_auxiliary_kernel": {
       "delta_h_total_J_g": {
-        "mae": 0.1393839024112729,
-        "rmse": 0.18125364601520855,
-        "r2": -0.020400673324697083,
-        "target_std": 0.17943261362861795
+        "mae": 1.6440002151601936,
+        "rmse": 2.109074803048316,
+        "r2": -6.51334939700514,
+        "target_std": 0.7694407631542081
       },
       "peak_area_J_g": {
-        "mae": 0.09753238285174388,
-        "rmse": 0.13306638220562753,
-        "r2": 0.14167463987376094,
-        "target_std": 0.1436290795464113
+        "mae": 1.4572706863976623,
+        "rmse": 1.7310990405384599,
+        "r2": -3.270367323741615,
+        "target_std": 0.83770151142584
       },
       "recovery_index": {
-        "mae": 0.19842916940465657,
-        "rmse": 0.22150854545436108,
-        "r2": -0.24412422527096234,
-        "target_std": 0.19859056525891283
+        "mae": 0.356668217610855,
+        "rmse": 0.40774083759779645,
+        "r2": -0.5953981476564414,
+        "target_std": 0.32281199885885375
       },
       "path_dependence_index": {
-        "mae": 0.0747007235743793,
-        "rmse": 0.10313210110917252,
-        "r2": 0.4216632431679923,
-        "target_std": 0.13561366969300728
+        "mae": 1.3522070071833259,
+        "rmse": 2.7080641140977306,
+        "r2": -7.531387678870729,
+        "target_std": 0.9271480804039658
       },
       "peak_temperature_Tp_C": {
-        "mae": 0.45405080184392216,
-        "rmse": 0.6056931596365929,
-        "r2": -1.7221486642583872,
-        "target_std": 0.36711045178788054
+        "mae": 6.983719347660893,
+        "rmse": 9.210980435798874,
+        "r2": -0.14565365043890077,
+        "target_std": 8.605561016129815
       },
       "peak_height_uW": {
-        "mae": 7.795835873774308,
-        "rmse": 11.12961113276931,
-        "r2": 0.6487381319156236,
-        "target_std": 18.778655167734986
+        "mae": 58.6078942715911,
+        "rmse": 76.26123677239593,
+        "r2": -3.041400489097006,
+        "target_std": 37.934808790530354
       }
     }
   },
   "normalized_core_same_split": {
     "process_auxiliary_kernel": {
-      "mean_mae_over_test_std": 0.7878110720182327,
-      "median_mae_over_test_std": 0.7868211436434421
+      "mean_mae_over_test_std": 1.2805359960571256,
+      "median_mae_over_test_std": 1.2740356746726977
     },
     "physics_process_auxiliary_kernel": {
-      "mean_mae_over_test_std": 0.7514707558414883,
-      "median_mae_over_test_std": 0.7279304835733089
+      "mean_mae_over_test_std": 1.6098901752547718,
+      "median_mae_over_test_std": 1.5990323208163373
     }
   },
   "notes": [

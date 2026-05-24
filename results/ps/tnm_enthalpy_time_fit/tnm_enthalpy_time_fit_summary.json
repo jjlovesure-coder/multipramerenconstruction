@@ -3,23 +3,23 @@
   "model_role": "Figure-2-style enthalpy recovery versus annealing time fit",
   "equation": "delta_h(t) = offset + amplitude * (1 - exp(-(t/tau)^beta))",
   "integration_window_C": [
-    40.0,
+    70.0,
     105.0
   ],
   "metrics": {
     "n_groups": 9,
     "n_points": 72,
-    "group_rmse_J_g_mean": 0.44672741907767943,
-    "group_rmse_J_g_median": 0.10477504506187096,
-    "point_mae_J_g": 0.3225279345880879,
+    "group_rmse_J_g_mean": 0.23427546193205936,
+    "group_rmse_J_g_median": 0.06321531796016497,
+    "point_mae_J_g": 0.1713312173847774,
     "single_step_groups": 5,
     "two_step_groups": 4
   },
   "figures": {
-    "single_step": "results\\ps\\tnm_enthalpy_time_fit\\figures\\single_step_enthalpy_time_fits_40_105.png",
-    "two_step": "results\\ps\\tnm_enthalpy_time_fit\\figures\\two_step_enthalpy_time_fits_40_105.png",
-    "upjump_80_90": "results\\ps\\tnm_enthalpy_time_fit\\figures\\upjump_80_90_enthalpy_time_40_105.png",
-    "errors": "results\\ps\\tnm_enthalpy_time_fit\\figures\\enthalpy_time_fit_errors_40_105.png"
+    "single_step": "results\\ps\\tnm_enthalpy_time_fit\\figures\\single_step_enthalpy_time_fits_70_105.png",
+    "two_step": "results\\ps\\tnm_enthalpy_time_fit\\figures\\two_step_enthalpy_time_fits_70_105.png",
+    "upjump_80_90": "results\\ps\\tnm_enthalpy_time_fit\\figures\\upjump_80_90_enthalpy_time_70_105.png",
+    "errors": "results\\ps\\tnm_enthalpy_time_fit\\figures\\enthalpy_time_fit_errors_70_105.png"
   },
   "outputs": {
     "by_group": "results\\ps\\tnm_enthalpy_time_fit\\tnm_enthalpy_time_fit_by_group.csv",

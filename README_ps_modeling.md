@@ -18,6 +18,12 @@ J/g = integral_uW_C * (60 / heating_rate_C_min) * 1e-6 / sample_mass_g
 
 For the current PS experiments, `sample_mass_g = 0.0047` and `heating_rate_C_min = 10`.
 
+The current primary DSC enthalpy window is `70-105 deg C`. This window was
+selected from repeated-condition scans because it reduces low-temperature
+heating-overshoot drift while still including the focused relaxation peak
+region. The legacy `40-160 deg C` fields remain in the processed table for
+audit comparison.
+
 ## Commands
 
 Build the planned experiment matrix:
@@ -82,20 +88,20 @@ information-theoretic rationale: do the finite-time experiments that are expecte
 reduce uncertainty in recovery index, Tp, enthalpy area, and path dependence most
 efficiently.
 
-## Physics-Informed PS Model
+## Current Model Choice
 
 The current default inverse-design and EIG entrypoints use
-`results/ps/models/ps_physics_informed_kernel_model.json`. This model keeps the
-raw finite-time annealing inputs and adds compact TNM/ARRT-inspired path
-features. The current best feature subset is `raw_phys_beta`, which describes
-total relaxation progress and two-step path excess over a small stretched
-exponential basis.
+`results/ps/models/ps_limited_time_model.json`. After switching the main DSC
+enthalpy window to `70-105 deg C`, the raw kernel is the better same-split
+choice for the core targets in this dataset.
 
-For the current sparse PS dataset, the physics-informed kernel lowers the mean
-core-target normalized error from `0.7997` to `0.7352` on the same grouped split.
-See `docs/ps_physics_informed_model_update.md` for the metric table and
-`docs/ps_required_missing_data_for_prediction.md` for the data gaps, especially
-the missing direct `S*` and `H*` measurements.
+The physics-informed model is still generated for comparison at
+`results/ps/models/ps_physics_informed_kernel_model.json`, but the current
+same-split normalized core-target error is `1.1552` for `raw_kernel` and
+`1.3138` for `physics_kernel`. See
+`docs/ps_physics_informed_model_update.md` for the metric table and
+`docs/ps_required_missing_data_for_prediction.md` for the remaining data gaps,
+especially the missing direct `S*` and `H*` measurements.
 
 `data/dsc/ps-hs-01.xlsx` adds multi-heating-rate scans for three representative
 single-step annealed states. The strict ARRT/Kissinger calculation now extracts

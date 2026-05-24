@@ -644,6 +644,31 @@ def markdown_table(headers: list[str], rows: list[list[str]]) -> str:
     return "\n".join(out)
 
 
+def physics_kernel_interpretation(summary: dict) -> str:
+    raw_core = summary["normalized_core"]["raw_kernel"]["mean_mae_over_test_std"]
+    physics_core = summary["normalized_core"]["physics_kernel"]["mean_mae_over_test_std"]
+    relative_change = (physics_core - raw_core) / raw_core if raw_core else math.nan
+    core_targets = ["delta_h_total_J_g", "peak_area_J_g", "recovery_index", "path_dependence_index"]
+    improved = [
+        target
+        for target in core_targets
+        if summary["metrics"]["physics_kernel"][target]["mae"] < summary["metrics"]["raw_kernel"][target]["mae"]
+    ]
+    worsened = [target for target in core_targets if target not in improved]
+    if physics_core < raw_core:
+        detail = "It improves all four core targets in this split." if not worsened else f"It improves {', '.join(improved)} but worsens {', '.join(worsened)}."
+        return (
+            f"The selected `physics_kernel` lowers the mean normalized core-target error from `{_fmt(raw_core)}` "
+            f"to `{_fmt(physics_core)}`, a relative change of `{relative_change * 100:.1f}%`. {detail}"
+        )
+    return (
+        f"The selected `physics_kernel` does not improve the mean normalized core-target error in this split: "
+        f"`raw_kernel` is `{_fmt(raw_core)}`, while `physics_kernel` is `{_fmt(physics_core)}` "
+        f"({relative_change * 100:.1f}% higher). It is not recommended as the default model for this window; "
+        f"worse core targets: {', '.join(worsened) if worsened else 'none'}."
+    )
+
+
 def write_report(summary: dict) -> None:
     metric_rows = []
     for target in TARGETS:
@@ -663,7 +688,7 @@ def write_report(summary: dict) -> None:
     process_core = summary["normalized_core"]["process_auxiliary_kernel"]["mean_mae_over_test_std"]
     physics_process_core = summary["normalized_core"]["physics_process_auxiliary_kernel"]["mean_mae_over_test_std"]
     residual_core = summary["normalized_core"]["physics_residual"]["mean_mae_over_test_std"]
-    physics_gain = (physics_core - raw_core) / raw_core
+    physics_interpretation = physics_kernel_interpretation(summary)
     report = f"""# PS Physics-Informed Model Update
 
 ## Purpose
@@ -702,11 +727,11 @@ The split is identical across models and grouped by source file / mode / T1. Low
 
 ## Interpretation
 
-The selected `physics_kernel` lowers the mean normalized core-target error from `{_fmt(raw_core)}` to `{_fmt(physics_core)}`, a relative change of `{physics_gain * 100:.1f}%`. It improves all four core targets in this split: total enthalpy, peak area, recovery index, and path-dependence index.
+{physics_interpretation}
 
 The process-assisted variants test whether the annealing/cooling curve contains useful training signal without being used as a test-time input. Their core normalized errors are `{_fmt(process_core)}` for `process_auxiliary_kernel` and `{_fmt(physics_process_core)}` for `physics_process_auxiliary_kernel`.
 
-The `physics_residual` variant is not recommended as the main model right now. It improves peak area and diagnostic peak shape, but it damages `recovery_index` and `path_dependence_index`, which are the targets that matter most for inverse annealing design. The better small-sample choice is therefore the lower-dimensional `physics_kernel`: raw annealing inputs plus TNM path/dose features selected by grouped CV.
+The `physics_residual` variant has a core normalized error of `{_fmt(residual_core)}` in this split. The default model should be chosen from the measured same-split results rather than assumed from the physics-feature label.
 """
     REPORT_PATH.write_text(report, encoding="utf-8")
 

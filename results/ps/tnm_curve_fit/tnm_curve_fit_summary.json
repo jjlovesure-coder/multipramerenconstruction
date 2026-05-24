@@ -2,8 +2,8 @@
   "status": "complete",
   "model_role": "curve-level TNM-inspired forward diagnostic, not a full material TNM solver",
   "temperature_window_C": [
-    40.0,
-    100.0
+    70.0,
+    105.0
   ],
   "targets": [
     "area_rel",
@@ -19,14 +19,14 @@
     "initial_fictive_temperature_k": 393.15
   },
   "metrics": {
-    "n_curves": 113,
-    "curve_rmse_uW_mean": 45.65465669073802,
-    "curve_mae_uW_mean": 39.707465792802374,
-    "area_error_J_g_mae": 0.4111382505616823,
-    "tp_error_C_mae": 0.4648228052402133,
-    "peak_height_error_uW_mae": 9.390966760588162,
-    "curve_rmse_uW_median": 46.20878589385725,
-    "curve_mae_uW_median": 40.58413630934538
+    "n_curves": 114,
+    "curve_rmse_uW_mean": 52.66964323586883,
+    "curve_mae_uW_mean": 48.083542100907486,
+    "area_error_J_g_mae": 1.765981677235704,
+    "tp_error_C_mae": 5.0719603086794125,
+    "peak_height_error_uW_mae": 50.711593903469186,
+    "curve_rmse_uW_median": 43.539156738469345,
+    "curve_mae_uW_median": 37.05068525627824
   },
   "figures": {
     "actual_vs_predicted": "results\\ps\\tnm_curve_fit\\figures\\tnm_curve_fit_actual_vs_predicted.png",

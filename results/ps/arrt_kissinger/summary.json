@@ -1,7 +1,7 @@
 {
   "method": "Strict ARRT/Kissinger calculation from multi-heating-rate Tp data.",
-  "n_total_scans": 151,
-  "n_condition_groups": 90,
+  "n_total_scans": 152,
+  "n_condition_groups": 91,
   "n_calculable_groups": 11,
   "max_distinct_heating_rates_per_group": 5,
   "minimum_required_distinct_heating_rates": 3,

@@ -54,6 +54,6 @@ def test_group_enthalpy_time_rows_builds_single_and_two_step_groups() -> None:
 
 
 def test_enthalpy_time_figures_are_window_versioned() -> None:
-    assert WINDOW_TAG == "40_105"
+    assert WINDOW_TAG == "70_105"
     assert WINDOW_TAG in SINGLE_FIG.name
     assert WINDOW_TAG in TWOSTEP_FIG.name

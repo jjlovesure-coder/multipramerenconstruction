@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.pytest_cache/
 
 # Virtual environments
 .venv/
@@ -21,3 +22,20 @@ Thumbs.db
 *.log
 .tmp/
 tmp/
+
+# LaTeX build intermediates
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+
+# Generated scratch outputs
+results/**/scratch/
+results/**/tmp/
+results/**/*.tmp

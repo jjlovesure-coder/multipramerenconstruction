@@ -309,7 +309,7 @@ def write_report(summary: dict[str, object]) -> None:
 采用 Kissinger 关系：
 
 ```text
-ln(beta / Tp^2) = C - E / (R Tp)
+ln(beta / Tp^3) = C - E / (R Tp)
 ```
 
 由斜率得到：
@@ -328,13 +328,13 @@ H* = E - R Tp
 再由绝对反应速率峰位近似：
 
 ```text
-ln(beta / Tp^2) = -H* / (R Tp) + ln(kB R / (h H*)) + S* / R
+ln(beta / Tp^3) = -H* / (R Tp) + ln(kB R / (h H*)) + S* / R
 ```
 
 求得：
 
 ```text
-S* = R * [ln(beta / Tp^2) + H*/(R Tp) - ln(kB R / (h H*))]
+S* = R * [ln(beta / Tp^3) + H*/(R Tp) - ln(kB R / (h H*))]
 ```
 
 ## 3. 当前数据可计算性

@@ -1,0 +1,10 @@
+{
+  "status": "complete",
+  "n_conditions": 11,
+  "n_curves": 49,
+  "figures": {
+    "multi_heating_rate_curves": "results\\ps\\arrt_kissinger\\figures\\arrt_multi_heating_rate_curves.png",
+    "kissinger_fits": "results\\ps\\arrt_kissinger\\figures\\arrt_kissinger_fits.png",
+    "hs_confidence_scatter": "results\\ps\\arrt_kissinger\\figures\\arrt_hs_confidence_scatter.png"
+  }
+}

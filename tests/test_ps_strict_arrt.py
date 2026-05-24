@@ -10,6 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from src.physics.arrt import H_PLANCK, K_B, R
+from src.physics.arrt_kissinger import PeakRatePoint, arrt_entropy_from_peak, kissinger_fit
 from src.ps.calculate_arrt_from_heating_rates import arrt_quality_flag
 from src.ps.calculate_arrt_from_heating_rates import calculate_group_results
 from src.ps.calculate_arrt_from_heating_rates import add_recovery_indices
@@ -67,6 +69,38 @@ def test_arrt_results_include_confidence_and_mean_response_fields() -> None:
     assert "mean_peak_area_J_g" in row
     assert "mean_peak_height_uW" in row
     assert row["quality_flag"] == "ok"
+
+
+def test_kissinger_fit_uses_paper_tp_cubed_axis() -> None:
+    points = [
+        PeakRatePoint(heating_rate_k_s=5.0 / 60.0, peak_temperature_k=370.0),
+        PeakRatePoint(heating_rate_k_s=10.0 / 60.0, peak_temperature_k=375.0),
+        PeakRatePoint(heating_rate_k_s=20.0 / 60.0, peak_temperature_k=380.0),
+    ]
+
+    slope, intercept, _ = kissinger_fit(points)
+    x = np.array([1.0 / p.peak_temperature_k for p in points], dtype=float)
+    y = np.array([np.log(p.heating_rate_k_s / (p.peak_temperature_k ** 3)) for p in points], dtype=float)
+    expected_slope, expected_intercept = np.polyfit(x, y, 1)
+
+    assert np.isclose(slope, expected_slope)
+    assert np.isclose(intercept, expected_intercept)
+
+
+def test_arrt_entropy_uses_paper_tp_cubed_axis() -> None:
+    enthalpy_kj_mol = 150.0
+    tp_k = 375.0
+    heating_rate_k_s = 10.0 / 60.0
+    h_j_mol = enthalpy_kj_mol * 1000.0
+
+    entropy = arrt_entropy_from_peak(enthalpy_kj_mol, tp_k, heating_rate_k_s)
+    expected = R * (
+        np.log(heating_rate_k_s / (tp_k ** 3))
+        + h_j_mol / (R * tp_k)
+        - np.log(K_B * R / (H_PLANCK * h_j_mol))
+    )
+
+    assert np.isclose(entropy, expected)
 
 
 def test_arrt_quality_flags_90_c_500_s_for_retest() -> None:

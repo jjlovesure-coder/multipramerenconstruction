@@ -9,14 +9,13 @@ import numpy as np
 
 from src.models.kernel_regression import KernelRegressor
 from src.ps.physics_features import physics_feature_dict
-from src.ps.train_physics_informed_ps_model import PHYSICS_BETA_FEATURES
-from src.ps.train_physics_informed_ps_model import TARGETS
+from src.ps.train_ps_model import TARGETS
 from src.ps.train_ps_model import FEATURES as DEFAULT_RAW_FEATURES
 from src.ps.train_ps_model import featurize
 
 
 ROOT = Path(__file__).resolve().parents[2]
-MODEL_PATH = ROOT / "results" / "ps" / "models" / "ps_physics_informed_kernel_model.json"
+MODEL_PATH = ROOT / "results" / "ps" / "models" / "ps_limited_time_model.json"
 OUT_DIR = ROOT / "results" / "ps" / "predictions"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -52,8 +51,8 @@ def raw_features(row: dict[str, str], feature_names: list[str] | None = None) ->
 
 def candidate_feature_matrix(rows: list[dict[str, str]], payload: dict | None = None) -> np.ndarray:
     payload = payload or (load_model_payload() if MODEL_PATH.exists() else {})
-    raw_feature_names = list(payload.get("raw_features", DEFAULT_RAW_FEATURES))
-    physics_features = list(payload.get("physics_features", PHYSICS_BETA_FEATURES))
+    raw_feature_names = list(payload.get("raw_features", payload.get("features", DEFAULT_RAW_FEATURES)))
+    physics_features = list(payload.get("physics_features", []))
     matrix = []
     for row in rows:
         physics = physics_feature_dict(row)
@@ -115,7 +114,8 @@ def filter_candidates_by_target(rows: list[dict[str, str]], target: dict[str, fl
     return [row for row, keep in zip(rows, mask) if keep], mask
 
 
-def _target_loss(pred: np.ndarray, target: dict[str, float]) -> float:
+def _target_loss(pred: np.ndarray, target: dict[str, float], target_names: list[str] | None = None) -> float:
+    target_names = target_names or TARGETS
     scale = {
         "delta_h_total_J_g": 10.0,
         "peak_area_J_g": 5.0,
@@ -126,7 +126,7 @@ def _target_loss(pred: np.ndarray, target: dict[str, float]) -> float:
     }
     loss = 0.0
     for name, value in target.items():
-        idx = TARGETS.index(name)
+        idx = target_names.index(name)
         loss += abs((float(pred[idx]) - float(value)) / scale[name])
     return loss / max(len(target), 1)
 
@@ -291,6 +291,8 @@ def refine_candidate(
     except Exception:
         return row, False
 
+    target_names = list(payload.get("targets", TARGETS))
+
     def objective(values: np.ndarray) -> float:
         candidate = _row_from_vector(values)
         pred, unc = model.predict(candidate_feature_matrix([candidate], payload))
@@ -299,7 +301,7 @@ def refine_candidate(
         if "peak_temperature_Tp_C" in target and np.isfinite(float(target["peak_temperature_Tp_C"])):
             estimate = min(max(float(target["peak_temperature_Tp_C"]), 50.0), 100.0)
             t2_penalty = max(abs(float(candidate["T2_C"]) - estimate) - 8.0, 0.0) / 8.0
-        return _target_loss(pred[0], target) + 0.05 * total_time / 1800.0 + 0.02 * float(np.mean(unc[0])) + t2_penalty
+        return _target_loss(pred[0], target, target_names) + 0.05 * total_time / 1800.0 + 0.02 * float(np.mean(unc[0])) + t2_penalty
 
     start = _vector_from_row(row)
     bounds = [(50.0, 100.0), (1.0, np.log10(1800.0)), (50.0, 100.0), (1.0, np.log10(1800.0))]
@@ -350,7 +352,7 @@ def search(target: dict[str, float] | None = None, top_k: int = 10, allow_degrad
 
     target_losses = np.zeros(len(candidates))
     for i in range(len(candidates)):
-        target_losses[i] = _target_loss(pred[i], target)
+        target_losses[i] = _target_loss(pred[i], target, targets)
     total_time = np.array([float(row["total_anneal_time_s"]) for row in candidates])
     mean_uncertainty = np.mean(unc, axis=1)
     diagnostics = load_inverse_diagnostics(candidates, payload, targets, allow_degraded_diagnostics=allow_degraded_diagnostics)
@@ -379,7 +381,7 @@ def search(target: dict[str, float] | None = None, top_k: int = 10, allow_degrad
             scipy_used = scipy_used or refined
             row["refined_continuously"] = refined
             pred_one, unc_one = model.predict(candidate_feature_matrix([row], payload))
-            row_target_loss = _target_loss(pred_one[0], target)
+            row_target_loss = _target_loss(pred_one[0], target, targets)
             pred_values = pred_one[0]
             unc_values = unc_one[0]
             refined_diagnostics = load_inverse_diagnostics([row], payload, targets, allow_degraded_diagnostics=allow_degraded_diagnostics)
@@ -407,7 +409,7 @@ def search(target: dict[str, float] | None = None, top_k: int = 10, allow_degrad
         row["inverse_identifiability"] = row_identifiability
         row["negative_inverse_identifiability"] = -row_identifiability
         row.update(support_label(row, row_extra_penalty))
-        row["abs_path_dependence"] = float(abs(pred_values[TARGETS.index("path_dependence_index")]))
+        row["abs_path_dependence"] = float(abs(pred_values[targets.index("path_dependence_index")]))
         row["loss_components"] = {
             "target_loss": float(row_target_loss),
             "time_penalty": float(INVERSE_LOSS_WEIGHTS["time"] * float(row["total_anneal_time_s"]) / 1800.0),
@@ -415,7 +417,7 @@ def search(target: dict[str, float] | None = None, top_k: int = 10, allow_degrad
             "extrapolation_penalty": row_extra_penalty,
             "identifiability_bonus": float(INVERSE_LOSS_WEIGHTS["identifiability"] * row_identifiability),
         }
-        for j, target_name in enumerate(TARGETS):
+        for j, target_name in enumerate(targets):
             row[f"pred_{target_name}"] = float(pred_values[j])
             row[f"uncertainty_{target_name}"] = float(unc_values[j])
         for parameter, values in sensitivity_norms.items():

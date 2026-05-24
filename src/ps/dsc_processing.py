@@ -42,7 +42,7 @@ RAW_FILES = {
 PS_SAMPLE_MASS_MG = 4.7
 PS_SAMPLE_MASS_G = PS_SAMPLE_MASS_MG / 1000.0
 DEFAULT_HEATING_RATE_C_MIN = 10.0
-MAIN_INTEGRATION_LOW_C = 40.0
+MAIN_INTEGRATION_LOW_C = 70.0
 MAIN_INTEGRATION_HIGH_C = 105.0
 LEGACY_INTEGRATION_LOW_C = 40.0
 LEGACY_INTEGRATION_HIGH_C = 160.0
@@ -421,12 +421,14 @@ def _rename_feature_block(block: dict[str, float | int], suffix: str) -> dict[st
 def extract_features(scan: pd.DataFrame, noise_sigma_uW: float, heating_rate_c_min: float = DEFAULT_HEATING_RATE_C_MIN) -> dict[str, float | int]:
     """Extract final-heating features.
 
-    The primary enthalpy-recovery features intentionally stop at 105 C to avoid
-    mixing the high-temperature liquid/supercooled-liquid baseline into the PS
-    finite-time recovery target.  The signal is experiment minus reference
-    state only; no additional endpoint baseline subtraction is applied.  The
-    earlier wider-window fields are preserved under explicit suffixes for audit
-    and backwards comparison.
+    The primary enthalpy-recovery features use the repeatability-selected
+    70-105 C window.  The lower bound avoids the low-temperature heating
+    overshoot/drift seen in repeated scans, while the upper bound still covers
+    the focused relaxation peak region without mixing in the high-temperature
+    liquid/supercooled-liquid baseline.  The signal is experiment minus
+    reference state only; no additional endpoint baseline subtraction is
+    applied.  The earlier wider-window fields are preserved under explicit
+    suffixes for audit and backwards comparison.
     """
     main = _recovery_feature_block(
         scan,

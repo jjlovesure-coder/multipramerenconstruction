@@ -2,7 +2,7 @@
 
 This module is deliberately a diagnostic forward fitter, not a claim that a
 single Gaussian is the final physical TNM solution.  It tests whether compact
-TNM/fictive-temperature coordinates can predict the observed 40-100 C recovery
+TNM/fictive-temperature coordinates can predict the observed 70-105 C recovery
 curve shape well enough before inverse reconstruction is trusted.
 """
 

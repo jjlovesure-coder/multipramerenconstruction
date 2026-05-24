@@ -12,21 +12,21 @@
   },
   "n_two_step_samples": 60,
   "candidate_grid_size": 9801,
-  "mae_T1_C": 9.75,
-  "mae_T2_C": 11.666666666666666,
-  "mae_log10_t1": 0.8068899225499134,
-  "mae_log10_t2": 1.1436318988834802,
-  "median_target_loss": 0.18983708035730062,
+  "mae_T1_C": 18.333333333333332,
+  "mae_T2_C": 25.333333333333332,
+  "mae_log10_t1": 1.202302520570966,
+  "mae_log10_t2": 1.3752950660300047,
+  "median_target_loss": 18.02116213147145,
   "posterior_coverage": {
-    "T1_C": 0.9833333333333333,
-    "T2_C": 0.9333333333333333,
-    "t1_s": 1.0,
-    "t2_s": 0.6666666666666666
+    "T1_C": 0.95,
+    "T2_C": 0.48333333333333334,
+    "t1_s": 0.9333333333333333,
+    "t2_s": 0.5333333333333333
   },
   "posterior_median_width": {
     "T1_C": 45.0,
-    "T2_C": 30.0,
-    "log10_t1_s": 2.255272505103306,
+    "T2_C": 22.5,
+    "log10_t1_s": 1.7781512503836436,
     "log10_t2_s": 2.255272505103306
   },
   "posterior_confidence_counts": {
@@ -36,14 +36,14 @@
       "low": 60
     },
     "T1_C": {
-      "high": 0,
-      "medium": 0,
-      "low": 60
+      "high": 1,
+      "medium": 1,
+      "low": 58
     },
     "T2_C": {
       "high": 0,
-      "medium": 2,
-      "low": 58
+      "medium": 28,
+      "low": 32
     },
     "t1_s": {
       "high": 0,
@@ -52,8 +52,8 @@
     },
     "t2_s": {
       "high": 0,
-      "medium": 3,
-      "low": 57
+      "medium": 0,
+      "low": 60
     }
   },
   "output": "results\\ps\\tnm_calibrated\\tnm_inverse_reconstruction_by_sample.csv",
